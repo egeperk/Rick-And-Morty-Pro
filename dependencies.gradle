@@ -1,0 +1,17 @@
+ext.versions = [
+        recyclerview     : '1.2.1',
+        androidxCoreKtx  : '1.8.0',
+        appCompat        : '1.5.0',
+        material         : '1.6.1',
+        constraintlayout : '2.1.4',
+        navigation       : '2.5.1',
+        junit            : '4.13.2',
+        espresso         : '3.4.0',
+        apollo           : '3.5.0',
+        coroutines       : '1.6.3',
+        coil             : '2.1.0',
+        paging3          : '3.2.0-alpha01',
+        sharedPreferences: '1.2.0',
+        koin             : '3.2.0',
+        multidex         : '2.0.1'
+]
