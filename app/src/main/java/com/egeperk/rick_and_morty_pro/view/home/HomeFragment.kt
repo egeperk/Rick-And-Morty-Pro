@@ -14,14 +14,16 @@ import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.databinding.FragmentHomeBinding
+import com.egeperk.rick_and_morty_pro.view.bottomsheetdialog.ItemListDialogFragment
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class HomeFragment : Fragment() {
 
-    private val homeViewModel: HomeViewModel by viewModel()
+    private val homeViewModel: HomeViewModel by sharedViewModel()
     private var charAdapter: GenericAdapter<CharactersQuery.Result>? = null
 
     override fun onCreateView(
@@ -32,6 +34,10 @@ class HomeFragment : Fragment() {
         return FragmentHomeBinding.inflate(layoutInflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = homeViewModel
+
+            characterBtnLy.setOnClickListener {
+                ItemListDialogFragment().show(childFragmentManager,"x")
+            }
 
             charAdapter = GenericAdapter(R.layout.character_row) {}
             homeCharacterRv.adapter = charAdapter

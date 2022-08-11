@@ -13,4 +13,5 @@
     <color name="hint_gray">#CECECE</color>
     <color name="app_black">#202020</color>
     <color name="dark_silver">#6E6E6E</color>
+    <color name="view_gray">#E0E0E0</color>
 </resources>

@@ -15,8 +15,11 @@
         <entry key="..\:/Users/Ege/AndroidStudioProjects/RickAndMortyPro/app/src/main/res/layout/fragment_home.xml" value="0.26400273224043713" />
         <entry key="..\:/Users/Ege/AndroidStudioProjects/RickAndMortyPro/app/src/main/res/layout/fragment_search.xml" value="0.5541666666666667" />
         <entry key="..\:/Users/Ege/AndroidStudioProjects/RickAndMortyPro/app/src/main/res/menu/bottom_bar_menu_row.xml" value="0.5541666666666667" />
+        <entry key="app/src/main/res/drawable/custom_bottom_sheet_bg.xml" value="0.2235" />
+        <entry key="app/src/main/res/drawable/custom_cursor_bg.xml" value="0.2235" />
         <entry key="app/src/main/res/layout/character_row.xml" value="0.25" />
         <entry key="app/src/main/res/layout/episode_row.xml" value="0.34479166666666666" />
+        <entry key="app/src/main/res/layout/fragment_bottom_sheet_dialog.xml" value="0.2" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.13832010029251984" />
       </map>
     </option>
