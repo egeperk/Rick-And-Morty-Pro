@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+<variable
+    name="item"
+    type="com.egeperk.rick_and_morty.EpisodeQuery.Result" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -26,6 +28,7 @@
                 android:layout_height="0dp"
                 android:background="@drawable/custom_count_bg"
                 android:padding="2dp"
+                android:text="@{item.episode}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="SO2.E04" />
@@ -39,6 +42,7 @@
                 android:textColor="@color/dark_silver"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/season_episode_number"
+                android:text="@{item.air_date}"
                 tools:text="Fri, July 32, 2020" />
 
             <ImageView
@@ -50,11 +54,12 @@
 
             <TextView
                 android:id="@+id/episode_title"
-                style="@style/Typography.Regular.16"
+                style="@style/Typography.Bold.Body.16"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:text="@{item.name}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/air_date"
                 tools:text="The End of Something" />
@@ -68,7 +73,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/episode_title"
-                tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore..." />
+                android:text="@string/lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit_sed_do_eiusmod_tempor_incididunt_ut_labore_et_dolore" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,24 @@
+query Characters($page: Int, $name: String) {
+    characters(page: $page, filter: { name: $name }) {
+        results {
+            id
+            name
+            image
+            status
+            species
+            type
+
+            gender
+            origin {
+                name
+            }
+            location {
+                name
+            }
+        }
+        info {
+            count
+            next
+        }
+    }
+}

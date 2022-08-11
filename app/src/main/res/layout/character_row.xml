@@ -5,29 +5,19 @@
 
     <data>
 
+        <variable
+            name="item"
+            type="com.egeperk.rick_and_morty.CharactersQuery.Result" />
+
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_marginHorizontal="12dp"
         android:layout_marginBottom="24dp"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guide"
-            android:layout_height="0dp"
-            android:layout_width="0dp"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.75"
-            />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guide_horizontal"
-            android:layout_height="0dp"
-            android:layout_width="0dp"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.8"
-            />
 
 
         <androidx.cardview.widget.CardView
@@ -35,8 +25,7 @@
             android:id="@+id/char_image_card"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/guide"
-            app:layout_constraintBottom_toTopOf="@id/guide_horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
             app:cardCornerRadius="8dp"
             app:cardElevation="0dp"
             android:layout_width="0dp"
@@ -47,7 +36,8 @@
                 android:id="@+id/char_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_launcher_background" />
+                android:src="@drawable/ic_launcher_background"
+                app:imageUrl="@{item.image}"/>
 
         </androidx.cardview.widget.CardView>
 
@@ -57,7 +47,8 @@
             android:layout_marginTop="16dp"
             app:layout_constraintTop_toBottomOf="@id/char_image_card"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/guide"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@{item.name}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             tools:text="Rick Sanchez" />
