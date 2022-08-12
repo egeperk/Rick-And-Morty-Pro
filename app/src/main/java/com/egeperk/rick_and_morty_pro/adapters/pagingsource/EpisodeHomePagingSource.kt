@@ -4,8 +4,9 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.repository.ApiRepository
+import java.text.FieldPosition
 
-class EpisodeHomePagingSource(private val repository: ApiRepository) :
+class EpisodeHomePagingSource(private val repository: ApiRepository, private val size: Int ) :
     PagingSource<Int, EpisodeQuery.Result>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, EpisodeQuery.Result> {
@@ -13,11 +14,14 @@ class EpisodeHomePagingSource(private val repository: ApiRepository) :
         return try {
             val nextPageNumber = params.key ?: 1
             val response = repository.episodesQuery(nextPageNumber)
-            val nextKey = null
+            val nextKey = response.data?.episodes?.info?.next
             val data = response.data?.episodes?.results
             val episodes = mapResponseToPresentationModel(data!!)
             if (!response.hasErrors()) {
-                LoadResult.Page(data = episodes.subList(0,4), nextKey = nextKey, prevKey = null)
+                LoadResult.Page(
+                    data = if(size == 0) episodes.subList(0,4) else episodes,
+                    nextKey = if (size == 0) null else nextKey,
+                    prevKey = null)
             } else {
                 LoadResult.Error(Exception(response.errors?.first()?.message))
             }
@@ -33,7 +37,7 @@ class EpisodeHomePagingSource(private val repository: ApiRepository) :
             val episodeAirDate = result?.air_date
             val episodeTitle = result?.name
             episodes.add(EpisodeQuery.Result(
-                episodeName,episodeAirDate,episodeTitle
+                episodeName,episodeTitle,episodeAirDate
 
              ))
         }

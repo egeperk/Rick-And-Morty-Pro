@@ -8,7 +8,11 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.egeperk.rick_and_morty_pro.view.home.HomeFragment"
-        android:label="HomeFragment" />
+        android:label="HomeFragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_itemListDialogFragment"
+            app:destination="@id/itemListDialogFragment" />
+    </fragment>
     <fragment
         android:id="@+id/favoritesFragment"
         android:name="com.egeperk.rick_and_morty_pro.view.favorites.FavoritesFragment"
@@ -19,4 +23,12 @@
         android:name="com.egeperk.rick_and_morty_pro.view.search.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
+    <dialog
+        android:id="@+id/itemListDialogFragment"
+        android:name="com.egeperk.rick_and_morty_pro.view.bottomsheetdialog.ItemListDialogFragment"
+        android:label="ItemListDialogFragment">
+        <argument
+            android:name="type"
+            app:argType="string" />
+    </dialog>
 </navigation>

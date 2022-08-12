@@ -4,8 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
+import androidx.paging.filter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,7 +18,11 @@ import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.databinding.FragmentHomeBinding
+import com.egeperk.rick_and_morty_pro.util.Constants.EMPTY_VALUE
+import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_CHAR
+import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_EPISODE
 import com.egeperk.rick_and_morty_pro.view.bottomsheetdialog.ItemListDialogFragment
+import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -23,8 +31,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
 
-    private val homeViewModel: HomeViewModel by sharedViewModel()
+    private val homeViewModel: HomeViewModel by viewModel()
     private var charAdapter: GenericAdapter<CharactersQuery.Result>? = null
+    private var episodeAdapter: GenericAdapter<EpisodeQuery.Result>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,12 +44,21 @@ class HomeFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
             viewModel = homeViewModel
 
-            characterBtnLy.setOnClickListener {
-                ItemListDialogFragment().show(childFragmentManager,"x")
+
+            episodeBtnLy.setOnClickListener {
+                homeViewModel.isDialogShown.value = true
+                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(TYPE_EPISODE))
             }
+
+            characterBtnLy.setOnClickListener {
+                homeViewModel.isDialogShown.value = true
+                findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(TYPE_CHAR))
+            }
+
 
             charAdapter = GenericAdapter(R.layout.character_row) {}
             homeCharacterRv.adapter = charAdapter
+
 
             lifecycleScope.launch {
                 homeViewModel.charResult.collectLatest {
@@ -48,16 +66,24 @@ class HomeFragment : Fragment() {
                 }
             }
 
-            val xAdapter = GenericAdapter<EpisodeQuery.Result>(R.layout.episode_row) {}
-            homeEpisodeRv.adapter = xAdapter
 
+            episodeAdapter = GenericAdapter<EpisodeQuery.Result>(R.layout.episode_row) {}
+            homeEpisodeRv.adapter = episodeAdapter
+
+            homeViewModel.isDialogShown.observe(viewLifecycleOwner) {
+                if (!it) {
+                    homeViewModel.apply {
+                        getEpisodeData()
+                        getCharacterData(EMPTY_VALUE)
+                    }
+                }
+            }
             lifecycleScope.launch {
                 homeViewModel.episodeResult.collectLatest {
-                    xAdapter.submitData(it)
+                    episodeAdapter?.submitData(it)
                 }
             }
 
         }.root
     }
-
 }

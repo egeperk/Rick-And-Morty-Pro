@@ -9,4 +9,10 @@
     <string name="favorites">Favorites</string>
     <string name="lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit_sed_do_eiusmod_tempor_incididunt_ut_labore_et_dolore">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore...</string>
     <string name="all_seasons">All seasons</string>
+    <string name="season_1">Season 1</string>
+    <string name="season_2">Season 2</string>
+    <string name="season_3">Season 3</string>
+    <string name="season_4">Season 4</string>
+    <string name="season_5">Season 5</string>
+
 </resources>

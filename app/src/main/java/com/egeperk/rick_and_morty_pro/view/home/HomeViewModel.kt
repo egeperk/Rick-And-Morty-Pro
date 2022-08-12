@@ -9,12 +9,15 @@ import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.adapters.pagingsource.CharacterHomePagingSource
 import com.egeperk.rick_and_morty_pro.adapters.pagingsource.EpisodeHomePagingSource
 import com.egeperk.rick_and_morty_pro.repository.ApiRepository
+import com.egeperk.rick_and_morty_pro.util.Constants.EMPTY_VALUE
 import com.egeperk.rick_and_morty_pro.util.Constants.PAGE_SIZE
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repository: ApiRepository): ViewModel() {
 
+    val isDialogShown = MutableLiveData(false)
     val episodeCount = MutableLiveData<Int>()
     val charactersCount = MutableLiveData<Int>()
 
@@ -28,30 +31,23 @@ class HomeViewModel(private val repository: ApiRepository): ViewModel() {
 
         viewModelScope.launch {
             val newResult = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
-                CharacterHomePagingSource(repository, query)
+                CharacterHomePagingSource(repository, query, if (isDialogShown.value == false) 0 else 1)
             }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
             _charResult.value = newResult.value
-            charactersCount.value = repository.charactersQuery(0,"").data?.characters?.info?.count!!
+            charactersCount.value = repository.charactersQuery(0, EMPTY_VALUE).data?.characters?.info?.count!!
         }
         return charResult
     }
 
     fun getEpisodeData(): StateFlow<PagingData<EpisodeQuery.Result>> {
 
-        viewModelScope.launch {
+        viewModelScope.launch{
             val newResult = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
-                EpisodeHomePagingSource(repository)
+                EpisodeHomePagingSource(repository,if(isDialogShown.value == false) 0 else 1)
             }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
             _episodeResult.value = newResult.value
             episodeCount.value = repository.episodesQuery(0).data?.episodes?.info?.count!!
         }
         return episodeResult
     }
-
-
-    init {
-        getCharacterData("")
-        getEpisodeData()
-    }
-
 }

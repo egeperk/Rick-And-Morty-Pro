@@ -5,7 +5,7 @@ import androidx.paging.PagingState
 import com.egeperk.rick_and_morty.CharactersQuery
 import com.egeperk.rick_and_morty_pro.repository.ApiRepository
 
-class CharacterHomePagingSource(private val repository: ApiRepository, private val query: String) :
+class CharacterHomePagingSource(private val repository: ApiRepository, private val query: String, private val size: Int) :
     PagingSource<Int, CharactersQuery.Result>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, CharactersQuery.Result> {
@@ -13,11 +13,14 @@ class CharacterHomePagingSource(private val repository: ApiRepository, private v
         return try {
             val nextPageNumber = params.key ?: 1
             val response = repository.charactersQuery(nextPageNumber, query)
-            val nextKey = null
+            val nextKey = response.data?.characters?.info?.next
             val data = response.data?.characters?.results
             val characters = mapResponseToPresentationModel(data!!)
             if (!response.hasErrors()) {
-                LoadResult.Page(data = characters.subList(0,4), nextKey = nextKey, prevKey = null)
+                LoadResult.Page(
+                    data = if(size == 0) characters.subList(0,4) else characters,
+                    nextKey = if (size == 0) null else nextKey,
+                    prevKey = null)
             } else {
                 LoadResult.Error(Exception(response.errors?.first()?.message))
             }
