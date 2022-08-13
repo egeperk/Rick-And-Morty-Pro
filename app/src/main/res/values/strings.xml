@@ -14,5 +14,12 @@
     <string name="season_3">Season 3</string>
     <string name="season_4">Season 4</string>
     <string name="season_5">Season 5</string>
+    <string name="add_your_favorites">Add your favorites</string>
+    <string name="status">Status</string>
+    <string name="species">Species</string>
+    <string name="type">Type</string>
+    <string name="gender">Gender</string>
+    <string name="origin">Origin</string>
+    <string name="location">Location</string>
 
 </resources>

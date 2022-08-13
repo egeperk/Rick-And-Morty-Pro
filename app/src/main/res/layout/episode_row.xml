@@ -23,7 +23,7 @@
 
             <TextView
                 android:id="@+id/season_episode_number"
-                style="@style/Typography.Regular.16"
+                style="@style/Typography.Bold.Body.16"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:background="@drawable/custom_count_bg"

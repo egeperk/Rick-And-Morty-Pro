@@ -75,6 +75,12 @@
         <item name="android:spacing">0.15dp</item>
     </style>
 
+    <style name="Typography.Regular.12" parent="Typography.Regular">
+        <item name="android:textSize">12sp</item>
+        <item name="lineHeight">14dp</item>
+        <item name="android:spacing">0.15dp</item>
+    </style>
+
     <style name="Typography.Regular.14" parent="Typography.Regular">
         <item name="android:textSize">14sp</item>
         <item name="lineHeight">17dp</item>
@@ -99,7 +105,6 @@
         <item name="android:textSize">20sp</item>
         <item name="lineHeight">25dp</item>
         <item name="android:spacing">0.4dp</item>
-        <item name="android:textAlignment">center</item>
     </style>
 
     <style name="Typography.Regular.Caption.11" parent="Typography.Regular">

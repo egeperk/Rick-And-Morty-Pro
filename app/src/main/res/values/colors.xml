@@ -14,4 +14,7 @@
     <color name="app_black">#202020</color>
     <color name="dark_silver">#6E6E6E</color>
     <color name="view_gray">#E0E0E0</color>
+    <color name="pomona_green">#215229</color>
+    <color name="green">#B3FFBF</color>
+    <color name="feldgrau_green">#4A614D</color>
 </resources>

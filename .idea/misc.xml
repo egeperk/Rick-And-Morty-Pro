@@ -3,6 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/custom_card_lower_bg.xml" value="0.4105" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/custom_card_upper_bg.xml" value="0.4105" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/custom_graident_bg.xml" value="0.4105" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/episode_row.xml" value="0.4548952543822146" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/fragment_bottom_sheet_dialog.xml" value="0.5541666666666667" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/fragment_detail.xml" value="0.20234375" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/fragment_home.xml" value="0.14" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/fragment_search.xml" value="0.5541666666666667" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/test_ly.xml" value="0.35222121486854036" />
         <entry key="..\:/Users/Ege/AndroidStudioProjects/RickAndMortyPro/app/src/main/res/drawable/character_row.xml" value="0.4105" />
         <entry key="..\:/Users/Ege/AndroidStudioProjects/RickAndMortyPro/app/src/main/res/drawable/custom_count_bg.xml" value="0.4105" />
         <entry key="..\:/Users/Ege/AndroidStudioProjects/RickAndMortyPro/app/src/main/res/drawable/custom_et_background.xml" value="0.4105" />

@@ -12,6 +12,9 @@
         <action
             android:id="@+id/action_homeFragment_to_itemListDialogFragment"
             app:destination="@id/itemListDialogFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
     </fragment>
     <fragment
         android:id="@+id/favoritesFragment"
@@ -31,4 +34,8 @@
             android:name="type"
             app:argType="string" />
     </dialog>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.egeperk.rick_and_morty_pro.view.detail.DetailFragment"
+        android:label="DetailFragment" />
 </navigation>

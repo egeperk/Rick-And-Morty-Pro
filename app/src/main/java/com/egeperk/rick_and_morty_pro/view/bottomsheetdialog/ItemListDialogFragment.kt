@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.paging.PagingData
@@ -87,6 +88,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                         itemCount.text = it.toString()
                     }
                     headerTitle.text = resources.getString(R.string.episodes)
+                    filterBtn.isVisible = true
                     val itemAdapter = GenericAdapter<EpisodeQuery.Result>(R.layout.episode_row) {}
                     genericRv.apply {
                         adapter = itemAdapter
