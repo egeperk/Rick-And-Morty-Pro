@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/app_black"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:context=".view.detail.DetailFragment">
+                tools:context=".view.detail.character.DetailFragment">
 
 
                 <ImageView

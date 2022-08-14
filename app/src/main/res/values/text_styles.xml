@@ -22,7 +22,7 @@
 
     <style name="Typography.Bold.Large.Title" parent="Typography.Bold">
         <item name="android:textSize">32sp</item>
-        <item name="lineHeight">41dp</item>
+        <item name="lineHeight">38dp</item>
         <item name="android:spacing">0.4dp</item>
     </style>
 

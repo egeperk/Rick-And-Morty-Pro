@@ -1,14 +1,14 @@
 package com.egeperk.rick_and_morty_pro.view.home
 
+import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
-import androidx.paging.map
 import com.egeperk.rick_and_morty.CharactersQuery
 import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.R
@@ -21,7 +21,6 @@ import com.egeperk.rick_and_morty_pro.util.safeNavigate
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.lang.Exception
 
 
 class HomeFragment : Fragment() {
@@ -34,10 +33,10 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-
         return FragmentHomeBinding.inflate(layoutInflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = homeViewModel
+
 
             episodeBtnLy.setOnClickListener {
                 homeViewModel.isDialogShown.value = true
@@ -50,16 +49,18 @@ class HomeFragment : Fragment() {
 
             characterBtnLy.setOnClickListener {
                 homeViewModel.isDialogShown.value = true
-                findNavController().safeNavigate(
-                    HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(
-                        TYPE_CHAR
-                    )
-                )
+               Handler().postDelayed({
+                   findNavController().safeNavigate(
+                       HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(
+                           TYPE_CHAR
+                       )
+                   )
+               },200)
             }
 
             charAdapter = GenericAdapter(R.layout.character_row) {
                 findNavController().safeNavigate(
-                    HomeFragmentDirections.actionHomeFragmentToDetailFragment(it)
+                    HomeFragmentDirections.actionHomeFragmentToDetailFragment(it.toString())
                 )
             }
             homeCharacterRv.adapter = charAdapter
@@ -72,7 +73,13 @@ class HomeFragment : Fragment() {
             }
 
 
-            episodeAdapter = GenericAdapter(R.layout.episode_row) {}
+            episodeAdapter = GenericAdapter(R.layout.episode_row) {
+                Handler().postDelayed({
+                    findNavController().navigate(R.id.action_homeFragment_to_episodeDetailFragment)
+                },200
+                )
+
+            }
             homeEpisodeRv.adapter = episodeAdapter
 
             homeViewModel.isDialogShown.observe(viewLifecycleOwner) {

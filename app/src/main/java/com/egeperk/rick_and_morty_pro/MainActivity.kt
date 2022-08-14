@@ -23,11 +23,5 @@ class MainActivity : AppCompatActivity() {
             bottomNavBar.setupWithNavController(navController)
             
         }
-
-        fun updateStatusBarColor(color: String){// Color must be in hexadecimal fromat
-            val window = window;
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.statusBarColor = Color.parseColor(color);
-        }
     }
 }

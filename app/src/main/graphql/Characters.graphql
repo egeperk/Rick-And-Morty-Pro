@@ -4,17 +4,6 @@ query Characters($page: Int, $name: String) {
             id
             name
             image
-            status
-            species
-            type
-
-            gender
-            origin {
-                name
-            }
-            location {
-                name
-            }
         }
         info {
             count

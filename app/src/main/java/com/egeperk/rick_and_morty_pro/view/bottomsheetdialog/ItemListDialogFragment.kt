@@ -6,10 +6,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.paging.PagingData
+import androidx.paging.filter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.egeperk.rick_and_morty.CharactersQuery
@@ -18,6 +20,13 @@ import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.databinding.FragmentBottomSheetDialogBinding
 import com.egeperk.rick_and_morty_pro.util.Constants.EMPTY_VALUE
+import com.egeperk.rick_and_morty_pro.util.Constants.ROTATE_DOWN
+import com.egeperk.rick_and_morty_pro.util.Constants.ROTATE_UP
+import com.egeperk.rick_and_morty_pro.util.Constants.SEASON_FIVE
+import com.egeperk.rick_and_morty_pro.util.Constants.SEASON_FOUR
+import com.egeperk.rick_and_morty_pro.util.Constants.SEASON_ONE
+import com.egeperk.rick_and_morty_pro.util.Constants.SEASON_THREE
+import com.egeperk.rick_and_morty_pro.util.Constants.SEASON_TWO
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_CHAR
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_EPISODE
 import com.egeperk.rick_and_morty_pro.view.home.HomeViewModel
@@ -34,6 +43,8 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
     private val viewModel by viewModel<HomeViewModel>()
     private val args by navArgs<ItemListDialogFragmentArgs>()
     private var binding: FragmentBottomSheetDialogBinding? = null
+    private var episodeAdapter: GenericAdapter<EpisodeQuery.Result>? = null
+    private var charAdapter: GenericAdapter<CharactersQuery.Result>? = null
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -67,10 +78,10 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                         itemCount.text = it.toString()
                     }
                     headerTitle.text = resources.getString(R.string.characters)
-                    val itemAdapter =
+                    charAdapter =
                         GenericAdapter<CharactersQuery.Result>(R.layout.character_row) {}
                     genericRv.apply {
-                        adapter = itemAdapter
+                        adapter = charAdapter
                         layoutManager = GridLayoutManager(requireContext(), 2)
                     }
                     viewModel.isDialogShown.observe(viewLifecycleOwner) {
@@ -80,7 +91,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                     }
                     lifecycleScope.launch {
                         viewModel.charResult.collectLatest {
-                            itemAdapter.submitData(it)
+                            charAdapter?.submitData(it)
                         }
                     }
 
@@ -91,9 +102,9 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                     }
                     headerTitle.text = resources.getString(R.string.episodes)
                     filterBtn.isVisible = true
-                    val itemAdapter = GenericAdapter<EpisodeQuery.Result>(R.layout.episode_row) {}
+                    episodeAdapter = GenericAdapter<EpisodeQuery.Result>(R.layout.episode_row) {}
                     genericRv.apply {
-                        adapter = itemAdapter
+                        adapter = episodeAdapter
                         layoutManager = LinearLayoutManager(requireContext())
                     }
                     viewModel.isDialogShown.observe(viewLifecycleOwner) {
@@ -103,7 +114,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                     }
                     lifecycleScope.launch {
                         viewModel.episodeResult.collectLatest {
-                            itemAdapter.submitData(it)
+                            episodeAdapter?.submitData(it)
                         }
                     }
                     //setRv<EpisodeQuery.Result>(GenericAdapter(R.layout.episode_row){},viewModel.episodeResult.value,viewModel.getEpisodeData())
@@ -136,30 +147,58 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
         if (binding?.seasonsCard?.isVisible == false) {
             binding?.apply {
                 seasonsCard.isVisible = true
-                downArrow.rotation = 180f
+                downArrow.rotation = ROTATE_UP
             }
         } else {
             binding?.apply {
                 seasonsCard.isVisible = false
-                downArrow.rotation = 0f
+                downArrow.rotation = ROTATE_DOWN
             }
         }
+
+        selectSeason(binding?.season1Tv, SEASON_ONE)
+        selectSeason(binding?.season2Tv, SEASON_TWO)
+        selectSeason(binding?.season3Tv, SEASON_THREE)
+        selectSeason(binding?.season4Tv, SEASON_FOUR)
+        selectSeason(binding?.season5Tv, SEASON_FIVE)
+        selectSeason(binding?.allSeasonTv, null)
 
     }
 
- /*   private fun <T> setRv(
-        adapter: GenericAdapter<Any>,
-        data: Any,
-        query: StateFlow<PagingData<T>>,
-    ) {
-        binding?.genericRv?.adapter = adapter
-        viewModel.isDialogShown.observe(viewLifecycleOwner) {
-            if (it) {
-                query
+    private fun selectSeason(v: TextView?, filter: String?) {
+        v?.setOnClickListener {
+            lifecycleScope.launch {
+                episodeAdapter?.submitData(PagingData.empty())
+                viewModel.episodeResult.collectLatest {
+                    if (filter != null) {
+                        episodeAdapter?.submitData(it.filter { it.episode?.contains(filter) == true })
+                    } else {
+                        episodeAdapter?.submitData(it)
+                    }
+                }
+            }
+            binding?.apply {
+                allSeasonBtn.text = v.text
+                seasonsCard.isVisible = false
+                downArrow.rotation = ROTATE_DOWN
             }
         }
-        lifecycleScope.launch {
-            adapter.submitData(PagingData.from(listOf(data)))
-        }
-    }*/
+
+
+        /*   private fun <T> setRv(
+               adapter: GenericAdapter<Any>,
+               data: Any,
+               query: StateFlow<PagingData<T>>,
+           ) {
+               binding?.genericRv?.adapter = adapter
+               viewModel.isDialogShown.observe(viewLifecycleOwner) {
+                   if (it) {
+                       query
+                   }
+               }
+               lifecycleScope.launch {
+                   adapter.submitData(PagingData.from(listOf(data)))
+               }
+           }*/
+    }
 }

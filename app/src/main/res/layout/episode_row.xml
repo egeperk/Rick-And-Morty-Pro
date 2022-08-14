@@ -4,19 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-<variable
-    name="item"
-    type="com.egeperk.rick_and_morty.EpisodeQuery.Result" />
+
+        <variable
+            name="item"
+            type="com.egeperk.rick_and_morty.EpisodeQuery.Result" />
     </data>
 
     <androidx.cardview.widget.CardView
-        android:layout_marginVertical="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="0dp"
-        app:cardBackgroundColor="@color/light_gray">
+        android:layout_marginVertical="8dp"
+        app:cardCornerRadius="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardElevation="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:background="@drawable/custom_row_selector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="18dp">
@@ -39,10 +43,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:text="@{item.air_date}"
                 android:textColor="@color/dark_silver"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/season_episode_number"
-                android:text="@{item.air_date}"
                 tools:text="Fri, July 32, 2020" />
 
             <ImageView
@@ -58,22 +62,22 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:text="@{item.name}"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/air_date"
                 tools:text="The End of Something" />
 
             <TextView
                 style="@style/Typography.Regular.16"
-                android:textColor="@color/dark_silver"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:maxLines="4"
+                android:text="@string/lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit_sed_do_eiusmod_tempor_incididunt_ut_labore_et_dolore"
+                android:textColor="@color/dark_silver"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/episode_title"
-                android:text="@string/lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit_sed_do_eiusmod_tempor_incididunt_ut_labore_et_dolore" />
+                app:layout_constraintTop_toBottomOf="@id/episode_title" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

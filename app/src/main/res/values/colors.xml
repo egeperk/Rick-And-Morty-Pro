@@ -7,6 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="white_fade1">#CCFFFFFF</color>
+    <color name="white_fade2">#99FFFFFF</color>
+    <color name="white_fade3">#66FFFFFF</color>
+    <color name="white_fade4">#33FFFFFF</color>
+    <color name="white_fade5">#00FFFFFF</color>
     <color name="magic_mint">#B3FFBF</color>
     <color name="gray">#8F8F8F</color>
     <color name="light_gray">#F5F5F5</color>
@@ -17,4 +22,6 @@
     <color name="pomona_green">#215229</color>
     <color name="green">#B3FFBF</color>
     <color name="feldgrau_green">#4A614D</color>
+    <color name="item_row_green">#E7F3E9</color>
+    <color name="count_clicked_green">#8DA491</color>
 </resources>

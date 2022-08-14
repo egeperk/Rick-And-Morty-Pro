@@ -1,18 +1,16 @@
-package com.egeperk.rick_and_morty_pro.view.detail
+package com.egeperk.rick_and_morty_pro.view.detail.character
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.databinding.FragmentDetailBinding
 import com.egeperk.rick_and_morty_pro.util.setStatusBarDark
 import com.egeperk.rick_and_morty_pro.util.setStatusBarLight
-import com.egeperk.rick_and_morty_pro.view.home.HomeViewModel
-import org.koin.androidx.scope.lifecycleScope
+import com.egeperk.rick_and_morty_pro.view.detail.DetailViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -30,6 +28,9 @@ class DetailFragment : Fragment() {
             viewModel = detailViewModel
             lifecycleOwner = viewLifecycleOwner
             activity?.setStatusBarDark(this.root)
+
+            backBtn.setOnClickListener { findNavController().popBackStack() }
+
 
             if (arguments != null) {
                 detailViewModel.getCharacterData(args.uuid.toString())

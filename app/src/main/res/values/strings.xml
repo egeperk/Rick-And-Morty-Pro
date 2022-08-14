@@ -21,5 +21,7 @@
     <string name="gender">Gender</string>
     <string name="origin">Origin</string>
     <string name="location">Location</string>
+    <string name="show_more">Show more</string>
+    <string name="locations">Locations</string>
 
 </resources>

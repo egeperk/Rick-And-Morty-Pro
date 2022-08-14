@@ -1,40 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".view.favorites.FavoritesFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/back_btn"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:padding="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_vector_arrow"
-        android:rotation="180"/>
+    <data>
 
-    <TextView
-        style="@style/Typography.Bold.Body.20"
-        android:id="@+id/favorites_header"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textAlignment="center"
-        android:paddingVertical="14dp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/favorites" />
+    </data>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="12dp"
-        android:layout_marginHorizontal="24dp"
-        app:layout_constraintTop_toBottomOf="@id/favorites_header"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"/>
+        android:layout_height="match_parent"
+        tools:context=".view.favorites.FavoritesFragment">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/back_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:padding="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_vector_arrow"
+            android:rotation="180" />
+
+        <TextView
+            style="@style/Typography.Bold.Body.20"
+            android:id="@+id/favorites_header"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textAlignment="center"
+            android:paddingVertical="14dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/favorites" />
+
+        <TextView
+            android:paddingVertical="2dp"
+            android:id="@+id/character_header"
+            style="@style/Typography.Bold.Body.20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/characters"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/favorites_header"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="24dp" />
+
+        <TextView
+            android:id="@+id/character_count"
+            style="@style/Typography.Bold.Body.16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/custom_count_bg"
+            android:gravity="center"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            app:layout_constraintTop_toBottomOf="@id/favorites_header"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toEndOf="@id/character_header"
+            tools:text="80" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/character_rv"
+            android:layout_marginTop="12dp"
+            android:layout_marginHorizontal="24dp"
+            app:layout_constraintTop_toBottomOf="@id/character_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:paddingVertical="2dp"
+            android:id="@+id/episodes_header"
+            style="@style/Typography.Bold.Body.20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/episodes"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/character_rv"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="24dp" />
+
+        <TextView
+            android:id="@+id/episodes_count"
+            style="@style/Typography.Bold.Body.16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/custom_count_bg"
+            android:gravity="center"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            app:layout_constraintTop_toBottomOf="@id/character_rv"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toEndOf="@id/episodes_header"
+            tools:text="80" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/episodes_rv"
+            android:layout_marginTop="12dp"
+            android:layout_marginHorizontal="24dp"
+            app:layout_constraintTop_toBottomOf="@id/episodes_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
