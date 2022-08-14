@@ -37,5 +37,9 @@
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.egeperk.rick_and_morty_pro.view.detail.DetailFragment"
-        android:label="DetailFragment" />
+        android:label="DetailFragment" >
+        <argument
+            android:name="uuid"
+            app:argType="integer" />
+    </fragment>
 </navigation>

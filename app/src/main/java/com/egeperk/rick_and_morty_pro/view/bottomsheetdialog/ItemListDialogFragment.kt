@@ -61,6 +61,8 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
 
             when (args.type) {
                 TYPE_CHAR -> {
+                    seasonsCard.isVisible = false
+                    filterBtn.isVisible = false
                     viewModel.charactersCount.observe(viewLifecycleOwner) {
                         itemCount.text = it.toString()
                     }
@@ -108,6 +110,9 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                 }
                 else -> Unit
             }
+            filterBtn.setOnClickListener {
+                setButtons()
+            }
         }
         return binding?.root
     }
@@ -125,6 +130,21 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         viewModel.isDialogShown.postValue(false)
+    }
+
+    private fun setButtons() {
+        if (binding?.seasonsCard?.isVisible == false) {
+            binding?.apply {
+                seasonsCard.isVisible = true
+                downArrow.rotation = 180f
+            }
+        } else {
+            binding?.apply {
+                seasonsCard.isVisible = false
+                downArrow.rotation = 0f
+            }
+        }
+
     }
 
  /*   private fun <T> setRv(

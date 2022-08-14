@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.paging.map
 import com.egeperk.rick_and_morty.CharactersQuery
 import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.R
@@ -38,21 +39,28 @@ class HomeFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
             viewModel = homeViewModel
 
-
             episodeBtnLy.setOnClickListener {
                 homeViewModel.isDialogShown.value = true
-                findNavController().safeNavigate(HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(
-                    TYPE_EPISODE))
+                findNavController().safeNavigate(
+                    HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(
+                        TYPE_EPISODE
+                    )
+                )
             }
 
             characterBtnLy.setOnClickListener {
                 homeViewModel.isDialogShown.value = true
-                findNavController().safeNavigate(HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(
-                    TYPE_CHAR))
+                findNavController().safeNavigate(
+                    HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(
+                        TYPE_CHAR
+                    )
+                )
             }
 
             charAdapter = GenericAdapter(R.layout.character_row) {
-                findNavController().navigate(R.id.action_homeFragment_to_detailFragment)
+                findNavController().safeNavigate(
+                    HomeFragmentDirections.actionHomeFragmentToDetailFragment(it)
+                )
             }
             homeCharacterRv.adapter = charAdapter
 

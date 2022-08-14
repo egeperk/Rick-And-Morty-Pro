@@ -7,7 +7,8 @@
 
     </data>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".view.bottomsheetdialog.ItemListDialogFragment">
@@ -17,6 +18,7 @@
                 android:layout_width="40dp"
                 android:layout_height="4dp"
                 android:layout_marginTop="16dp"
+                android:layout_gravity="center"
                 android:background="@drawable/custom_cursor_bg"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -67,7 +69,7 @@
                 android:layout_marginTop="24dp"
                 android:background="@drawable/custom_et_background"
                 app:layout_constraintTop_toBottomOf="@id/header_ly"
-                android:visibility="gone">
+                android:visibility="invisible">
 
                 <TextView
                     style="@style/Typography.Bold.Body.16"
@@ -81,6 +83,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
+                    android:id="@+id/down_arrow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
@@ -168,6 +171,6 @@
                 app:layout_constraintTop_toBottomOf="@id/seasons_card"
                 tools:visibility="visible" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
 </layout>

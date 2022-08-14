@@ -14,7 +14,7 @@ class RickAndMortyApp : Application() {
             androidContext(this@RickAndMortyApp)
             modules(
                 AppModule.repoModule,
-                AppModule.viewModeleModule)
+                AppModule.viewModelModule)
         }
     }
 

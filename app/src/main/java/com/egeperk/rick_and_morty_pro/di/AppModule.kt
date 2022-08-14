@@ -3,6 +3,7 @@ package com.egeperk.rick_and_morty_pro.di
 import com.apollographql.apollo3.ApolloClient
 import com.egeperk.rick_and_morty_pro.repository.ApiRepository
 import com.egeperk.rick_and_morty_pro.util.Constants.BASE_URL
+import com.egeperk.rick_and_morty_pro.view.detail.DetailViewModel
 import com.egeperk.rick_and_morty_pro.view.home.HomeViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -16,7 +17,8 @@ object AppModule {
         }
     }
 
-    val viewModeleModule = module {
+    val viewModelModule = module {
         viewModel { HomeViewModel(get()) }
+        viewModel { DetailViewModel(get())}
     }
 }
