@@ -22,7 +22,7 @@ class HomeViewModel(private val repository: ApiRepository): ViewModel() {
     val episodeCount = MutableLiveData<Int>()
     val charactersCount = MutableLiveData<Int>()
 
-    val search = MutableStateFlow("")
+    val search = MutableStateFlow(EMPTY_VALUE)
 
     private val _charResult = MutableStateFlow<PagingData<CharactersQuery.Result>>(PagingData.empty())
     val charResult = _charResult.asStateFlow()
@@ -33,6 +33,9 @@ class HomeViewModel(private val repository: ApiRepository): ViewModel() {
     val charPosition = MutableLiveData<List<String>>()
     val episodePosition = MutableLiveData<List<String>>()
 
+    var isSearch = MutableLiveData(false)
+
+
 
     fun getCharacterData(query: String): StateFlow<PagingData<CharactersQuery.Result>> {
 
@@ -40,7 +43,7 @@ class HomeViewModel(private val repository: ApiRepository): ViewModel() {
 
             charPosition.value = repository.charactersQuery(0,query).data?.characters?.results?.map { it?.id.toString() }
 
-            val newResult = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
+            val newResult = Pager(PagingConfig(pageSize = if (isSearch.value == true) PAGE_SIZE * 20 else PAGE_SIZE)) {
                 CharacterHomePagingSource(repository, query, if (isDialogShown.value == false) 0 else 1)
             }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
 

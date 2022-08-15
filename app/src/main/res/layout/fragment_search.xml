@@ -16,6 +16,7 @@
         android:layout_height="match_parent"
         android:clickable="true"
         android:focusable="true"
+        android:focusableInTouchMode="true"
         tools:context=".view.search.SearchFragment">
 
         <ImageView
@@ -50,7 +51,6 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/selector_edit_text"
             android:drawableStart="@drawable/ic_search"
-            android:drawableEnd="@drawable/ic_baseline_clear_24"
             android:drawablePadding="16dp"
             android:hint="@string/search"
             android:imeOptions="actionSearch"
@@ -62,10 +62,12 @@
             app:layout_constraintTop_toBottomOf="@id/favorites_header" />
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/search_rv_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="8dp"
+            android:visibility="gone"
             android:elevation="0dp"
             app:cardBackgroundColor="?attr/colorOnPrimary"
             app:layout_constraintTop_toBottomOf="@id/search_bar"
@@ -73,9 +75,10 @@
             app:strokeWidth="1dp">
 
             <androidx.recyclerview.widget.RecyclerView
+                android:overScrollMode="never"
                 android:id="@+id/search_text_rv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="190dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/search_row" />
 
@@ -95,13 +98,13 @@
             tools:text="Characters" />
 
         <TextView
-            android:id="@+id/character_count"
+            android:id="@+id/item_count"
             style="@style/Typography.Bold.Body.16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/custom_count_bg"
+            android:background="@drawable/custom_item_count_bg"
             android:gravity="center"
             android:paddingHorizontal="8dp"
             android:paddingVertical="4dp"
@@ -111,6 +114,8 @@
             tools:text="80" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:focusableInTouchMode="true"
+            android:overScrollMode="never"
             android:id="@+id/search_result_rv"
             android:layout_width="match_parent"
             android:layout_height="0dp"

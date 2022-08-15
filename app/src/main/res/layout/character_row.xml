@@ -13,12 +13,11 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:focusableInTouchMode="true"
         android:layout_marginHorizontal="12dp"
         android:layout_marginBottom="24dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-
 
         <androidx.cardview.widget.CardView
             app:layout_constraintDimensionRatio="1:1"

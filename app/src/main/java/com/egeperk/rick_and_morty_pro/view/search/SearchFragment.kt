@@ -1,25 +1,28 @@
 package com.egeperk.rick_and_morty_pro.view.search
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.paging.PagingData
-import com.apollographql.apollo3.api.BooleanExpression
 import com.egeperk.rick_and_morty.CharactersQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.databinding.FragmentSearchBinding
-import com.egeperk.rick_and_morty_pro.util.Constants.EMPTY_VALUE
 import com.egeperk.rick_and_morty_pro.view.home.HomeViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import android.view.MotionEvent
+import com.egeperk.rick_and_morty_pro.util.Constants.EMPTY_VALUE
+import com.egeperk.rick_and_morty_pro.util.onRightDrawableClicked
 
 
 class SearchFragment : Fragment() {
@@ -30,27 +33,48 @@ class SearchFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         return FragmentSearchBinding.inflate(layoutInflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = homeViewModel
 
-            homeViewModel.isDialogShown.postValue(true)
+            homeViewModel.apply {
+                isDialogShown.postValue(true)
+                isSearch.postValue(true)
+            }
 
             val itemAdapter = GenericAdapter<CharactersQuery.Result>(R.layout.character_row) {}
             searchResultRv.adapter = itemAdapter
 
+
             searchBar.setOnEditorActionListener { v, actionId, event ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    searchRvCard.isVisible = false
                     lifecycleScope.launch {
-                        if (homeViewModel.search.value.toString().isEmpty()) {
-                            itemAdapter.submitData(PagingData.empty())
+                        if (homeViewModel.search.value.isEmpty()) {
+                            itemAdapter.submitData(PagingData.from(emptyList()))
+                            itemHeader.isVisible = false
+                            itemCount.isVisible = false
                         } else {
+
+                            itemAdapter.addLoadStateListener {
+                                if (it.source.append is LoadState.NotLoading && it.append.endOfPaginationReached) {
+                                    itemCount.apply {
+                                        text = itemAdapter.itemCount.toString()
+                                        isVisible = true
+                                    }
+                                    itemHeader.apply {
+                                        text = resources.getString(R.string.characters)
+                                        this.isVisible = true
+                                    }
+                                }
+                            }
                             homeViewModel.apply {
-                                getCharacterData(homeViewModel.search.value.toString())
-                                charResult.collectLatest {
+                                homeViewModel.search.value.let { getCharacterData(it).value }
+                                charResult.collect {
                                     itemAdapter.submitData(it)
+
                                 }
                             }
                         }
@@ -62,37 +86,62 @@ class SearchFragment : Fragment() {
                 val searchAdapter = GenericAdapter<CharactersQuery.Result>(R.layout.search_row) {}
                 searchTextRv.adapter = searchAdapter
 
-                if (text != null) {
-                    searchTextRv.isVisible = true
+                if (text.toString().isNotEmpty()) {
+                    searchBar.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_search,
+                        0,
+                        R.drawable.ic_baseline_clear_24,
+                        0
+                    );
+                } else {
+                    searchBar.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_search,
+                        0,
+                        0,
+                        0
+                    );
                 }
-                if (text == "" || text.isNullOrBlank() ||text.isNullOrEmpty()){
-                    searchTextRv.isVisible = false
-                }
+
+                if (text.isNullOrEmpty()) {
+                      searchRvCard.isVisible = true
+                  }
 
                 lifecycleScope.launch {
-                homeViewModel.search.collectLatest { text ->
+                    homeViewModel.search.collectLatest {
+                        searchAdapter.submitData(homeViewModel.getCharacterData(it).value)
 
-                    searchAdapter.apply {
-                        submitData(PagingData.from(emptyList()))
-                        submitData(homeViewModel.getCharacterData(text).value)
-                    }
-                    if (text == EMPTY_VALUE) {
-                        searchAdapter.apply {
-                            submitData(PagingData.from(emptyList()))
-                            submitData(homeViewModel.getCharacterData(EMPTY_VALUE).value)
-                        }
-                    }
-
-                    if (searchAdapter.snapshot().items.size == 0) {
-                        searchAdapter.submitData(PagingData.from(emptyList()))
-                        searchTextRv.isVisible = false
                     }
 
                 }
+               searchAdapter.addLoadStateListener { loadState ->
+                    lifecycleScope.launch {
+                        searchRvCard.isVisible =
+                            !(loadState.append.endOfPaginationReached && searchAdapter.itemCount < 1)
+                    }
                 }
+            }
 
+            searchBar.setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    searchRvCard.isVisible = false
+                }
+            }
+
+            searchBar.onRightDrawableClicked {
+                searchRvCard.isVisible = false
+                it.text.clear()
+                it.clearFocus()
             }
 
         }.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        homeViewModel.apply {
+            isDialogShown.postValue(false)
+            isSearch.postValue(false)
+        }
     }
 }

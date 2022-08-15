@@ -3,14 +3,37 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable-v24/custom_et_focused_background.xml" value="0.4115" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3165" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/csutom_dot_bg.xml" value="0.4115" />
         <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/custom_card_lower_bg.xml" value="0.4105" />
         <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/custom_card_upper_bg.xml" value="0.4105" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/custom_count_bg.xml" value="0.4115" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/custom_et_background.xml" value="0.4115" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/custom_et_focused_background.xml" value="0.3165" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/custom_et_focused_bg.xml" value="0.4115" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/custom_expandable_tv_bg.xml" value="0.3165" />
         <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/custom_graident_bg.xml" value="0.4105" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/custom_progress_bar.xml" value="0.4115" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/custom_selector.xml" value="0.4115" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/green_bg.xml" value="0.3155" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/ic_component_progress.xml" value="0.4115" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/ic_progress.xml" value="0.4115" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/ic_progress_phase_1.xml" value="0.4115" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/ic_progress_phase_2.xml" value="0.4115" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/light_bg.xml" value="0.3155" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/selector_edit_text.xml" value="0.4115" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/drawable/selector_item_row.xml" value="0.4115" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/character_row.xml" value="0.4548952543822146" />
         <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/episode_row.xml" value="0.4548952543822146" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/fragment_blank.xml" value="0.4548952543822146" />
         <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/fragment_bottom_sheet_dialog.xml" value="0.5541666666666667" />
-        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/fragment_detail.xml" value="0.20234375" />
-        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/fragment_home.xml" value="0.14" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/fragment_detail.xml" value="0.35222121486854036" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/fragment_episode_detail.xml" value="0.35222121486854036" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/fragment_favorites.xml" value="0.4548952543822146" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/fragment_home.xml" value="0.35222121486854036" />
         <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/fragment_search.xml" value="0.5541666666666667" />
+        <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/search_row.xml" value="0.4548952543822146" />
         <entry key="..\:/Users/Ege/AndroidStudioProjects/Rick-And-Morty-Pro/app/src/main/res/layout/test_ly.xml" value="0.35222121486854036" />
         <entry key="..\:/Users/Ege/AndroidStudioProjects/RickAndMortyPro/app/src/main/res/drawable/character_row.xml" value="0.4105" />
         <entry key="..\:/Users/Ege/AndroidStudioProjects/RickAndMortyPro/app/src/main/res/drawable/custom_count_bg.xml" value="0.4105" />
@@ -25,22 +48,11 @@
         <entry key="..\:/Users/Ege/AndroidStudioProjects/RickAndMortyPro/app/src/main/res/layout/fragment_search.xml" value="0.5541666666666667" />
         <entry key="..\:/Users/Ege/AndroidStudioProjects/RickAndMortyPro/app/src/main/res/menu/bottom_bar_menu_row.xml" value="0.5541666666666667" />
         <entry key="app/src/main/res/drawable/custom_bottom_sheet_bg.xml" value="0.2235" />
-        <entry key="app/src/main/res/drawable/custom_count_bg.xml" value="0.1345" />
         <entry key="app/src/main/res/drawable/custom_cursor_bg.xml" value="0.2235" />
-        <entry key="app/src/main/res/drawable/custom_et_background.xml" value="0.1345" />
-        <entry key="app/src/main/res/drawable/custom_et_focused_bg.xml" value="0.1345" />
-        <entry key="app/src/main/res/drawable/custom_item_count_bg.xml" value="0.1345" />
-        <entry key="app/src/main/res/drawable/ic_home.xml" value="0.1345" />
-        <entry key="app/src/main/res/drawable/ss.xml" value="0.1345" />
         <entry key="app/src/main/res/layout/character_row.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/character_row_detail.xml" value="0.14175724637681159" />
         <entry key="app/src/main/res/layout/episode_row.xml" value="0.34479166666666666" />
-        <entry key="app/src/main/res/layout/episode_row_detail.xml" value="0.14175724637681159" />
         <entry key="app/src/main/res/layout/fragment_bottom_sheet_dialog.xml" value="0.22" />
-        <entry key="app/src/main/res/layout/fragment_detail.xml" value="0.14175724637681159" />
-        <entry key="app/src/main/res/layout/fragment_episode_detail.xml" value="0.2103778039068437" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.13832010029251984" />
-        <entry key="app/src/main/res/layout/location_row.xml" value="0.4388458694236866" />
       </map>
     </option>
   </component>
