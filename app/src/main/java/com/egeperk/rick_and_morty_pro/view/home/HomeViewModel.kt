@@ -28,12 +28,20 @@ class HomeViewModel(private val repository: ApiRepository): ViewModel() {
     private val _episodeResult = MutableStateFlow<PagingData<EpisodeQuery.Result>>(PagingData.empty())
     val episodeResult = _episodeResult.asStateFlow()
 
+    val charPosition = MutableLiveData<List<String>>()
+    val episodePosition = MutableLiveData<List<String>>()
+
+
     fun getCharacterData(query: String): StateFlow<PagingData<CharactersQuery.Result>> {
 
         viewModelScope.launch {
+
+            charPosition.value = repository.charactersQuery(0,query).data?.characters?.results?.map { it?.id.toString() }
+
             val newResult = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
                 CharacterHomePagingSource(repository, query, if (isDialogShown.value == false) 0 else 1)
             }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
+
             _charResult.value = newResult.value
             charactersCount.value = repository.charactersQuery(0, EMPTY_VALUE).data?.characters?.info?.count!!
         }
@@ -41,11 +49,14 @@ class HomeViewModel(private val repository: ApiRepository): ViewModel() {
     }
 
     fun getEpisodeData(): StateFlow<PagingData<EpisodeQuery.Result>> {
-
         viewModelScope.launch{
+
+            episodePosition.value = repository.episodesQuery(0).data?.episodes?.results?.map { it?.id.toString() }
+
             val newResult = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
                 EpisodeHomePagingSource(repository,if(isDialogShown.value == false) 0 else 1)
             }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
+
             _episodeResult.value = newResult.value
             episodeCount.value = repository.episodesQuery(0).data?.episodes?.info?.count!!
         }

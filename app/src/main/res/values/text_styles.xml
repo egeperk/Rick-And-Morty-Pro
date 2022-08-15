@@ -81,6 +81,12 @@
         <item name="android:spacing">0.15dp</item>
     </style>
 
+    <style name="Typography.Bold.12" parent="Typography.Bold">
+        <item name="android:textSize">12sp</item>
+        <item name="lineHeight">14dp</item>
+        <item name="android:spacing">0.15dp</item>
+    </style>
+
     <style name="Typography.Regular.14" parent="Typography.Regular">
         <item name="android:textSize">14sp</item>
         <item name="lineHeight">17dp</item>

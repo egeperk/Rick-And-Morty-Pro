@@ -1,6 +1,7 @@
 query Episode ($page: Int){
     episodes(page: $page) {
         results {
+            id
             episode
             name
             air_date

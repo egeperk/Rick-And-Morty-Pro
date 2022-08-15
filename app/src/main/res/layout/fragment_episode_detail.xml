@@ -5,9 +5,14 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.egeperk.rick_and_morty_pro.view.detail.DetailViewModel" />
+
     </data>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
+        android:overScrollMode="never"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -37,6 +42,7 @@
                 app:tint="?attr/colorOnPrimary" />
 
             <TextView
+                android:text="@{viewModel.episode.episode}"
                 android:id="@+id/char_name"
                 style="@style/Typography.Bold.Body.20"
                 android:layout_width="0dp"
@@ -50,6 +56,7 @@
                 tools:text="S2.E10" />
 
             <TextView
+                android:text="@{viewModel.episode.name}"
                 android:id="@+id/episode_name"
                 style="@style/Typography.Bold.Large.Title"
                 android:layout_width="0dp"
@@ -64,6 +71,7 @@
                 tools:text="The End of Something" />
 
             <TextView
+                android:text="@{viewModel.episode.episode}"
                 android:id="@+id/episode_number"
                 style="@style/Typography.Bold.Large.Title"
                 android:layout_width="wrap_content"
@@ -101,6 +109,7 @@
                 app:layout_constraintTop_toBottomOf="@id/episode_number" />
 
             <TextView
+                android:text="@{viewModel.episode.air_date}"
                 android:id="@+id/air_date"
                 style="@style/Typography.Regular.16"
                 android:layout_width="wrap_content"
@@ -186,6 +195,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:text="@{String.valueOf(viewModel.episode.characters.size())}"
                     android:id="@+id/character_count"
                     style="@style/Typography.Bold.Body.16"
                     android:layout_width="wrap_content"
@@ -212,7 +222,8 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/charavter_rv"
+                android:overScrollMode="never"
+                android:id="@+id/character_rv"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="24dp"
                 app:layout_constraintTop_toBottomOf="@id/character_btn_ly"
@@ -231,7 +242,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="34dp"
-                app:layout_constraintTop_toBottomOf="@id/charavter_rv"
+                app:layout_constraintTop_toBottomOf="@id/character_rv"
                 app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
@@ -272,6 +283,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
+                android:nestedScrollingEnabled="false"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="24dp"
                 app:layout_constraintTop_toBottomOf="@id/location_btn_ly"
@@ -283,6 +295,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </layout>

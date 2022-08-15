@@ -6,11 +6,14 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import com.egeperk.rick_and_morty_pro.R
+import com.egeperk.rick_and_morty_pro.util.Constants.DELAY_TIME
 
 
 fun NavController.safeNavigate(directions: NavDirections) {
     try {
-        navigate(directions)
+    android.os.Handler().postDelayed({
+    navigate(directions)
+    }, DELAY_TIME)
     } catch (e: IllegalArgumentException) {
         e.printStackTrace()
     }

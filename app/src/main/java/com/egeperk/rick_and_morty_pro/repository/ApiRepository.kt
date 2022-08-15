@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
 import com.egeperk.rick_and_morty.CharacterByIdQuery
 import com.egeperk.rick_and_morty.CharactersQuery
+import com.egeperk.rick_and_morty.EpisodeByIdQuery
 import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty.type.Episode
 
@@ -22,4 +23,7 @@ class ApiRepository(private val api: ApolloClient) {
         return api.query(CharacterByIdQuery(id)).execute()
     }
 
+    suspend fun episodeByIdQuery(id: String) : ApolloResponse<EpisodeByIdQuery.Data> {
+        return api.query(EpisodeByIdQuery(id)).execute()
+    }
 }

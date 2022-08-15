@@ -17,7 +17,9 @@
             app:destination="@id/detailFragment" />
         <action
             android:id="@+id/action_homeFragment_to_episodeDetailFragment"
-            app:destination="@id/episodeDetailFragment" />
+            app:destination="@id/episodeDetailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/favoritesFragment"
@@ -36,6 +38,20 @@
         <argument
             android:name="type"
             app:argType="string" />
+        <argument
+            android:name="from"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="uuid"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_itemListDialogFragment_to_episodeDetailFragment"
+            app:destination="@id/episodeDetailFragment" />
+        <action
+            android:id="@+id/action_itemListDialogFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
     </dialog>
     <fragment
         android:id="@+id/detailFragment"
@@ -44,9 +60,19 @@
         <argument
             android:name="uuid"
             app:argType="string" />
+        <action
+            android:id="@+id/action_detailFragment_to_itemListDialogFragment"
+            app:destination="@id/itemListDialogFragment" />
     </fragment>
     <fragment
         android:id="@+id/episodeDetailFragment"
         android:name="com.egeperk.rick_and_morty_pro.view.detail.episode.EpisodeDetailFragment"
-        android:label="EpisodeDetailFragment" />
+        android:label="EpisodeDetailFragment">
+        <argument
+            android:name="uuid"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_episodeDetailFragment_to_itemListDialogFragment"
+            app:destination="@id/itemListDialogFragment" />
+    </fragment>
 </navigation>

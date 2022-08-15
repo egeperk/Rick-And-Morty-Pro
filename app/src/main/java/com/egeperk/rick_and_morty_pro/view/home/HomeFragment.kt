@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.map
 import com.egeperk.rick_and_morty.CharactersQuery
 import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.R
@@ -42,25 +43,26 @@ class HomeFragment : Fragment() {
                 homeViewModel.isDialogShown.value = true
                 findNavController().safeNavigate(
                     HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(
-                        TYPE_EPISODE
+                        TYPE_EPISODE, null, null
                     )
                 )
             }
 
             characterBtnLy.setOnClickListener {
                 homeViewModel.isDialogShown.value = true
-               Handler().postDelayed({
-                   findNavController().safeNavigate(
-                       HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(
-                           TYPE_CHAR
-                       )
-                   )
-               },200)
+                findNavController().safeNavigate(
+                    HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(
+                        TYPE_CHAR, null, null
+                    )
+                )
             }
 
             charAdapter = GenericAdapter(R.layout.character_row) {
                 findNavController().safeNavigate(
-                    HomeFragmentDirections.actionHomeFragmentToDetailFragment(it.toString())
+                    HomeFragmentDirections.actionHomeFragmentToDetailFragment(
+                        homeViewModel.charPosition.value?.get(it)
+                            .toString()
+                    )
                 )
             }
             homeCharacterRv.adapter = charAdapter
@@ -72,13 +74,14 @@ class HomeFragment : Fragment() {
                 }
             }
 
+            //homeViewModel.episodePosition.value?.get(it).toString()
 
             episodeAdapter = GenericAdapter(R.layout.episode_row) {
-                Handler().postDelayed({
-                    findNavController().navigate(R.id.action_homeFragment_to_episodeDetailFragment)
-                },200
+                findNavController().safeNavigate(
+                    HomeFragmentDirections.actionHomeFragmentToEpisodeDetailFragment(
+                        homeViewModel.episodePosition.value?.get(it).toString()
+                    )
                 )
-
             }
             homeEpisodeRv.adapter = episodeAdapter
 

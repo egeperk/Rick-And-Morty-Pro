@@ -6,7 +6,9 @@ object Constants {
     const val PAGE_SIZE = 10
     const val EMPTY_VALUE = ""
     const val TYPE_EPISODE = "episodes"
+    const val TYPE_EPISODE_BY_ID = "episode_id"
     const val TYPE_CHAR = "characters"
+    const val TYPE_CHAR_BY_ID = "character_id"
     const val SEASON_ONE = "S01"
     const val SEASON_TWO = "S02"
     const val SEASON_THREE = "S03"
@@ -14,6 +16,6 @@ object Constants {
     const val SEASON_FIVE = "S05"
     const val ROTATE_UP = 180f
     const val ROTATE_DOWN = 0f
-
+    const val DELAY_TIME = 100L
 
 }

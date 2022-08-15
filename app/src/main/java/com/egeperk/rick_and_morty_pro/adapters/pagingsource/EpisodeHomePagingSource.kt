@@ -6,7 +6,7 @@ import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.repository.ApiRepository
 import java.text.FieldPosition
 
-class EpisodeHomePagingSource(private val repository: ApiRepository, private val size: Int ) :
+class EpisodeHomePagingSource(private val repository: ApiRepository, private val size: Int) :
     PagingSource<Int, EpisodeQuery.Result>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, EpisodeQuery.Result> {
@@ -19,9 +19,10 @@ class EpisodeHomePagingSource(private val repository: ApiRepository, private val
             val episodes = mapResponseToPresentationModel(data!!)
             if (!response.hasErrors()) {
                 LoadResult.Page(
-                    data = if(size == 0) episodes.subList(0,4) else episodes,
+                    data = if (size == 0) episodes.subList(0, 4) else episodes,
                     nextKey = if (size == 0) null else nextKey,
-                    prevKey = null)
+                    prevKey = null
+                )
             } else {
                 LoadResult.Error(Exception(response.errors?.first()?.message))
             }
@@ -33,13 +34,18 @@ class EpisodeHomePagingSource(private val repository: ApiRepository, private val
     private fun mapResponseToPresentationModel(results: List<EpisodeQuery.Result?>): List<EpisodeQuery.Result> {
         val episodes = mutableListOf<EpisodeQuery.Result>()
         for (result in results) {
+            val episodeId = result?.id
             val episodeName = result?.episode
             val episodeAirDate = result?.air_date
             val episodeTitle = result?.name
-            episodes.add(EpisodeQuery.Result(
-                episodeName,episodeTitle,episodeAirDate
-
-             ))
+            episodes.add(
+                EpisodeQuery.Result(
+                    episodeId,
+                    episodeName,
+                    episodeTitle,
+                    episodeAirDate
+                )
+            )
         }
         return episodes
     }

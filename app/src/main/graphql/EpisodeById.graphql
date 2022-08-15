@@ -6,6 +6,12 @@ query EpisodeById($id: ID!) {
         air_date
         characters {
             name
+            image
+            location {
+                name
+                dimension
+                type
+            }
         }
     }
 }
