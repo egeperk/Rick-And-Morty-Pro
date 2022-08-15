@@ -52,6 +52,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
     private var binding: FragmentBottomSheetDialogBinding? = null
     private var episodeAdapter: GenericAdapter<EpisodeQuery.Result>? = null
     private var charAdapter: GenericAdapter<CharactersQuery.Result>? = null
+    private var episodeIdAdapter: GenericAdapter<CharacterByIdQuery.Episode>? = null
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -135,10 +136,10 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                     filterBtn.isVisible = true
 
                     if (args.from == TYPE_EPISODE_BY_ID) {
-                        val itemAdapter =
+                        episodeIdAdapter =
                             GenericAdapter<CharacterByIdQuery.Episode>(R.layout.episode_row_detail) {}
                         genericRv.apply {
-                            adapter = itemAdapter
+                            adapter = episodeIdAdapter
                             layoutManager = LinearLayoutManager(requireContext())
                         }
                         detailViewModel.isDialogShown.observe(viewLifecycleOwner) {
@@ -149,7 +150,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
 
                         lifecycleScope.launch {
                             detailViewModel.episodeResult.collectLatest {
-                                itemAdapter.submitData(it)
+                                episodeIdAdapter?.submitData(it)
                             }
                         }
 
@@ -189,6 +190,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
         if (binding?.seasonsCard?.isVisible == false) {
             binding?.apply {
                 seasonsCard.isVisible = true
+                seasonsCard.bringToFront()
                 downArrow.rotation = ROTATE_UP
             }
         } else {
@@ -209,16 +211,30 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
 
     private fun selectSeason(v: TextView?, filter: String?) {
         v?.setOnClickListener {
-            lifecycleScope.launch {
-                episodeAdapter?.submitData(PagingData.empty())
-                homeViewModel.episodeResult.collectLatest {
-                    if (filter != null) {
-                        episodeAdapter?.submitData(it.filter { it.episode?.contains(filter) == true })
-                    } else {
-                        episodeAdapter?.submitData(it)
+            if (args.from == TYPE_EPISODE_BY_ID) {
+                lifecycleScope.launch {
+                    episodeIdAdapter?.submitData(PagingData.empty())
+                    detailViewModel.episodeResult.collectLatest {
+                        if (filter != null) {
+                            episodeIdAdapter?.submitData(it.filter { it.episode?.contains(filter) == true })
+                        } else {
+                            episodeIdAdapter?.submitData(it)
+                        }
+                    }
+                }
+            } else {
+                lifecycleScope.launch {
+                    episodeAdapter?.submitData(PagingData.empty())
+                    homeViewModel.episodeResult.collectLatest {
+                        if (filter != null) {
+                            episodeAdapter?.submitData(it.filter { it.episode?.contains(filter) == true })
+                        } else {
+                            episodeAdapter?.submitData(it)
+                        }
                     }
                 }
             }
+
             binding?.apply {
                 allSeasonBtn.text = v.text
                 seasonsCard.isVisible = false

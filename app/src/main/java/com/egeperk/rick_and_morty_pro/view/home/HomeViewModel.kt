@@ -22,6 +22,8 @@ class HomeViewModel(private val repository: ApiRepository): ViewModel() {
     val episodeCount = MutableLiveData<Int>()
     val charactersCount = MutableLiveData<Int>()
 
+    val search = MutableStateFlow("")
+
     private val _charResult = MutableStateFlow<PagingData<CharactersQuery.Result>>(PagingData.empty())
     val charResult = _charResult.asStateFlow()
 
@@ -53,7 +55,7 @@ class HomeViewModel(private val repository: ApiRepository): ViewModel() {
 
             episodePosition.value = repository.episodesQuery(0).data?.episodes?.results?.map { it?.id.toString() }
 
-            val newResult = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
+            val newResult = Pager(PagingConfig(pageSize = PAGE_SIZE * 3)) {
                 EpisodeHomePagingSource(repository,if(isDialogShown.value == false) 0 else 1)
             }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
 
