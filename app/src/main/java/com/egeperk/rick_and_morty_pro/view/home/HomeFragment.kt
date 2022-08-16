@@ -41,20 +41,12 @@ class HomeFragment : Fragment() {
 
             episodeBtnLy.setOnClickListener {
                 homeViewModel.isDialogShown.value = true
-                findNavController().safeNavigate(
-                    HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(
-                        TYPE_EPISODE, null, null
-                    )
-                )
+                showEpisodeSheet()
             }
 
             characterBtnLy.setOnClickListener {
                 homeViewModel.isDialogShown.value = true
-                findNavController().safeNavigate(
-                    HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(
-                        TYPE_CHAR, null, null
-                    )
-                )
+                showCharacterSheet()
             }
 
             charAdapter = GenericAdapter(R.layout.character_row) {
@@ -73,8 +65,6 @@ class HomeFragment : Fragment() {
                     charAdapter?.submitData(it)
                 }
             }
-
-            //homeViewModel.episodePosition.value?.get(it).toString()
 
             episodeAdapter = GenericAdapter(R.layout.episode_row) {
                 findNavController().safeNavigate(
@@ -98,7 +88,22 @@ class HomeFragment : Fragment() {
                     episodeAdapter?.submitData(it)
                 }
             }
-
         }.root
+    }
+
+    private fun showCharacterSheet() {
+        findNavController().safeNavigate(
+            HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(
+                TYPE_CHAR, null, null
+            )
+        )
+    }
+
+    private fun showEpisodeSheet() {
+        findNavController().safeNavigate(
+            HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(
+                TYPE_EPISODE, null, null
+            )
+        )
     }
 }

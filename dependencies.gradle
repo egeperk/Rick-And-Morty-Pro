@@ -13,5 +13,7 @@ ext.versions = [
         paging3          : '3.2.0-alpha01',
         sharedPreferences: '1.2.0',
         koin             : '3.2.0',
-        multidex         : '2.0.1'
+        multidex         : '2.0.1',
+        room             : '2.4.3',
+        roomPaging    : '2.5.0-alpha02'
 ]

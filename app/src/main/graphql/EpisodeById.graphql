@@ -5,13 +5,20 @@ query EpisodeById($id: ID!) {
         episode
         air_date
         characters {
+            id
             name
             image
             location {
+                id
                 name
                 dimension
                 type
             }
         }
+    }
+    character(id: $id) {
+        id
+        name
+        image
     }
 }

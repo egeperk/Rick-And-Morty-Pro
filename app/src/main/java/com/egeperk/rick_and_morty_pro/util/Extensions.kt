@@ -2,11 +2,13 @@ package com.egeperk.rick_and_morty_pro.util
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
+import android.graphics.Point
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.core.view.marginEnd
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import com.egeperk.rick_and_morty_pro.R
@@ -15,9 +17,9 @@ import com.egeperk.rick_and_morty_pro.util.Constants.DELAY_TIME
 
 fun NavController.safeNavigate(directions: NavDirections) {
     try {
-        android.os.Handler().postDelayed({
+        //android.os.Handler().postDelayed({
             navigate(directions)
-        }, DELAY_TIME)
+        //}, DELAY_TIME)
     } catch (e: IllegalArgumentException) {
         e.printStackTrace()
     }

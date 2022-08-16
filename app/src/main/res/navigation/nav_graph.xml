@@ -63,6 +63,9 @@
         <action
             android:id="@+id/action_detailFragment_to_itemListDialogFragment"
             app:destination="@id/itemListDialogFragment" />
+        <action
+            android:id="@+id/action_detailFragment_to_episodeDetailFragment"
+            app:destination="@id/episodeDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/episodeDetailFragment"
@@ -74,5 +77,8 @@
         <action
             android:id="@+id/action_episodeDetailFragment_to_itemListDialogFragment"
             app:destination="@id/itemListDialogFragment" />
+        <action
+            android:id="@+id/action_episodeDetailFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
     </fragment>
 </navigation>

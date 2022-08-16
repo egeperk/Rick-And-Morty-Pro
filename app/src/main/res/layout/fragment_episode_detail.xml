@@ -283,6 +283,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
+                android:overScrollMode="never"
                 android:nestedScrollingEnabled="false"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="24dp"

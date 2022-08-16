@@ -35,6 +35,8 @@ class DetailViewModel(private val repository: ApiRepository) : ViewModel() {
     private val _characterResult = MutableStateFlow<PagingData<EpisodeByIdQuery.Character>>(PagingData.empty())
     val characterResult = _characterResult.asStateFlow()
 
+    private val _location : MutableLiveData<CharacterByIdQuery.Location?> = MutableLiveData()
+    val location: MutableLiveData<CharacterByIdQuery.Location?> = _location
 
     fun getCharacterData(id: String): MutableLiveData<CharacterByIdQuery.Character?> {
         viewModelScope.launch {

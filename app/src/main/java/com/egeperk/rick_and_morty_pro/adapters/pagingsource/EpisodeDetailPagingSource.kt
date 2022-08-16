@@ -37,12 +37,16 @@ class EpisodeDetailPagingSource(
     private fun mapResponseToPresentationModel(results: List<EpisodeByIdQuery.Character?>): List<EpisodeByIdQuery.Character> {
         val characters = mutableListOf<EpisodeByIdQuery.Character>()
         for (result in results) {
+            val characterId = result?.id
             val characterName = result?.name
             val characterImage = result?.image
+            val characterLocation = result?.location
             characters.add(
                 EpisodeByIdQuery.Character(
+                    characterId,
                    characterName,
-                    characterImage, null
+                    characterImage,
+                    characterLocation
                 )
             )
         }

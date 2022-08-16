@@ -12,6 +12,7 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_ly"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
@@ -67,10 +68,11 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="8dp"
-            android:visibility="gone"
+            android:visibility="visible"
             android:elevation="0dp"
             app:cardBackgroundColor="?attr/colorOnPrimary"
             app:layout_constraintTop_toBottomOf="@id/search_bar"
+            app:layout_constraintVertical_bias="0"
             app:strokeColor="@color/green"
             app:strokeWidth="1dp">
 
@@ -78,7 +80,7 @@
                 android:overScrollMode="never"
                 android:id="@+id/search_text_rv"
                 android:layout_width="match_parent"
-                android:layout_height="190dp"
+                android:layout_height="wrap_content"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/search_row" />
 
@@ -114,6 +116,7 @@
             tools:text="80" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:visibility="gone"
             android:focusableInTouchMode="true"
             android:overScrollMode="never"
             android:id="@+id/search_result_rv"

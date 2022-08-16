@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.paging.map
 import com.egeperk.rick_and_morty.CharacterByIdQuery
 import com.egeperk.rick_and_morty.EpisodeByIdQuery
 import com.egeperk.rick_and_morty_pro.R
@@ -23,6 +24,7 @@ import com.egeperk.rick_and_morty_pro.util.setStatusBarDark
 import com.egeperk.rick_and_morty_pro.util.setStatusBarLight
 import com.egeperk.rick_and_morty_pro.view.detail.DetailViewModel
 import com.egeperk.rick_and_morty_pro.view.detail.character.DetailFragmentDirections
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -32,6 +34,8 @@ class EpisodeDetailFragment : Fragment() {
     private val args by navArgs<EpisodeDetailFragmentArgs>()
     private val detailViewModel: DetailViewModel by viewModel()
     private var binding: FragmentEpisodeDetailBinding? = null
+    private var charAdapter: GenericAdapter<EpisodeByIdQuery.Character>? = null
+    private var locationAdapter: GenericAdapter<EpisodeByIdQuery.Character>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,12 +56,27 @@ class EpisodeDetailFragment : Fragment() {
                 }
             }
 
-            val episodeAdapter =
-                GenericAdapter<EpisodeByIdQuery.Character>(R.layout.character_row_detail) {}
-            characterRv.adapter = episodeAdapter
+            charAdapter =
+                GenericAdapter<EpisodeByIdQuery.Character>(R.layout.character_row_detail) { position ->
+                    findNavController().safeNavigate(EpisodeDetailFragmentDirections.actionEpisodeDetailFragmentToDetailFragment(
+                        charAdapter?.snapshot()?.items?.map {
+                            it.id.toString()
+                        }?.get(position).toString()
+                    ))
+                }
+            characterRv.adapter = charAdapter
+
+
+            locationAdapter = GenericAdapter(R.layout.location_row){}
+            locationRv.adapter = locationAdapter
+
+
 
             lifecycleScope.launch {
-                episodeAdapter.submitData(detailViewModel.characterResult.value)
+                charAdapter?.submitData(detailViewModel.characterResult.value)
+                detailViewModel.characterResult.collectLatest {
+                    locationAdapter?.submitData(it)
+                }
             }
 
             characterBtnLy.setOnClickListener {
@@ -78,6 +97,7 @@ class EpisodeDetailFragment : Fragment() {
                 TileMode.CLAMP
             )
             episodeDescription.paint.shader = textShader
+
         }
 
         return binding?.root

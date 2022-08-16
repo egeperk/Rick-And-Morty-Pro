@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.filter
 import androidx.recyclerview.widget.GridLayoutManager
@@ -54,21 +55,6 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
     private var charAdapter: GenericAdapter<CharactersQuery.Result>? = null
     private var episodeIdAdapter: GenericAdapter<CharacterByIdQuery.Episode>? = null
 
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = context?.let { BottomSheetDialog(it, theme) }
-        dialog?.setOnShowListener {
-            val bottomSheetDialog = it as BottomSheetDialog
-            val parentLayout =
-                bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            parentLayout?.let { bottomSheet ->
-                val behaviour = BottomSheetBehavior.from(bottomSheet)
-                behaviour.state = BottomSheetBehavior.STATE_EXPANDED
-            }
-        }
-        return dialog ?: super.onCreateDialog(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -87,18 +73,27 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
 
                     if (args.from == TYPE_CHAR_BY_ID) {
                         val itemAdapter =
-                            GenericAdapter<EpisodeByIdQuery.Character>(R.layout.character_row_detail) {
+                            GenericAdapter<EpisodeByIdQuery.Character>(R.layout.character_row_detail) { position ->
                                 findNavController().safeNavigate(
                                     ItemListDialogFragmentDirections.actionItemListDialogFragmentToDetailFragment(
-                                        homeViewModel.charPosition.value?.get(it)
-                                            .toString()
+                                        args.uuid.toString()
                                     )
                                 )
+
                             }
                         genericRv.apply {
                             adapter = itemAdapter
                             layoutManager = GridLayoutManager(requireContext(), 2)
                         }
+                            itemAdapter.addLoadStateListener {
+                                if (it.source.append is LoadState.NotLoading && it.append.endOfPaginationReached) {
+
+                                    itemCount.apply {
+                                        text = itemAdapter.itemCount.toString()
+                                        isVisible = true
+                                    }
+                                }
+                            }
                         detailViewModel.isDialogShown.observe(viewLifecycleOwner) {
                             if (it) {
                                 args.uuid?.let { id -> detailViewModel.getEpisodeCharacters(id) }
@@ -109,12 +104,21 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                                 itemAdapter.submitData(it)
                             }
                         }
+
                     } else {
                         homeViewModel.charactersCount.observe(viewLifecycleOwner) {
                             itemCount.text = it.toString()
                         }
                         charAdapter =
-                            GenericAdapter<CharactersQuery.Result>(R.layout.character_row) {}
+                            GenericAdapter<CharactersQuery.Result>(R.layout.character_row) { position ->
+                                findNavController().safeNavigate(
+                                    ItemListDialogFragmentDirections.actionItemListDialogFragmentToDetailFragment(
+                                        charAdapter?.snapshot()?.items?.map { it.id }?.get(position)
+                                            .toString()
+
+                                    )
+                                )
+                            }
                         genericRv.apply {
                             adapter = charAdapter
                             layoutManager = GridLayoutManager(requireContext(), 2)
@@ -137,10 +141,25 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
 
                     if (args.from == TYPE_EPISODE_BY_ID) {
                         episodeIdAdapter =
-                            GenericAdapter<CharacterByIdQuery.Episode>(R.layout.episode_row_detail) {}
+                            GenericAdapter<CharacterByIdQuery.Episode>(R.layout.episode_row_detail) { position ->
+                                episodeAdapter?.snapshot()?.items?.map {
+                                    it.id }?.get(position)
+                                    .toString()
+
+                            }
                         genericRv.apply {
                             adapter = episodeIdAdapter
                             layoutManager = LinearLayoutManager(requireContext())
+                        }
+
+                        episodeIdAdapter?.addLoadStateListener {
+                            if (it.source.append is LoadState.NotLoading && it.append.endOfPaginationReached) {
+
+                                itemCount.apply {
+                                    text = episodeIdAdapter?.itemCount.toString()
+                                    isVisible = true
+                                }
+                            }
                         }
                         detailViewModel.isDialogShown.observe(viewLifecycleOwner) {
                             if (it) {
@@ -160,7 +179,16 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                         }
 
                         episodeAdapter =
-                            GenericAdapter<EpisodeQuery.Result>(R.layout.episode_row) {}
+                            GenericAdapter<EpisodeQuery.Result>(R.layout.episode_row) { position ->
+
+                                findNavController().safeNavigate(
+                                    ItemListDialogFragmentDirections.actionItemListDialogFragmentToEpisodeDetailFragment(
+                                        episodeAdapter?.snapshot()?.items?.map { it.id }
+                                            ?.get(position)
+                                            .toString()
+                                    )
+                                )
+                            }
                         genericRv.apply {
                             adapter = episodeAdapter
                             layoutManager = LinearLayoutManager(requireContext())
