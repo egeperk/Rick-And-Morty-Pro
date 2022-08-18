@@ -48,6 +48,10 @@ class DetailFragment : Fragment() {
 
             backBtn.setOnClickListener { findNavController().popBackStack() }
 
+            if (args.from == TYPE_FAVORITES) {
+                setDataFromDb()
+            }
+
             if (activity?.hasInternetConnection() == true) {
 
 
@@ -56,9 +60,9 @@ class DetailFragment : Fragment() {
                         getCharacterData(args.uuid)
                         getCharacterEpisodes(args.uuid)
                     }
-                    favoritesVieModel.readCharacterById(args.uuid)
-                    setDataFromDb()
                 }
+
+
 
                 episodeAdapter =
                     GenericAdapter<CharacterByIdQuery.Episode>(R.layout.episode_row_detail) { position ->
@@ -83,10 +87,9 @@ class DetailFragment : Fragment() {
                 favBtn.setOnClickListener {
                     addCharacter()
                 }
-            } else {
-                setDataFromDb()
             }
         }
+
         return binding?.root
     }
 
@@ -111,10 +114,8 @@ class DetailFragment : Fragment() {
     }
 
     private fun setDataFromDb() {
-        if (args.from == TYPE_FAVORITES) {
 
-
-            lifecycleScope.launch {
+        lifecycleScope.launch {
             favoritesVieModel.readCharacterById(args.uuid).collectLatest {
                 binding?.apply {
                     charName.text = it.name
@@ -124,13 +125,13 @@ class DetailFragment : Fragment() {
                     type.text = it.type
                     origin.text = it.origin
                     location.text = it.location
-                    gender.text = it    .gender
+                    gender.text = it.gender
                 }
             }
             Toast.makeText(requireContext(), "xxx", Toast.LENGTH_SHORT).show()
 
         }
-        }
+
     }
 
     private fun showEpisodeSheet() {
