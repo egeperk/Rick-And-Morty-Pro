@@ -22,7 +22,7 @@ class EpisodeDetailPagingSource(
             val characters = mapResponseToPresentationModel(data!!)
             if (!response.hasErrors()) {
                 LoadResult.Page(
-                    data = if (size == 0) characters.subList(0, 4) else characters,
+                    data = if (size == 0) characters.slice(0..3) else characters,
                     nextKey = null,
                     prevKey = null
                 )

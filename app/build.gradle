@@ -42,7 +42,6 @@ android {
 
 dependencies {
 
-
     implementation "androidx.recyclerview:recyclerview:$versions.recyclerview"
     implementation "androidx.core:core-ktx:$versions.androidxCoreKtx"
     implementation "androidx.appcompat:appcompat:$versions.appCompat"
@@ -71,11 +70,10 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$versions.navigation"
     implementation "androidx.navigation:navigation-ui-ktx:$versions.navigation"
     //Room
-    implementation "androidx.room:room-paging:$versions.roomPaging"
     implementation "androidx.room:room-runtime:$versions.room"
-    annotationProcessor "androidx.room:room-compiler:$versions.room"
+    kapt "androidx.room:room-compiler:$versions.room"
     implementation "androidx.room:room-ktx:$versions.room"
-    androidTestImplementation "androidx.room:room-testing:$versions.room"
+    implementation "androidx.room:room-paging:$versions.room"
 
 }
 

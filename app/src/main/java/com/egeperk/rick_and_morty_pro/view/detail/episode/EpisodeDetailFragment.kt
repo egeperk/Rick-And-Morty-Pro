@@ -12,18 +12,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.paging.map
-import com.egeperk.rick_and_morty.CharacterByIdQuery
 import com.egeperk.rick_and_morty.EpisodeByIdQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
+import com.egeperk.rick_and_morty_pro.data.model.Character
+import com.egeperk.rick_and_morty_pro.data.model.Episode
 import com.egeperk.rick_and_morty_pro.databinding.FragmentEpisodeDetailBinding
-import com.egeperk.rick_and_morty_pro.util.Constants
-import com.egeperk.rick_and_morty_pro.util.safeNavigate
-import com.egeperk.rick_and_morty_pro.util.setStatusBarDark
-import com.egeperk.rick_and_morty_pro.util.setStatusBarLight
+import com.egeperk.rick_and_morty_pro.util.*
 import com.egeperk.rick_and_morty_pro.view.detail.DetailViewModel
-import com.egeperk.rick_and_morty_pro.view.detail.character.DetailFragmentDirections
+import com.egeperk.rick_and_morty_pro.view.favorites.FavoritesViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -33,6 +30,7 @@ class EpisodeDetailFragment : Fragment() {
 
     private val args by navArgs<EpisodeDetailFragmentArgs>()
     private val detailViewModel: DetailViewModel by viewModel()
+    private val favoritesVieModel: FavoritesViewModel by viewModel()
     private var binding: FragmentEpisodeDetailBinding? = null
     private var charAdapter: GenericAdapter<EpisodeByIdQuery.Character>? = null
     private var locationAdapter: GenericAdapter<EpisodeByIdQuery.Character>? = null
@@ -41,7 +39,6 @@ class EpisodeDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         binding = FragmentEpisodeDetailBinding.inflate(layoutInflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = detailViewModel
@@ -98,9 +95,33 @@ class EpisodeDetailFragment : Fragment() {
             )
             episodeDescription.paint.shader = textShader
 
+            favBtn.setOnClickListener {
+                addEpisodeToDb()
+            }
         }
 
         return binding?.root
+    }
+
+    private fun addEpisodeToDb() {
+        lifecycleScope.launch {
+
+            favoritesVieModel.addEpisode(
+                Episode(
+                    id = detailViewModel.episode.value?.id,
+                    name = detailViewModel.episode.value?.name,
+                    episode = detailViewModel.episode.value?.episode,
+                    air_date = detailViewModel.episode.value?.air_date,
+                    pk = detailViewModel.episode.value?.id?.toInt()!!,
+                )
+            )
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding?.root?.let { activity?.setStatusBarDark(it) }
+
     }
 
     override fun onDestroy() {

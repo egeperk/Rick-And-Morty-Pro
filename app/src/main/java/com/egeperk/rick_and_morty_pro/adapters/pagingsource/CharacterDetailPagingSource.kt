@@ -18,10 +18,10 @@ class CharacterDetailPagingSource(
         return try {
             val response = repository.characterByIdQuery(id)
             val data = response.data?.character?.episode
-            val characters = mapResponseToPresentationModel(data!!)
+            val episodes = mapResponseToPresentationModel(data!!)
             if (!response.hasErrors()) {
                 LoadResult.Page(
-                    data = if (size == 0) characters.subList(0, 3) else characters,
+                    data = if (size == 0) episodes.subList(0, 3) else episodes,
                     nextKey = null,
                     prevKey = null
                 )

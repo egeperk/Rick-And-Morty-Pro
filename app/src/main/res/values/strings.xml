@@ -23,5 +23,6 @@
     <string name="location">Location</string>
     <string name="show_more">Show more</string>
     <string name="locations">Locations</string>
+    <string name="results">Results</string>
 
 </resources>

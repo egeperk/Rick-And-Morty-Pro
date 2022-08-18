@@ -13,6 +13,6 @@ data class Character(
     val type: String?,
     val origin: String?,
     val location: String?,
-    @PrimaryKey(autoGenerate = true)
-    val pk: Int = 0
+    @PrimaryKey(autoGenerate = false)
+    val pk: Int
 )

@@ -49,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:background="@drawable/custom_count_bg"
+                android:background="@drawable/custom_count_bg_selector"
                 android:gravity="center"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="4dp"
@@ -121,6 +121,8 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:textColor="@drawable/custom_text_color_selector"
+                        android:background="@drawable/custom_season_text_selector"
                         android:id="@+id/all_season_tv"
                         style="@style/Typography.Bold.Body.16"
                         android:layout_width="match_parent"
@@ -130,6 +132,8 @@
                         android:text="@string/all_seasons" />
 
                     <TextView
+                        android:textColor="@drawable/custom_text_color_selector"
+                        android:background="@drawable/custom_season_text_selector"
                         android:id="@+id/season_1_tv"
                         style="@style/Typography.Bold.Body.16"
                         android:layout_width="match_parent"
@@ -140,6 +144,8 @@
 
 
                     <TextView
+                        android:textColor="@drawable/custom_text_color_selector"
+                        android:background="@drawable/custom_season_text_selector"
                         android:id="@+id/season_2_tv"
                         style="@style/Typography.Bold.Body.16"
                         android:layout_width="match_parent"
@@ -150,6 +156,8 @@
 
 
                     <TextView
+                        android:textColor="@drawable/custom_text_color_selector"
+                        android:background="@drawable/custom_season_text_selector"
                         android:id="@+id/season_3_tv"
                         style="@style/Typography.Bold.Body.16"
                         android:layout_width="match_parent"
@@ -159,6 +167,8 @@
                         android:text="@string/season_3" />
 
                     <TextView
+                        android:textColor="@drawable/custom_text_color_selector"
+                        android:background="@drawable/custom_season_text_selector"
                         android:id="@+id/season_4_tv"
                         style="@style/Typography.Bold.Body.16"
                         android:layout_width="match_parent"
@@ -168,6 +178,8 @@
                         android:text="@string/season_4" />
 
                     <TextView
+                        android:textColor="@drawable/custom_text_color_selector"
+                        android:background="@drawable/custom_season_text_selector"
                         android:id="@+id/season_5_tv"
                         style="@style/Typography.Bold.Body.16"
                         android:layout_width="match_parent"

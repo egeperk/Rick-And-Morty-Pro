@@ -50,17 +50,17 @@ class DetailFragment : Fragment() {
                 }
             }
 
-
             episodeAdapter =
-                GenericAdapter(R.layout.episode_row_detail) { position ->
+                GenericAdapter<CharacterByIdQuery.Episode>(R.layout.episode_row_detail) { position ->
                     findNavController().safeNavigate(
                         DetailFragmentDirections.actionDetailFragmentToEpisodeDetailFragment(
                             episodeAdapter?.snapshot()?.items?.map { it.id }?.get(position)
                                 .toString()
                         )
                     )
+                }.apply {
+                    episodeRv.adapter = this
                 }
-            episodeRv.adapter = episodeAdapter
 
             lifecycleScope.launch {
                 episodeAdapter?.submitData(detailViewModel.episodeResult.value)
@@ -71,25 +71,29 @@ class DetailFragment : Fragment() {
             }
 
             favBtn.setOnClickListener {
-                lifecycleScope.launch {
-
-
-                    favoritesVieModel.addCharacter(
-                        Character(
-                            id = detailViewModel.character.value?.id,
-                            name = detailViewModel.character.value?.name,
-                            image = detailViewModel.character.value?.image,
-                            status = detailViewModel.character.value?.status,
-                            species = detailViewModel.character.value?.species,
-                            type = detailViewModel.character.value?.type,
-                            origin = detailViewModel.character.value?.origin?.name,
-                            location = detailViewModel.character.value?.location?.name
-                        )
-                    )
-                }
+            addCharacter()
             }
         }
         return binding?.root
+    }
+
+    private fun addCharacter() {
+        lifecycleScope.launch {
+
+            favoritesVieModel.addCharacter(
+                Character(
+                    id = detailViewModel.character.value?.id,
+                    name = detailViewModel.character.value?.name,
+                    image = detailViewModel.character.value?.image,
+                    status = detailViewModel.character.value?.status,
+                    species = detailViewModel.character.value?.species,
+                    type = detailViewModel.character.value?.type,
+                    origin = detailViewModel.character.value?.origin?.name,
+                    location = detailViewModel.character.value?.location?.name,
+                    pk = detailViewModel.character.value?.id?.toInt()!!,
+                )
+            )
+        }
     }
 
     private fun showEpisodeSheet() {
@@ -98,6 +102,11 @@ class DetailFragment : Fragment() {
                 TYPE_EPISODE, TYPE_EPISODE_BY_ID, args.uuid
             )
         )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding?.root?.let { activity?.setStatusBarDark(it) }
     }
 
     override fun onDestroy() {

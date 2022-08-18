@@ -12,14 +12,14 @@ class EpisodeHomePagingSource(private val repository: ApiRepository, private val
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, EpisodeQuery.Result> {
 
         return try {
-            val nextPageNumber = params.key ?: 1
-            val response = repository.episodesQuery(nextPageNumber)
+            val page = params.key ?: 1
+            val response = repository.episodesQuery(page)
             val nextKey = response.data?.episodes?.info?.next
             val data = response.data?.episodes?.results
             val episodes = mapResponseToPresentationModel(data!!)
             if (!response.hasErrors()) {
                 LoadResult.Page(
-                    data = if (size == 0) episodes.subList(0, 4) else episodes,
+                    data = if (size == 0) episodes.slice(0..3) else episodes,
                     nextKey = if (size == 0) null else nextKey,
                     prevKey = null
                 )

@@ -41,12 +41,12 @@ class HomeFragment : Fragment() {
 
             episodeBtnLy.setOnClickListener {
                 homeViewModel.isDialogShown.value = true
-                showEpisodeSheet()
+                showSheet(TYPE_EPISODE)
             }
 
             characterBtnLy.setOnClickListener {
                 homeViewModel.isDialogShown.value = true
-                showCharacterSheet()
+                showSheet(TYPE_CHAR)
             }
 
             charAdapter = GenericAdapter(R.layout.character_row) {
@@ -58,7 +58,6 @@ class HomeFragment : Fragment() {
                 )
             }
             homeCharacterRv.adapter = charAdapter
-
 
             lifecycleScope.launch {
                 homeViewModel.charResult.collectLatest {
@@ -91,18 +90,10 @@ class HomeFragment : Fragment() {
         }.root
     }
 
-    private fun showCharacterSheet() {
+    private fun showSheet(type: String) {
         findNavController().safeNavigate(
             HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(
-                TYPE_CHAR, null, null
-            )
-        )
-    }
-
-    private fun showEpisodeSheet() {
-        findNavController().safeNavigate(
-            HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(
-                TYPE_EPISODE, null, null
+                type, null, null
             )
         )
     }

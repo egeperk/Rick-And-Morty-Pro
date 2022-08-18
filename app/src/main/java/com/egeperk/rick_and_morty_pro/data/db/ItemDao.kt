@@ -1,5 +1,8 @@
 package com.egeperk.rick_and_morty_pro.data.db
 
+import android.icu.number.IntegerWidth
+import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -15,12 +18,25 @@ interface ItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE )
     suspend fun insertCharacter(character: Character)
 
-    @Query("SELECT * FROM character_table")
-    fun readAllCharacters(): Flow<List<Character>>
+    @Query("select * from character_table limit 4")
+    fun readLimitedCharacters(): PagingSource<Int, Character>
+
+    @Query("select * from character_table")
+    fun readAllCharacters(): PagingSource<Int, Character>
+
+    @Query("select count (id) from character_table")
+    fun getCharacterCount(): LiveData<Int>
+
+    @Query("select * from episode_table limit 3")
+    fun readLimitedEpisode(): PagingSource<Int, Episode>
+
+    @Query("select * from episode_table")
+    fun readAllEpisodes(): PagingSource<Int, Episode>
+
+    @Query("select count (id) from episode_table")
+    fun getEpisodeCount(): LiveData<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE )
     suspend fun insertEpisode(episode: Episode)
 
-    @Query("SELECT * FROM episode_table")
-    fun readAllEpisodes(): Flow<List<Episode>>
 }

@@ -32,7 +32,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/favorites_header"
+            android:id="@+id/search_header"
             style="@style/Typography.Bold.Body.20"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:layout_marginTop="16dp"
-            android:background="@drawable/selector_edit_text"
+            android:background="@drawable/custom_edit_text_selector"
             android:drawableStart="@drawable/ic_search"
             android:drawablePadding="16dp"
             android:hint="@string/search"
@@ -60,7 +60,7 @@
             android:textColorHint="@color/hint_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/favorites_header" />
+            app:layout_constraintTop_toBottomOf="@id/search_header" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/search_rv_card"
@@ -122,7 +122,7 @@
             android:id="@+id/search_result_rv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginHorizontal="24dp"
+            android:layout_marginHorizontal="12dp"
             android:layout_marginTop="24dp"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"

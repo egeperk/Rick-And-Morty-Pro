@@ -9,6 +9,6 @@ data class Episode(
     val name: String?,
     val episode: String?,
     val air_date: String?,
-    @PrimaryKey(autoGenerate = true)
-    val pk: Int = 0
+    @PrimaryKey(autoGenerate = false)
+    val pk: Int
 )

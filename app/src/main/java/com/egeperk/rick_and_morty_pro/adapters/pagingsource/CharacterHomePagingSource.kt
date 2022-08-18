@@ -11,14 +11,14 @@ class CharacterHomePagingSource(private val repository: ApiRepository, private v
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, CharactersQuery.Result> {
 
         return try {
-            val nextPageNumber = params.key ?: 1
-            val response = repository.charactersQuery(nextPageNumber, query)
+            val page = params.key ?: 1
+            val response = repository.charactersQuery(page, query)
             val nextKey = response.data?.characters?.info?.next
             val data = response.data?.characters?.results
             val characters = mapResponseToPresentationModel(data!!)
             if (!response.hasErrors()) {
                 LoadResult.Page(
-                    data = if(size == 0) characters.subList(0,4) else characters,
+                    data = if(size == 0) characters.slice(0..3) else characters,
                     nextKey = if (size == 0) null else nextKey,
                     prevKey = null)
             } else {

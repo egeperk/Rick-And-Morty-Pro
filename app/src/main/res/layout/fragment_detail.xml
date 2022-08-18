@@ -101,6 +101,7 @@
                     app:tint="@color/green" />
 
                 <TextView
+                    app:layout_constraintHorizontal_bias="0.55"
                     android:id="@+id/add_to_favs"
                     style="@style/Typography.Regular.16"
                     android:layout_width="wrap_content"
@@ -269,7 +270,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:background="@drawable/custom_count_bg"
+                        android:background="@drawable/custom_count_bg_selector"
                         android:gravity="center"
                         android:paddingHorizontal="8dp"
                         android:paddingVertical="4dp"

@@ -24,7 +24,7 @@ object AppModule {
                 androidApplication(),
                 ItemDatabase::class.java,
                 "rickmorty_db.db"
-            ).build()
+            ).allowMainThreadQueries().build()
         }
         single { get<ItemDatabase>().itemDao() }
     }

@@ -8,19 +8,18 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.paging.PagingData
-import androidx.recyclerview.widget.RecyclerView
 import com.egeperk.rick_and_morty.CharactersQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.databinding.FragmentSearchBinding
 import com.egeperk.rick_and_morty_pro.util.onRightDrawableClicked
 import com.egeperk.rick_and_morty_pro.view.home.HomeViewModel
+import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -43,7 +42,7 @@ class SearchFragment : Fragment() {
             searchRvCard.isVisible = false
 
             homeViewModel.apply {
-                isDialogShown.postValue(true)
+                isDialogShown.postValue(false)
                 isSearch.postValue(true)
             }
 
@@ -55,12 +54,14 @@ class SearchFragment : Fragment() {
 
             searchBar.apply {
 
-                setOnEditorActionListener { v, actionId, event ->
+                setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                        homeViewModel.isDialogShown.postValue(true)
                         searchResultRv.isVisible = true
+                        searchHeader.text = requireContext().getString(R.string.results)
                         lifecycleScope.launch {
                             if (homeViewModel.search.value.isEmpty()) {
-                                itemAdapter.submitData(PagingData.from(emptyList()))
+                                itemAdapter.submitData(PagingData.empty())
                                 itemHeader.isVisible = false
                                 itemCount.isVisible = false
                             } else {
@@ -68,6 +69,8 @@ class SearchFragment : Fragment() {
                                 itemAdapter.addLoadStateListener {
                                     if (it.source.append is LoadState.NotLoading && it.append.endOfPaginationReached) {
 
+                                        homeViewModel.isDialogShown.postValue(false)
+                                        searchResultRv.isVisible = true
                                         itemCount.apply {
                                             text = itemAdapter.itemCount.toString()
                                             isVisible = true
@@ -81,10 +84,15 @@ class SearchFragment : Fragment() {
                                         itemCount.isVisible = false
                                         itemHeader.isVisible = false
                                     }
+                                    if (it.source.append is LoadState.Loading) {
+                                        searchResultRv.isVisible = false
+                                    }
                                 }
+
                                 homeViewModel.apply {
                                     homeViewModel.search.value.let { getCharacterData(it).value }
                                     charResult.collectLatest {
+                                        itemAdapter.submitData(PagingData.empty())
                                         itemAdapter.submitData(it)
                                     }
                                 }
@@ -92,6 +100,17 @@ class SearchFragment : Fragment() {
                         }
                     }
                     false
+                }
+
+                onRightDrawableClicked {
+                    searchRvCard.isVisible = false
+                    searchResultRv.isVisible = false
+                    it.text.clear()
+                    it.clearFocus()
+                    searchHeader.text = requireContext().getString(R.string.search)
+                    itemHeader.isVisible = false
+                    itemCount.isVisible = false
+                    println(homeViewModel.isDialogShown.value)
                 }
 
                 doOnTextChanged { text, start, before, count ->
@@ -126,37 +145,24 @@ class SearchFragment : Fragment() {
                             searchRvCard.isVisible = false
                         }
                     }
-                    lifecycleScope.launch {
-                        homeViewModel.search.collectLatest {
+
+                }
+                lifecycleScope.launch {
+                    homeViewModel.search.collect {
+                        if (it.isEmpty()) {
+                            itemAdapter.submitData(PagingData.empty())
+                        } else {
+                            searchAdapter.submitData(PagingData.empty())
                             searchAdapter.submitData(homeViewModel.getCharacterData(it).value)
                         }
                     }
-
-
-                    if (searchAdapter.itemCount > 1) {
-                        searchTextRv.layoutParams.height = mainLy.height / 2
-                    } else {
-                        searchTextRv.layoutParams.height = RecyclerView.LayoutParams.WRAP_CONTENT
-                    }
                 }
-
-
                 setOnFocusChangeListener { _, hasFocus ->
                     if (!hasFocus) {
                         searchRvCard.isVisible = false
-                        val keyboard =
-                            activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        keyboard.hideSoftInputFromWindow(this.windowToken, 0);
-                    }
-                }
 
-                onRightDrawableClicked {
-                    searchRvCard.isVisible = false
-                    searchResultRv.isVisible = false
-                    it.text.clear()
-                    it.clearFocus()
-                    itemHeader.isVisible = false
-                    itemCount.isVisible = false
+                        (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(this.windowToken, 0);
+                    }
                 }
             }
         }.root
