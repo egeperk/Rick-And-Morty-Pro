@@ -2,6 +2,9 @@ package com.egeperk.rick_and_morty_pro.util
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
@@ -15,9 +18,9 @@ import com.egeperk.rick_and_morty_pro.util.Constants.DELAY_TIME
 
 fun NavController.safeNavigate(directions: NavDirections) {
     try {
-        android.os.Handler().postDelayed({
+        //android.os.Handler().postDelayed({
             navigate(directions)
-        }, DELAY_TIME)
+        //}, DELAY_TIME)
     } catch (e: IllegalArgumentException) {
         e.printStackTrace()
     }
@@ -46,5 +49,19 @@ fun EditText.onRightDrawableClicked(onClicked: (view: EditText) -> Unit) {
             }
         }
         hasClicked
+    }
+}
+
+fun Activity.hasInternetConnection(): Boolean {
+    val connectivityManager =
+        application?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val hasConnection = connectivityManager.activeNetwork ?: return false
+    val capabilities = connectivityManager.getNetworkCapabilities(hasConnection) ?: return false
+
+    return when {
+        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+        else -> false
     }
 }

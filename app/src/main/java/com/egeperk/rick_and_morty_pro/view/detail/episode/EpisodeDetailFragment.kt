@@ -19,6 +19,7 @@ import com.egeperk.rick_and_morty_pro.data.model.Character
 import com.egeperk.rick_and_morty_pro.data.model.Episode
 import com.egeperk.rick_and_morty_pro.databinding.FragmentEpisodeDetailBinding
 import com.egeperk.rick_and_morty_pro.util.*
+import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_CHAR
 import com.egeperk.rick_and_morty_pro.view.detail.DetailViewModel
 import com.egeperk.rick_and_morty_pro.view.favorites.FavoritesViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -58,7 +59,7 @@ class EpisodeDetailFragment : Fragment() {
                     findNavController().safeNavigate(EpisodeDetailFragmentDirections.actionEpisodeDetailFragmentToDetailFragment(
                         charAdapter?.snapshot()?.items?.map {
                             it.id.toString()
-                        }?.get(position).toString()
+                        }?.get(position).toString(),TYPE_CHAR
                     ))
                 }
             characterRv.adapter = charAdapter
@@ -66,7 +67,6 @@ class EpisodeDetailFragment : Fragment() {
 
             locationAdapter = GenericAdapter(R.layout.location_row){}
             locationRv.adapter = locationAdapter
-
 
 
             lifecycleScope.launch {
@@ -105,7 +105,6 @@ class EpisodeDetailFragment : Fragment() {
 
     private fun addEpisodeToDb() {
         lifecycleScope.launch {
-
             favoritesVieModel.addEpisode(
                 Episode(
                     id = detailViewModel.episode.value?.id,

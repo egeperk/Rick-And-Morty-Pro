@@ -12,6 +12,8 @@ object Constants {
     const val TYPE_FAVORITES_CHAR = "favorite_chars"
     const val TYPE_FAVORITES_EPISODE = "favorite_episodes"
     const val TYPE_FAVORITES = "favorites"
+    const val TYPE_DIALOG = "dialog"
+    const val TYPE_HOME = "home"
     const val SEASON_ONE = "S01"
     const val SEASON_TWO = "S02"
     const val SEASON_THREE = "S03"

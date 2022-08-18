@@ -24,8 +24,11 @@ interface ItemDao {
     @Query("select * from character_table")
     fun readAllCharacters(): PagingSource<Int, Character>
 
+    @Query("select * from character_table where id=:id")
+    fun getCharacterById(id: String): Flow<Character>
+
     @Query("select count (id) from character_table")
-    fun getCharacterCount(): LiveData<Int>
+    fun getCharacterCount(): Flow<Int>
 
     @Query("select * from episode_table limit 3")
     fun readLimitedEpisode(): PagingSource<Int, Episode>
@@ -34,7 +37,7 @@ interface ItemDao {
     fun readAllEpisodes(): PagingSource<Int, Episode>
 
     @Query("select count (id) from episode_table")
-    fun getEpisodeCount(): LiveData<Int>
+    fun getEpisodeCount(): Flow<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE )
     suspend fun insertEpisode(episode: Episode)

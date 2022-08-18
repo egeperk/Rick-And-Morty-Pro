@@ -69,7 +69,7 @@
 
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/char_image"
+                    android:id="@+id/char_image_card"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_marginHorizontal="44dp"
@@ -81,6 +81,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
+                        android:id="@+id/char_image"
                         app:imageUrl="@{viewModel.character.image}"
                         android:layout_width="287dp"
                         android:layout_height="288dp"
@@ -97,7 +98,7 @@
                     android:layout_marginEnd="8dp"
                     android:src="@drawable/ic_star"
                     app:layout_constraintEnd_toStartOf="@id/add_to_favs"
-                    app:layout_constraintTop_toBottomOf="@id/char_image"
+                    app:layout_constraintTop_toBottomOf="@id/char_image_card"
                     app:tint="@color/green" />
 
                 <TextView
@@ -112,7 +113,7 @@
                     app:layout_constraintBottom_toTopOf="@id/details_ly"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/char_image" />
+                    app:layout_constraintTop_toBottomOf="@id/char_image_card" />
 
                 <LinearLayout
                     android:id="@+id/details_ly"
@@ -134,6 +135,7 @@
                         android:textColor="?attr/colorOnPrimary" />
 
                     <TextView
+                        android:id="@+id/status"
                         android:text="@{viewModel.character.status}"
                         style="@style/Typography.Regular.Body.20"
                         android:layout_width="match_parent"
@@ -152,6 +154,7 @@
                         android:textColor="?attr/colorOnPrimary" />
 
                     <TextView
+                        android:id="@+id/species"
                         android:text="@{viewModel.character.species}"
                         style="@style/Typography.Regular.Body.20"
                         android:layout_width="match_parent"
@@ -170,6 +173,7 @@
                         android:textColor="?attr/colorOnPrimary" />
 
                     <TextView
+                        android:id="@+id/type"
                         android:text="@{viewModel.character.type}"
                         style="@style/Typography.Regular.Body.20"
                         android:layout_width="match_parent"
@@ -188,6 +192,7 @@
                         android:textColor="?attr/colorOnPrimary" />
 
                     <TextView
+                        android:id="@+id/gender"
                         android:text="@{viewModel.character.gender}"
                         style="@style/Typography.Regular.Body.20"
                         android:layout_width="match_parent"
@@ -206,6 +211,7 @@
                         android:textColor="?attr/colorOnPrimary" />
 
                     <TextView
+                        android:id="@+id/origin"
                         android:text="@{viewModel.character.origin.name}"
                         style="@style/Typography.Regular.Body.20"
                         android:layout_width="match_parent"
@@ -224,6 +230,7 @@
                         android:textColor="?attr/colorOnPrimary" />
 
                     <TextView
+                        android:id="@+id/location"
                         android:text="@{viewModel.character.location.name}"
                         style="@style/Typography.Regular.Body.20"
                         android:layout_width="match_parent"

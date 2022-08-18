@@ -81,6 +81,9 @@
         <action
             android:id="@+id/action_detailFragment_to_episodeDetailFragment"
             app:destination="@id/episodeDetailFragment" />
+        <argument
+            android:name="from"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/episodeDetailFragment"

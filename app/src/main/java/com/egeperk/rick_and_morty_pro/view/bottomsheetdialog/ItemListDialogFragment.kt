@@ -12,11 +12,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
 import androidx.paging.PagingData
-import androidx.paging.PagingDataAdapter
 import androidx.paging.filter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.egeperk.rick_and_morty.CharacterByIdQuery
 import com.egeperk.rick_and_morty.CharactersQuery
 import com.egeperk.rick_and_morty.EpisodeByIdQuery
@@ -36,11 +34,13 @@ import com.egeperk.rick_and_morty_pro.util.Constants.SEASON_THREE
 import com.egeperk.rick_and_morty_pro.util.Constants.SEASON_TWO
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_CHAR
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_CHAR_BY_ID
+import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_DIALOG
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_EPISODE
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_EPISODE_BY_ID
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_FAVORITES
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_FAVORITES_CHAR
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_FAVORITES_EPISODE
+import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_HOME
 import com.egeperk.rick_and_morty_pro.util.safeNavigate
 import com.egeperk.rick_and_morty_pro.view.detail.DetailViewModel
 import com.egeperk.rick_and_morty_pro.view.favorites.FavoritesViewModel
@@ -85,7 +85,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                             findNavController().safeNavigate(ItemListDialogFragmentDirections.actionItemListDialogFragmentToDetailFragment(
                                 favoriteCharAdapter?.snapshot()?.items?.map { it.id }
                                     ?.get(position)
-                                    .toString()
+                                    .toString(), TYPE_DIALOG
                             ))
 
                         }.apply {
@@ -140,7 +140,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                                     ItemListDialogFragmentDirections.actionItemListDialogFragmentToDetailFragment(
                                         charIdAdapter?.snapshot()?.items?.map { it.id }
                                             ?.get(position)
-                                            .toString()
+                                            .toString(), TYPE_HOME
                                     )
                                 )
                             }
@@ -177,7 +177,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                                 findNavController().safeNavigate(
                                     ItemListDialogFragmentDirections.actionItemListDialogFragmentToDetailFragment(
                                         charAdapter?.snapshot()?.items?.map { it.id }?.get(position)
-                                            .toString()
+                                            .toString(), TYPE_HOME
                                     )
                                 )
                             }
@@ -320,7 +320,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
             } else if (args.from == TYPE_FAVORITES_EPISODE) {
                 lifecycleScope.launch {
                     favoriteEpAdapter?.submitData(PagingData.empty())
-                    favoritesViewModel.epiodeResult.collectLatest {
+                    favoritesViewModel.episodeResult.collectLatest {
                         if (filter != null) {
                             favoriteEpAdapter?.submitData(it.filter { ep ->
                                 ep.episode?.contains(filter) == true })

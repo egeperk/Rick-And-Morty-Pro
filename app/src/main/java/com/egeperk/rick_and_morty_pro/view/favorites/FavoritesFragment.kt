@@ -46,7 +46,7 @@ class FavoritesFragment : Fragment() {
                 findNavController().safeNavigate(FavoritesFragmentDirections.actionFavoritesFragmentToDetailFragment(
                     favCharsAdapter?.snapshot()?.items?.map { it.id }
                         ?.get(position)
-                        .toString()
+                        .toString(), TYPE_FAVORITES
                 ))
             }.apply {
                 characterRv.adapter = this

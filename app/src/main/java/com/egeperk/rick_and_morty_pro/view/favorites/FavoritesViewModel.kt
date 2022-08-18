@@ -1,11 +1,9 @@
 package com.egeperk.rick_and_morty_pro.view.favorites
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
-import com.egeperk.rick_and_morty.CharactersQuery
-import com.egeperk.rick_and_morty_pro.data.db.ItemDao
 import com.egeperk.rick_and_morty_pro.data.model.Character
 import com.egeperk.rick_and_morty_pro.data.model.Episode
 import com.egeperk.rick_and_morty_pro.data.repository.LocalRepository
@@ -19,12 +17,17 @@ class FavoritesViewModel(private val repository: LocalRepository) :
     private val _charResult = MutableStateFlow<PagingData<Character>>(PagingData.empty())
     val charResult = _charResult.asStateFlow()
 
+    private val _character :MutableStateFlow<Character>? = null
+    val character = _character?.asStateFlow()
+
     private val _episodeResult = MutableStateFlow<PagingData<Episode>>(PagingData.empty())
-    val epiodeResult = _episodeResult.asStateFlow()
+    val episodeResult = _episodeResult.asStateFlow()
 
-    val characterCount = repository.getCharacterCount()
+    val characterCount = repository.getCharacterCount().asLiveData()
 
-    val episodeCount = repository.getEpisodeCount()
+    val episodeCount = repository.getEpisodeCount().asLiveData()
+
+    fun readCharacterById(id:String) = repository.getCharacterById(id)
 
 
     fun readCharactersData(): StateFlow<PagingData<Character>> {
@@ -44,7 +47,7 @@ class FavoritesViewModel(private val repository: LocalRepository) :
             }.flow.cachedIn(viewModelScope).stateIn(viewModelScope).value
             _episodeResult.value = result
         }
-        return epiodeResult
+        return episodeResult
     }
 
     val readLimitedCharactersData = Pager(PagingConfig(pageSize = PAGE_SIZE)) {

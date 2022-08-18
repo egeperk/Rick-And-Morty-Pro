@@ -17,7 +17,9 @@ import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.databinding.FragmentHomeBinding
 import com.egeperk.rick_and_morty_pro.util.Constants.EMPTY_VALUE
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_CHAR
+import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_DIALOG
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_EPISODE
+import com.egeperk.rick_and_morty_pro.util.hasInternetConnection
 import com.egeperk.rick_and_morty_pro.util.safeNavigate
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -38,6 +40,9 @@ class HomeFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
             viewModel = homeViewModel
 
+            if (activity?.hasInternetConnection() == true) {
+
+
 
             episodeBtnLy.setOnClickListener {
                 homeViewModel.isDialogShown.value = true
@@ -53,7 +58,7 @@ class HomeFragment : Fragment() {
                 findNavController().safeNavigate(
                     HomeFragmentDirections.actionHomeFragmentToDetailFragment(
                         homeViewModel.charPosition.value?.get(it)
-                            .toString()
+                            .toString(), TYPE_DIALOG
                     )
                 )
             }
@@ -86,6 +91,7 @@ class HomeFragment : Fragment() {
                 homeViewModel.episodeResult.collectLatest {
                     episodeAdapter?.submitData(it)
                 }
+            }
             }
         }.root
     }
