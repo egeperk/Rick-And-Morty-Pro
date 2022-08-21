@@ -29,7 +29,6 @@ class SearchFragment : Fragment() {
 
     private val homeViewModel: HomeViewModel by viewModel()
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,7 +41,6 @@ class SearchFragment : Fragment() {
             searchRvCard.isVisible = false
 
             homeViewModel.apply {
-                isDialogShown.postValue(false)
                 isSearch.postValue(true)
             }
 
@@ -56,7 +54,6 @@ class SearchFragment : Fragment() {
 
                 setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                        homeViewModel.isDialogShown.postValue(true)
                         searchResultRv.isVisible = true
                         searchHeader.text = requireContext().getString(R.string.results)
                         lifecycleScope.launch {
@@ -69,7 +66,6 @@ class SearchFragment : Fragment() {
                                 itemAdapter.addLoadStateListener {
                                     if (it.source.append is LoadState.NotLoading && it.append.endOfPaginationReached) {
 
-                                        homeViewModel.isDialogShown.postValue(false)
                                         searchResultRv.isVisible = true
                                         itemCount.apply {
                                             text = itemAdapter.itemCount.toString()
@@ -90,7 +86,7 @@ class SearchFragment : Fragment() {
                                 }
 
                                 homeViewModel.apply {
-                                    homeViewModel.search.value.let { getCharacterData(it).value }
+                                    homeViewModel.search.value.let { getCharacterData(it,showFour = false).value }
                                     charResult.collectLatest {
                                         itemAdapter.submitData(PagingData.empty())
                                         itemAdapter.submitData(it)
@@ -110,7 +106,6 @@ class SearchFragment : Fragment() {
                     searchHeader.text = requireContext().getString(R.string.search)
                     itemHeader.isVisible = false
                     itemCount.isVisible = false
-                    println(homeViewModel.isDialogShown.value)
                 }
 
                 doOnTextChanged { text, start, before, count ->
@@ -153,7 +148,7 @@ class SearchFragment : Fragment() {
                             itemAdapter.submitData(PagingData.empty())
                         } else {
                             searchAdapter.submitData(PagingData.empty())
-                            searchAdapter.submitData(homeViewModel.getCharacterData(it).value)
+                            searchAdapter.submitData(homeViewModel.getCharacterData(it,showFour = true).value)
                         }
                     }
                 }
@@ -161,7 +156,7 @@ class SearchFragment : Fragment() {
                     if (!hasFocus) {
                         searchRvCard.isVisible = false
 
-                        (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(this.windowToken, 0);
+                        (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(this.windowToken, 0)
                     }
                 }
             }
@@ -172,7 +167,6 @@ class SearchFragment : Fragment() {
         super.onDestroy()
 
         homeViewModel.apply {
-            isDialogShown.postValue(false)
             isSearch.postValue(false)
         }
     }

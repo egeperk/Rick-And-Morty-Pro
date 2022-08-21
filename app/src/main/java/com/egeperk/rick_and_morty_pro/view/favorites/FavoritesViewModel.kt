@@ -29,26 +29,23 @@ class FavoritesViewModel(private val repository: LocalRepository) :
 
     fun readCharacterById(id:String) = repository.getCharacterById(id)
 
+    fun readEpisodeById(id:String) = repository.getEpisodeById(id)
 
-    fun readCharactersData(): StateFlow<PagingData<Character>> {
+    fun readCharactersData() =
         viewModelScope.launch {
             val result = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
                 repository.readAllCharactersData()
             }.flow.cachedIn(viewModelScope).stateIn(viewModelScope).value
             _charResult.value = result
         }
-        return charResult
-    }
 
-    fun readEpisodesData(): StateFlow<PagingData<Episode>> {
+    fun readEpisodesData() =
         viewModelScope.launch {
             val result = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
                 repository.readAllEpisodesData()
             }.flow.cachedIn(viewModelScope).stateIn(viewModelScope).value
             _episodeResult.value = result
         }
-        return episodeResult
-    }
 
     val readLimitedCharactersData = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
         repository.readLimitedCharactersData()
@@ -58,11 +55,11 @@ class FavoritesViewModel(private val repository: LocalRepository) :
         repository.readLimitedEpisodeData()
     }.flow.cachedIn(viewModelScope)
 
-    suspend fun addCharacter(character: Character) {
+    fun addCharacter(character: Character) = viewModelScope.launch {
         repository.addCharacter(character)
     }
 
-    suspend fun addEpisode(episode: Episode) {
+    fun addEpisode(episode: Episode) = viewModelScope.launch {
         repository.addEpisode(episode)
     }
 

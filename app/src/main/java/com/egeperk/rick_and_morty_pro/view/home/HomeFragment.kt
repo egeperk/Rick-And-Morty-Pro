@@ -43,55 +43,50 @@ class HomeFragment : Fragment() {
             if (activity?.hasInternetConnection() == true) {
 
 
-
-            episodeBtnLy.setOnClickListener {
-                homeViewModel.isDialogShown.value = true
-                showSheet(TYPE_EPISODE)
-            }
-
-            characterBtnLy.setOnClickListener {
-                homeViewModel.isDialogShown.value = true
-                showSheet(TYPE_CHAR)
-            }
-
-            charAdapter = GenericAdapter(R.layout.character_row) {
-                findNavController().safeNavigate(
-                    HomeFragmentDirections.actionHomeFragmentToDetailFragment(
-                        homeViewModel.charPosition.value?.get(it)
-                            .toString(), TYPE_DIALOG
-                    )
-                )
-            }
-            homeCharacterRv.adapter = charAdapter
-
-            lifecycleScope.launch {
-                homeViewModel.charResult.collectLatest {
-                    charAdapter?.submitData(it)
+                episodeBtnLy.setOnClickListener {
+                    showSheet(TYPE_EPISODE)
                 }
-            }
 
-            episodeAdapter = GenericAdapter(R.layout.episode_row) {
-                findNavController().safeNavigate(
-                    HomeFragmentDirections.actionHomeFragmentToEpisodeDetailFragment(
-                        homeViewModel.episodePosition.value?.get(it).toString()
+                characterBtnLy.setOnClickListener {
+                    showSheet(TYPE_CHAR)
+                }
+
+                charAdapter = GenericAdapter(R.layout.character_row) {
+                    findNavController().safeNavigate(
+                        HomeFragmentDirections.actionHomeFragmentToDetailFragment(
+                            homeViewModel.charPosition.value?.get(it)
+                                .toString(), TYPE_DIALOG
+                        )
                     )
-                )
-            }
-            homeEpisodeRv.adapter = episodeAdapter
+                }
+                homeCharacterRv.adapter = charAdapter
 
-            homeViewModel.isDialogShown.observe(viewLifecycleOwner) {
-                if (!it) {
-                    homeViewModel.apply {
-                        getEpisodeData()
-                        getCharacterData(EMPTY_VALUE)
+                lifecycleScope.launch {
+                    homeViewModel.charResult.collectLatest {
+                        charAdapter?.submitData(it)
                     }
                 }
-            }
-            lifecycleScope.launch {
-                homeViewModel.episodeResult.collectLatest {
-                    episodeAdapter?.submitData(it)
+
+                episodeAdapter = GenericAdapter(R.layout.episode_row) {
+                    findNavController().safeNavigate(
+                        HomeFragmentDirections.actionHomeFragmentToEpisodeDetailFragment(
+                            homeViewModel.episodePosition.value?.get(it).toString(), TYPE_DIALOG
+                        )
+                    )
                 }
-            }
+                homeEpisodeRv.adapter = episodeAdapter
+
+                homeViewModel.apply {
+                    getEpisodeData(showFour = true)
+                    getCharacterData(EMPTY_VALUE, showFour = true)
+                }
+
+
+                lifecycleScope.launch {
+                    homeViewModel.episodeResult.collectLatest {
+                        episodeAdapter?.submitData(it)
+                    }
+                }
             }
         }.root
     }

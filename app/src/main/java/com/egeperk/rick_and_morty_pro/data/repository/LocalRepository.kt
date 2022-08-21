@@ -24,6 +24,8 @@ class LocalRepository(private val db: ItemDatabase) {
 
     fun readAllEpisodesData(): PagingSource<Int,Episode> = db.itemDao().readAllEpisodes()
 
+    fun getEpisodeById(id: String): Flow<Episode> = db.itemDao().getEpisodeById(id)
+
     fun getEpisodeCount(): Flow<Int> = db.itemDao().getEpisodeCount()
 
     suspend fun addEpisode(episode: Episode) = db.itemDao().insertEpisode(episode)

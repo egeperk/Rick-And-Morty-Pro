@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 @Dao
 interface ItemDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE )
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCharacter(character: Character)
 
     @Query("select * from character_table limit 4")
@@ -36,10 +36,13 @@ interface ItemDao {
     @Query("select * from episode_table")
     fun readAllEpisodes(): PagingSource<Int, Episode>
 
+    @Query("select * from episode_table where id=:id")
+    fun getEpisodeById(id: String): Flow<Episode>
+
     @Query("select count (id) from episode_table")
     fun getEpisodeCount(): Flow<Int>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE )
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEpisode(episode: Episode)
 
 }

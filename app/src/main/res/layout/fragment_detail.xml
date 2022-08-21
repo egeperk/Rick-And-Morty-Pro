@@ -11,9 +11,9 @@
     </data>
 
     <androidx.core.widget.NestedScrollView
-        android:overScrollMode="never"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:overScrollMode="never"
         android:scrollbars="none"
         app:layout_constraintTop_toBottomOf="@id/header_ly">
 
@@ -82,38 +82,43 @@
 
                     <ImageView
                         android:id="@+id/char_image"
-                        app:imageUrl="@{viewModel.character.image}"
                         android:layout_width="287dp"
                         android:layout_height="288dp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/ic_launcher_background" />
+                        android:src="@drawable/ic_launcher_background"
+                        app:imageUrl="@{viewModel.character.image}" />
                 </androidx.cardview.widget.CardView>
 
 
-                <ImageView
+                <LinearLayout
                     android:id="@+id/fav_btn"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="8dp"
-                    android:src="@drawable/ic_star"
-                    app:layout_constraintEnd_toStartOf="@id/add_to_favs"
-                    app:layout_constraintTop_toBottomOf="@id/char_image_card"
-                    app:tint="@color/green" />
-
-                <TextView
-                    app:layout_constraintHorizontal_bias="0.55"
-                    android:id="@+id/add_to_favs"
-                    style="@style/Typography.Regular.16"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="96dp"
                     android:layout_marginTop="24dp"
-                    android:text="@string/add_your_favorites"
-                    android:textColor="@color/green"
-                    app:layout_constraintBottom_toTopOf="@id/details_ly"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/char_image_card" />
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@id/char_image_card">
+
+                    <ImageView
+                        android:id="@+id/fav_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_star"
+                        app:tint="@color/green" />
+
+                    <TextView
+                        android:id="@+id/add_to_favs_tv"
+                        style="@style/Typography.Regular.16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@string/add_your_favorites"
+                        android:textColor="@color/green" />
+
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/details_ly"
@@ -124,7 +129,7 @@
                     android:layout_weight="3"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/add_to_favs">
+                    app:layout_constraintTop_toBottomOf="@id/fav_btn">
 
                     <TextView
                         style="@style/Typography.Regular.12"
@@ -136,11 +141,11 @@
 
                     <TextView
                         android:id="@+id/status"
-                        android:text="@{viewModel.character.status}"
                         style="@style/Typography.Regular.Body.20"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/custom_card_lower_bg"
+                        android:text="@{viewModel.character.status}"
                         android:textColor="?attr/colorOnPrimary"
                         tools:text="Alive" />
 
@@ -155,11 +160,11 @@
 
                     <TextView
                         android:id="@+id/species"
-                        android:text="@{viewModel.character.species}"
                         style="@style/Typography.Regular.Body.20"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/custom_card_lower_bg"
+                        android:text="@{viewModel.character.species}"
                         android:textColor="?attr/colorOnPrimary"
                         tools:text="Alive" />
 
@@ -174,11 +179,11 @@
 
                     <TextView
                         android:id="@+id/type"
-                        android:text="@{viewModel.character.type}"
                         style="@style/Typography.Regular.Body.20"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/custom_card_lower_bg"
+                        android:text="@{viewModel.character.type}"
                         android:textColor="?attr/colorOnPrimary"
                         tools:text="Alive" />
 
@@ -193,11 +198,11 @@
 
                     <TextView
                         android:id="@+id/gender"
-                        android:text="@{viewModel.character.gender}"
                         style="@style/Typography.Regular.Body.20"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/custom_card_lower_bg"
+                        android:text="@{viewModel.character.gender}"
                         android:textColor="?attr/colorOnPrimary"
                         tools:text="Alive" />
 
@@ -212,11 +217,11 @@
 
                     <TextView
                         android:id="@+id/origin"
-                        android:text="@{viewModel.character.origin.name}"
                         style="@style/Typography.Regular.Body.20"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/custom_card_lower_bg"
+                        android:text="@{viewModel.character.origin.name}"
                         android:textColor="?attr/colorOnPrimary"
                         tools:text="Alive" />
 
@@ -231,12 +236,12 @@
 
                     <TextView
                         android:id="@+id/location"
-                        android:text="@{viewModel.character.location.name}"
                         style="@style/Typography.Regular.Body.20"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
                         android:background="@drawable/custom_card_lower_bg"
+                        android:text="@{viewModel.character.location.name}"
                         android:textColor="?attr/colorOnPrimary"
                         tools:text="Alive" />
 
@@ -271,7 +276,6 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:text="@{String.valueOf(viewModel.character.episode.size())}"
                         android:id="@+id/episode_count"
                         style="@style/Typography.Bold.Body.16"
                         android:layout_width="wrap_content"
@@ -281,6 +285,7 @@
                         android:gravity="center"
                         android:paddingHorizontal="8dp"
                         android:paddingVertical="4dp"
+                        android:text="@{String.valueOf(viewModel.character.episode.size())}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@id/episode_header"
                         app:layout_constraintTop_toTopOf="parent"
@@ -298,12 +303,12 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:nestedScrollingEnabled="false"
                     android:id="@+id/episode_rv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
                     android:layout_marginTop="16dp"
+                    android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintTop_toBottomOf="@id/episode_btn_ly"

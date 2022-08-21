@@ -2,15 +2,13 @@ package com.egeperk.rick_and_morty_pro.adapters.pagingsource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.egeperk.rick_and_morty.CharacterByIdQuery
-import com.egeperk.rick_and_morty.CharactersQuery
 import com.egeperk.rick_and_morty.EpisodeByIdQuery
 import com.egeperk.rick_and_morty_pro.repository.ApiRepository
 
 class EpisodeDetailPagingSource(
     private val repository: ApiRepository,
     private val id: String,
-    private val size: Int
+    private val showFour: Boolean = true
 ) :
     PagingSource<Int, EpisodeByIdQuery.Character>() {
 
@@ -22,7 +20,11 @@ class EpisodeDetailPagingSource(
             val characters = mapResponseToPresentationModel(data!!)
             if (!response.hasErrors()) {
                 LoadResult.Page(
-                    data = if (size == 0) characters.slice(0..3) else characters,
+                    data = if (showFour) {
+                        if (characters.size < 4)
+                            characters else characters.subList(0, 4)
+                    } else
+                        characters,
                     nextKey = null,
                     prevKey = null
                 )
@@ -44,7 +46,7 @@ class EpisodeDetailPagingSource(
             characters.add(
                 EpisodeByIdQuery.Character(
                     characterId,
-                   characterName,
+                    characterName,
                     characterImage,
                     characterLocation
                 )

@@ -15,5 +15,6 @@ ext.versions = [
         koin             : '3.2.0',
         multidex         : '2.0.1',
         room             : '2.4.3',
-        roomPaging    : '2.5.0-alpha02'
+        roomPaging       : '2.5.0-alpha02',
+        gson             : '2.9.1'
 ]

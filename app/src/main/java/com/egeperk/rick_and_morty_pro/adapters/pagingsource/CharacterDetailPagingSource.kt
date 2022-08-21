@@ -9,7 +9,7 @@ import com.egeperk.rick_and_morty_pro.repository.ApiRepository
 class CharacterDetailPagingSource(
     private val repository: ApiRepository,
     private val id: String,
-    private val size: Int
+    private val showThree: Boolean = true
 ) :
     PagingSource<Int, CharacterByIdQuery.Episode>() {
 
@@ -21,7 +21,11 @@ class CharacterDetailPagingSource(
             val episodes = mapResponseToPresentationModel(data!!)
             if (!response.hasErrors()) {
                 LoadResult.Page(
-                    data = if (size == 0) episodes.subList(0, 3) else episodes,
+                    data = if (showThree) {
+                        if (episodes.size < 4)
+                            episodes else episodes.subList(0, 3)
+                    } else
+                        episodes,
                     nextKey = null,
                     prevKey = null
                 )

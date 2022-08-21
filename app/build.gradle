@@ -74,6 +74,9 @@ dependencies {
     kapt "androidx.room:room-compiler:$versions.room"
     implementation "androidx.room:room-ktx:$versions.room"
     implementation "androidx.room:room-paging:$versions.room"
+    //Gson
+    implementation "com.google.code.gson:gson:$versions.gson"
+
 
 }
 

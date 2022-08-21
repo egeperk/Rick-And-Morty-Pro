@@ -5,7 +5,11 @@ import androidx.paging.PagingState
 import com.egeperk.rick_and_morty.CharactersQuery
 import com.egeperk.rick_and_morty_pro.repository.ApiRepository
 
-class CharacterHomePagingSource(private val repository: ApiRepository, private val query: String, private val size: Int) :
+class CharacterHomePagingSource(
+    private val repository: ApiRepository,
+    private val query: String,
+    private val showFour: Boolean = true
+) :
     PagingSource<Int, CharactersQuery.Result>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, CharactersQuery.Result> {
@@ -18,9 +22,14 @@ class CharacterHomePagingSource(private val repository: ApiRepository, private v
             val characters = mapResponseToPresentationModel(data!!)
             if (!response.hasErrors()) {
                 LoadResult.Page(
-                    data = if(size == 0) characters.slice(0..3) else characters,
-                    nextKey = if (size == 0) null else nextKey,
-                    prevKey = null)
+                    data = if (showFour) {
+                        if (characters.size < 4)
+                            characters else characters.subList(0, 4)
+                    } else
+                        characters,
+                    nextKey = if (showFour) null else nextKey,
+                    prevKey = null
+                )
             } else {
                 LoadResult.Error(Exception(response.errors?.first()?.message))
             }
@@ -35,11 +44,13 @@ class CharacterHomePagingSource(private val repository: ApiRepository, private v
             val characterId = result?.id
             val characterImage = result?.image
             val characterName = result?.name
-            characters.add(CharactersQuery.Result(
-                characterId,
-                characterName,
-                characterImage
-             ))
+            characters.add(
+                CharactersQuery.Result(
+                    characterId,
+                    characterName,
+                    characterImage
+                )
+            )
         }
         return characters
     }

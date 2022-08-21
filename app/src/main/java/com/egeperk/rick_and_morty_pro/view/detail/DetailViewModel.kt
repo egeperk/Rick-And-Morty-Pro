@@ -21,8 +21,6 @@ import kotlinx.coroutines.launch
 
 class DetailViewModel(private val repository: ApiRepository) : ViewModel() {
 
-    val isDialogShown = MutableLiveData(false)
-
     private val _character: MutableLiveData<CharacterByIdQuery.Character?> = MutableLiveData()
     val character: MutableLiveData<CharacterByIdQuery.Character?> = _character
 
@@ -37,48 +35,40 @@ class DetailViewModel(private val repository: ApiRepository) : ViewModel() {
         MutableStateFlow<PagingData<EpisodeByIdQuery.Character>>(PagingData.empty())
     val characterResult = _characterResult.asStateFlow()
 
-    fun getCharacterData(id: String): MutableLiveData<CharacterByIdQuery.Character?> {
+    fun getCharacterData(id: String) {
         viewModelScope.launch {
-            val data = repository.characterByIdQuery(id).data?.character
-            _character.value = data
+            _character.value = repository.characterByIdQuery(id).data?.character
         }
-        return character
     }
 
-    fun getEpisodeData(id: String): MutableLiveData<EpisodeByIdQuery.Episode?> {
+    fun getEpisodeData(id: String) =
         viewModelScope.launch {
-            val data = repository.episodeByIdQuery(id).data?.episode
-            _episode.value = data
+            _episode.value = repository.episodeByIdQuery(id).data?.episode
         }
-        return episode
-    }
 
-    fun getCharacterEpisodes(id: String): StateFlow<PagingData<CharacterByIdQuery.Episode>> {
+
+    fun getCharacterEpisodes(id: String, showThree: Boolean) =
         viewModelScope.launch {
             val newResult = Pager(PagingConfig(pageSize = Constants.PAGE_SIZE)) {
                 CharacterDetailPagingSource(
                     repository,
                     id,
-                    if (isDialogShown.value == false) 0 else 1
+                    showThree
                 )
             }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
             _episodeResult.value = newResult.value
         }
-        return episodeResult
-    }
 
 
-    fun getEpisodeCharacters(id: String): StateFlow<PagingData<EpisodeByIdQuery.Character>> {
+    fun getEpisodeCharacters(id: String, showThree: Boolean) =
         viewModelScope.launch {
             val newResult = Pager(PagingConfig(pageSize = Constants.PAGE_SIZE)) {
                 EpisodeDetailPagingSource(
                     repository,
                     id,
-                    if (isDialogShown.value == false) 0 else 1
+                    showThree
                 )
             }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
             _characterResult.value = newResult.value
         }
-        return characterResult
-    }
 }

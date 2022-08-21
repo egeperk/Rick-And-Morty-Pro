@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
-import com.benasher44.uuid.uuid4
 import com.egeperk.rick_and_morty.CharactersQuery
 import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.adapters.pagingsource.CharacterHomePagingSource
@@ -12,13 +11,11 @@ import com.egeperk.rick_and_morty_pro.adapters.pagingsource.EpisodeHomePagingSou
 import com.egeperk.rick_and_morty_pro.repository.ApiRepository
 import com.egeperk.rick_and_morty_pro.util.Constants.EMPTY_VALUE
 import com.egeperk.rick_and_morty_pro.util.Constants.PAGE_SIZE
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repository: ApiRepository): ViewModel() {
 
-    val isDialogShown = MutableLiveData(false)
     val episodeCount = MutableLiveData<Int>()
     val charactersCount = MutableLiveData<Int>()
 
@@ -35,16 +32,14 @@ class HomeViewModel(private val repository: ApiRepository): ViewModel() {
 
     var isSearch = MutableLiveData(false)
 
-
-
-    fun getCharacterData(query: String): StateFlow<PagingData<CharactersQuery.Result>> {
+    fun getCharacterData(query: String, showFour: Boolean): StateFlow<PagingData<CharactersQuery.Result>> {
 
         viewModelScope.launch {
 
             charPosition.value = repository.charactersQuery(0,query).data?.characters?.results?.map { it?.id.toString() }
 
             val newResult = Pager(PagingConfig(pageSize = if (isSearch.value == true) PAGE_SIZE * 10 else PAGE_SIZE)) {
-                CharacterHomePagingSource(repository, query, if (isDialogShown.value == false) 0 else 1)
+                CharacterHomePagingSource(repository, query, showFour)
             }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
 
             _charResult.value = newResult.value
@@ -53,13 +48,13 @@ class HomeViewModel(private val repository: ApiRepository): ViewModel() {
         return charResult
     }
 
-    fun getEpisodeData(): StateFlow<PagingData<EpisodeQuery.Result>> {
+    fun getEpisodeData(showFour: Boolean): StateFlow<PagingData<EpisodeQuery.Result>> {
         viewModelScope.launch{
 
             episodePosition.value = repository.episodesQuery(0).data?.episodes?.results?.map { it?.id.toString() }
 
             val newResult = Pager(PagingConfig(pageSize = PAGE_SIZE * 5)) {
-                EpisodeHomePagingSource(repository,if(isDialogShown.value == false) 0 else 1)
+                EpisodeHomePagingSource(repository, showFour)
             }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
 
             _episodeResult.value = newResult.value

@@ -7,14 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
 import androidx.paging.PagingData
+import androidx.paging.PagingDataAdapter
 import androidx.paging.filter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.egeperk.rick_and_morty.CharacterByIdQuery
 import com.egeperk.rick_and_morty.CharactersQuery
 import com.egeperk.rick_and_morty.EpisodeByIdQuery
@@ -46,6 +49,7 @@ import com.egeperk.rick_and_morty_pro.view.detail.DetailViewModel
 import com.egeperk.rick_and_morty_pro.view.favorites.FavoritesViewModel
 import com.egeperk.rick_and_morty_pro.view.home.HomeViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -71,55 +75,52 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
         binding = FragmentBottomSheetDialogBinding.inflate(layoutInflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
 
-            homeViewModel.isDialogShown.postValue(true)
-            detailViewModel.isDialogShown.postValue(true)
-
             when (args.type) {
                 TYPE_FAVORITES -> {
                     if (args.from == TYPE_FAVORITES_CHAR) {
-                        seasonsCard.isVisible = false
-                        filterBtn.isVisible = false
-                        headerTitle.text = resources.getString(R.string.characters)
 
-                        favoriteCharAdapter = GenericAdapter<Character>(R.layout.character_row_favorites) { position ->
-                            findNavController().safeNavigate(ItemListDialogFragmentDirections.actionItemListDialogFragmentToDetailFragment(
-                                favoriteCharAdapter?.snapshot()?.items?.map { it.id }
-                                    ?.get(position)
-                                    .toString(), TYPE_DIALOG
-                            ))
+                       setCharacterScreen()
 
-                        }.apply {
-                            genericRv.adapter = this
-                            genericRv.layoutManager = GridLayoutManager(requireContext(), 2)
-                        }
+                        favoriteCharAdapter =
+                            GenericAdapter<Character>(R.layout.character_row_favorites) { position ->
+                                findNavController().safeNavigate(ItemListDialogFragmentDirections.actionItemListDialogFragmentToDetailFragment(
+                                    favoriteCharAdapter?.snapshot()?.items?.map { it.id }
+                                        ?.get(position)
+                                        .toString(), TYPE_FAVORITES
+                                ))
 
-                        lifecycleScope.launch{
-                            favoritesViewModel.readCharactersData().collectLatest {
-                                    favoriteCharAdapter?.submitData(it)
-                                }
+                            }.apply {
+                                genericRv.adapter = this
+                                genericRv.layoutManager = GridLayoutManager(requireContext(), 2)
+                            }
+
+                        lifecycleScope.launch {
+                            favoritesViewModel.charResult.collectLatest {
+                                favoriteCharAdapter?.submitData(it)
+                            }
                         }
                         favoritesViewModel.characterCount.observe(viewLifecycleOwner) {
                             itemCount.text = it.toString()
                         }
                     } else {
 
-                        headerTitle.text = resources.getString(R.string.episodes)
-                        filterBtn.isVisible = true
+                      setEpisodeScreen()
 
-                        favoriteEpAdapter = GenericAdapter<Episode>(R.layout.episode_row_favorites) { position ->
-                            findNavController().safeNavigate(ItemListDialogFragmentDirections.actionItemListDialogFragmentToEpisodeDetailFragment(
-                                favoriteEpAdapter?.snapshot()?.items?.map { it.id }
-                                    ?.get(position)
-                                    .toString()
-                            ))
+                        favoriteEpAdapter =
+                            GenericAdapter<Episode>(R.layout.episode_row_favorites) { position ->
+                                findNavController().safeNavigate(ItemListDialogFragmentDirections.actionItemListDialogFragmentToEpisodeDetailFragment(
+                                    favoriteEpAdapter?.snapshot()?.items?.map { it.id }
+                                        ?.get(position)
+                                        .toString(), TYPE_FAVORITES
+                                ))
 
-                        }.apply {
-                            genericRv.adapter = this
-                            genericRv.layoutManager = LinearLayoutManager(requireContext())
-                        }
+                            }.apply {
+                                genericRv.adapter = this
+                                genericRv.layoutManager = LinearLayoutManager(requireContext())
+                            }
 
-                        lifecycleScope.launch{
-                            favoritesViewModel.readEpisodesData().collectLatest {
+                        lifecycleScope.launch {
+                            favoritesViewModel.episodeResult.collectLatest {
                                 favoriteEpAdapter?.submitData(it)
                             }
                         }
@@ -129,13 +130,12 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                     }
                 }
                 TYPE_CHAR -> {
-                    seasonsCard.isVisible = false
-                    filterBtn.isVisible = false
-                    headerTitle.text = resources.getString(R.string.characters)
+
+                   setCharacterScreen()
 
                     if (args.from == TYPE_CHAR_BY_ID) {
                         charIdAdapter =
-                            GenericAdapter<EpisodeByIdQuery.Character>(R.layout.character_row_detail) { position ->
+                            GenericAdapter(R.layout.character_row_detail) { position ->
                                 findNavController().safeNavigate(
                                     ItemListDialogFragmentDirections.actionItemListDialogFragmentToDetailFragment(
                                         charIdAdapter?.snapshot()?.items?.map { it.id }
@@ -157,11 +157,14 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                                 }
                             }
                         }
-                        detailViewModel.isDialogShown.observe(viewLifecycleOwner) {
-                            if (it) {
-                                args.uuid?.let { id -> detailViewModel.getEpisodeCharacters(id) }
-                            }
+
+                        args.uuid?.let { id ->
+                            detailViewModel.getEpisodeCharacters(
+                                id,
+                                showThree = false
+                            )
                         }
+
                         lifecycleScope.launch {
                             detailViewModel.characterResult.collectLatest {
                                 charIdAdapter?.submitData(it)
@@ -173,7 +176,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                             itemCount.text = it.toString()
                         }
                         charAdapter =
-                            GenericAdapter<CharactersQuery.Result>(R.layout.character_row) { position ->
+                            GenericAdapter(R.layout.character_row) { position ->
                                 findNavController().safeNavigate(
                                     ItemListDialogFragmentDirections.actionItemListDialogFragmentToDetailFragment(
                                         charAdapter?.snapshot()?.items?.map { it.id }?.get(position)
@@ -185,11 +188,9 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                             adapter = charAdapter
                             layoutManager = GridLayoutManager(requireContext(), 2)
                         }
-                        homeViewModel.isDialogShown.observe(viewLifecycleOwner) {
-                            if (it) {
-                                homeViewModel.getCharacterData(EMPTY_VALUE)
-                            }
-                        }
+
+                        homeViewModel.getCharacterData(EMPTY_VALUE, false)
+
                         lifecycleScope.launch {
                             homeViewModel.charResult.collectLatest {
                                 charAdapter?.submitData(it)
@@ -198,18 +199,17 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                     }
                 }
                 TYPE_EPISODE -> {
-                    headerTitle.text = resources.getString(R.string.episodes)
-                    filterBtn.isVisible = true
+                   setEpisodeScreen()
 
                     if (args.from == TYPE_EPISODE_BY_ID) {
                         episodeIdAdapter =
-                            GenericAdapter<CharacterByIdQuery.Episode>(R.layout.episode_row_detail) { position ->
+                            GenericAdapter(R.layout.episode_row_detail) { position ->
                                 findNavController().safeNavigate(
                                     ItemListDialogFragmentDirections.actionItemListDialogFragmentToEpisodeDetailFragment(
                                         episodeIdAdapter?.snapshot()?.items?.map {
                                             it.id
                                         }?.get(position)
-                                            .toString()
+                                            .toString(), TYPE_DIALOG
                                     )
                                 )
                             }
@@ -227,10 +227,12 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                                 }
                             }
                         }
-                        detailViewModel.isDialogShown.observe(viewLifecycleOwner) {
-                            if (it) {
-                                args.uuid?.let { id -> detailViewModel.getCharacterEpisodes(id) }
-                            }
+
+                        args.uuid?.let { id ->
+                            detailViewModel.getCharacterEpisodes(
+                                id,
+                                showThree = false
+                            )
                         }
 
                         lifecycleScope.launch {
@@ -245,13 +247,13 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                         }
 
                         episodeAdapter =
-                            GenericAdapter<EpisodeQuery.Result>(R.layout.episode_row) { position ->
+                            GenericAdapter(R.layout.episode_row) { position ->
 
                                 findNavController().safeNavigate(
                                     ItemListDialogFragmentDirections.actionItemListDialogFragmentToEpisodeDetailFragment(
                                         episodeAdapter?.snapshot()?.items?.map { it.id }
                                             ?.get(position)
-                                            .toString()
+                                            .toString(), TYPE_DIALOG
                                     )
                                 )
                             }
@@ -259,11 +261,9 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                             adapter = episodeAdapter
                             layoutManager = LinearLayoutManager(requireContext())
                         }
-                        homeViewModel.isDialogShown.observe(viewLifecycleOwner) {
-                            if (it) {
-                                homeViewModel.getEpisodeData()
-                            }
-                        }
+
+                        homeViewModel.getEpisodeData(showFour = false)
+
                         lifecycleScope.launch {
                             homeViewModel.episodeResult.collectLatest {
                                 episodeAdapter?.submitData(it)
@@ -278,6 +278,21 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
             }
         }
         return binding?.root
+    }
+
+    private fun setEpisodeScreen() {
+        binding?.apply {
+            headerTitle.text = resources.getString(R.string.episodes)
+            filterBtn.isVisible = true
+        }
+    }
+
+    private fun setCharacterScreen(){
+       binding?.apply {
+           seasonsCard.isVisible = false
+           filterBtn.isVisible = false
+           headerTitle.text = resources.getString(R.string.characters)
+       }
     }
 
     private fun setButtons() {
@@ -305,39 +320,46 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
 
     private fun selectSeason(v: TextView?, filter: String?) {
         v?.setOnClickListener {
-            if (args.from == TYPE_EPISODE_BY_ID) {
-                lifecycleScope.launch {
-                    episodeIdAdapter?.submitData(PagingData.empty())
-                    detailViewModel.episodeResult.collectLatest {
-                        if (filter != null) {
-                            episodeIdAdapter?.submitData(it.filter { ep ->
-                                ep.episode?.contains(filter) == true })
-                        } else {
-                            episodeIdAdapter?.submitData(it)
+            when (args.from) {
+                TYPE_EPISODE_BY_ID -> {
+                    lifecycleScope.launch {
+                        episodeIdAdapter?.submitData(PagingData.empty())
+                        detailViewModel.episodeResult.collectLatest {
+                            if (filter != null) {
+                                episodeIdAdapter?.submitData(it.filter { ep ->
+                                    ep.episode?.contains(filter) == true
+                                })
+                            } else {
+                                episodeIdAdapter?.submitData(it)
+                            }
                         }
                     }
                 }
-            } else if (args.from == TYPE_FAVORITES_EPISODE) {
-                lifecycleScope.launch {
-                    favoriteEpAdapter?.submitData(PagingData.empty())
-                    favoritesViewModel.episodeResult.collectLatest {
-                        if (filter != null) {
-                            favoriteEpAdapter?.submitData(it.filter { ep ->
-                                ep.episode?.contains(filter) == true })
-                        } else {
-                            favoriteEpAdapter?.submitData(it)
+                TYPE_FAVORITES_EPISODE -> {
+                    lifecycleScope.launch {
+                        favoriteEpAdapter?.submitData(PagingData.empty())
+                        favoritesViewModel.episodeResult.collectLatest {
+                            if (filter != null) {
+                                favoriteEpAdapter?.submitData(it.filter { ep ->
+                                    ep.episode?.contains(filter) == true
+                                })
+                            } else {
+                                favoriteEpAdapter?.submitData(it)
+                            }
                         }
                     }
                 }
-            } else {
-                lifecycleScope.launch {
-                    episodeAdapter?.submitData(PagingData.empty())
-                    homeViewModel.episodeResult.collectLatest {
-                        if (filter != null) {
-                            episodeAdapter?.submitData(it.filter { ep ->
-                                ep.episode?.contains(filter) == true })
-                        } else {
-                            episodeAdapter?.submitData(it)
+                else -> {
+                    lifecycleScope.launch {
+                        episodeAdapter?.submitData(PagingData.empty())
+                        homeViewModel.episodeResult.collectLatest {
+                            if (filter != null) {
+                                episodeAdapter?.submitData(it.filter { ep ->
+                                    ep.episode?.contains(filter) == true
+                                })
+                            } else {
+                                episodeAdapter?.submitData(it)
+                            }
                         }
                     }
                 }
@@ -349,26 +371,6 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                 downArrow.rotation = ROTATE_DOWN
             }
         }
-
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        homeViewModel.isDialogShown.postValue(false)
-        detailViewModel.isDialogShown.postValue(false)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        homeViewModel.isDialogShown.postValue(false)
-        detailViewModel.isDialogShown.postValue(false)
-
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        homeViewModel.isDialogShown.postValue(false)
-        detailViewModel.isDialogShown.postValue(false)
 
     }
 }

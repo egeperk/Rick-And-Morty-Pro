@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import coil.load
 import com.egeperk.rick_and_morty.EpisodeByIdQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
@@ -20,6 +21,7 @@ import com.egeperk.rick_and_morty_pro.data.model.Episode
 import com.egeperk.rick_and_morty_pro.databinding.FragmentEpisodeDetailBinding
 import com.egeperk.rick_and_morty_pro.util.*
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_CHAR
+import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_FAVORITES
 import com.egeperk.rick_and_morty_pro.view.detail.DetailViewModel
 import com.egeperk.rick_and_morty_pro.view.favorites.FavoritesViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -47,74 +49,98 @@ class EpisodeDetailFragment : Fragment() {
 
             backBtn.setOnClickListener { findNavController().popBackStack() }
 
-            if (arguments != null) {
-                detailViewModel.apply {
-                    getEpisodeData(args.uuid)
-                    getEpisodeCharacters(args.uuid)
-                }
+            if (args.from == TYPE_FAVORITES) {
+                setDataFromDb()
             }
 
-            charAdapter =
-                GenericAdapter<EpisodeByIdQuery.Character>(R.layout.character_row_detail) { position ->
-                    findNavController().safeNavigate(EpisodeDetailFragmentDirections.actionEpisodeDetailFragmentToDetailFragment(
-                        charAdapter?.snapshot()?.items?.map {
-                            it.id.toString()
-                        }?.get(position).toString(),TYPE_CHAR
-                    ))
+            if (activity?.hasInternetConnection() == true) {
+
+
+                if (arguments != null) {
+                    detailViewModel.apply {
+                        getEpisodeData(args.uuid)
+                        getEpisodeCharacters(args.uuid,showThree = true)
+                    }
                 }
-            characterRv.adapter = charAdapter
+
+                charAdapter =
+                    GenericAdapter<EpisodeByIdQuery.Character>(R.layout.character_row_detail) { position ->
+                        findNavController().safeNavigate(
+                            EpisodeDetailFragmentDirections.actionEpisodeDetailFragmentToDetailFragment(
+                                charAdapter?.snapshot()?.items?.map {
+                                    it.id.toString()
+                                }?.get(position).toString(), TYPE_CHAR
+                            )
+                        )
+                    }
+                characterRv.adapter = charAdapter
 
 
-            locationAdapter = GenericAdapter(R.layout.location_row){}
-            locationRv.adapter = locationAdapter
+                locationAdapter = GenericAdapter(R.layout.location_row) {}
+                locationRv.adapter = locationAdapter
 
 
-            lifecycleScope.launch {
-                charAdapter?.submitData(detailViewModel.characterResult.value)
-                detailViewModel.characterResult.collectLatest {
-                    locationAdapter?.submitData(it)
+                lifecycleScope.launch {
+                    charAdapter?.submitData(detailViewModel.characterResult.value)
+                    detailViewModel.characterResult.collectLatest {
+                        locationAdapter?.submitData(it)
+                    }
                 }
-            }
 
-            characterBtnLy.setOnClickListener {
-                findNavController().safeNavigate(
-                    EpisodeDetailFragmentDirections.actionEpisodeDetailFragmentToItemListDialogFragment(
-                        Constants.TYPE_CHAR, Constants.TYPE_CHAR_BY_ID, args.uuid
+                characterBtnLy.setOnClickListener {
+                    findNavController().safeNavigate(
+                        EpisodeDetailFragmentDirections.actionEpisodeDetailFragmentToItemListDialogFragment(
+                            Constants.TYPE_CHAR, Constants.TYPE_CHAR_BY_ID, args.uuid
+                        )
                     )
+                }
+
+                val textShader: Shader = LinearGradient(
+                    0f,
+                    0f,
+                    0f,
+                    300f,
+                    intArrayOf(Color.WHITE, Color.TRANSPARENT),
+                    floatArrayOf(0f, 1f),
+                    TileMode.CLAMP
                 )
-            }
+                episodeDescription.paint.shader = textShader
 
-            val textShader: Shader = LinearGradient(
-                0f,
-                0f,
-                0f,
-                300f,
-                intArrayOf(Color.WHITE, Color.TRANSPARENT),
-                floatArrayOf(0f, 1f),
-                TileMode.CLAMP
-            )
-            episodeDescription.paint.shader = textShader
-
-            favBtn.setOnClickListener {
-                addEpisodeToDb()
+                favBtn.setOnClickListener {
+                    favBtn.setImageResource(R.drawable.ic_icon_added_fav)
+                    addEpisodeToDb()
+                }
             }
         }
-
         return binding?.root
     }
 
     private fun addEpisodeToDb() {
-        lifecycleScope.launch {
-            favoritesVieModel.addEpisode(
-                Episode(
-                    id = detailViewModel.episode.value?.id,
-                    name = detailViewModel.episode.value?.name,
-                    episode = detailViewModel.episode.value?.episode,
-                    air_date = detailViewModel.episode.value?.air_date,
-                    pk = detailViewModel.episode.value?.id?.toInt()!!,
-                )
+        favoritesVieModel.addEpisode(
+            Episode(
+                id = detailViewModel.episode.value?.id,
+                name = detailViewModel.episode.value?.name,
+                episode = detailViewModel.episode.value?.episode,
+                air_date = detailViewModel.episode.value?.air_date,
+                pk = detailViewModel.episode.value?.id?.toInt()!!,
             )
+        )
+    }
+
+
+    private fun setDataFromDb() {
+
+        lifecycleScope.launch {
+            favoritesVieModel.readEpisodeById(args.uuid).collectLatest {
+                binding?.apply {
+                    episodeHeaderNumber.text = it.episode
+                    episodeName.text = it.name
+                    episodeNumber.text = it.episode
+                    airDate.text = it.air_date
+                }
+            }
         }
+
     }
 
     override fun onResume() {

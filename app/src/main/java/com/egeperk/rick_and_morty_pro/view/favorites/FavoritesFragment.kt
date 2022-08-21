@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
 import androidx.paging.map
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
@@ -67,7 +69,7 @@ class FavoritesFragment : Fragment() {
                 findNavController().safeNavigate(FavoritesFragmentDirections.actionFavoritesFragmentToEpisodeDetailFragment(
                     favEpisodeAdapter?.snapshot()?.items?.map { it.id }
                         ?.get(position)
-                        .toString()
+                        .toString(), TYPE_FAVORITES
                 ))
             }.apply {
                 episodesRv.adapter = this
@@ -78,6 +80,7 @@ class FavoritesFragment : Fragment() {
                     favEpisodeAdapter?.submitData(it)
                 }
             }
+
         }.root
     }
 

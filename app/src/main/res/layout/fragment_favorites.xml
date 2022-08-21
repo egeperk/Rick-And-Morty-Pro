@@ -63,7 +63,7 @@
                     />
 
                 <TextView
-                    android:id="@+id/character_count"
+                    android:id="@+id/character_header_count"
                     style="@style/Typography.Bold.Body.16"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -83,6 +83,21 @@
                     android:layout_marginStart="16dp"
                     android:src="@drawable/ic_vector_arrow" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/empty_char"
+                style="@style/Typography.Regular.Body.20"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="32dp"
+                android:paddingVertical="24dp"
+                android:text="@string/you_have_no_favourite_character_yet"
+                android:textColor="@color/empty_rv_gray"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/episode_btn_ly"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/character_btn_ly" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/character_rv"
@@ -115,7 +130,7 @@
                     android:text="@string/episodes" />
 
                 <TextView
-                    android:id="@+id/episodes_count"
+                    android:id="@+id/episodes_header_count"
                     style="@style/Typography.Bold.Body.16"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -137,6 +152,21 @@
                     android:src="@drawable/ic_vector_arrow" />
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/empty_episode"
+                style="@style/Typography.Regular.Body.20"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="32dp"
+                android:paddingVertical="24dp"
+                android:text="@string/you_have_no_favourite_episode_yet"
+                android:textColor="@color/empty_rv_gray"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/episode_btn_ly" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/episodes_rv"
                 android:layout_width="match_parent"
@@ -148,6 +178,20 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintTop_toBottomOf="@id/episode_btn_ly" />
 
+
+                <TextView
+                    android:visibility="gone"
+                    style="@style/Typography.Regular.Body.20"
+                    android:textColor="@color/empty_rv_gray"
+                    android:id="@+id/full_empty_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:text="@string/you_have_no_favourite_character_nor_episode_yet"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

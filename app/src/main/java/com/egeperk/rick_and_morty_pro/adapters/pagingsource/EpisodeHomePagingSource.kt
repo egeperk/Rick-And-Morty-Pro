@@ -6,7 +6,9 @@ import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.repository.ApiRepository
 import java.text.FieldPosition
 
-class EpisodeHomePagingSource(private val repository: ApiRepository, private val size: Int) :
+class EpisodeHomePagingSource(
+    private val repository: ApiRepository, private val showFour: Boolean = true
+) :
     PagingSource<Int, EpisodeQuery.Result>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, EpisodeQuery.Result> {
@@ -19,8 +21,11 @@ class EpisodeHomePagingSource(private val repository: ApiRepository, private val
             val episodes = mapResponseToPresentationModel(data!!)
             if (!response.hasErrors()) {
                 LoadResult.Page(
-                    data = if (size == 0) episodes.slice(0..3) else episodes,
-                    nextKey = if (size == 0) null else nextKey,
+                    data = if (showFour) {
+                        if (episodes.size < 4)
+                            episodes else episodes.subList(0, 4)
+                    } else
+                        episodes, nextKey = if (showFour) null else nextKey,
                     prevKey = null
                 )
             } else {

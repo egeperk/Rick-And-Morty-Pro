@@ -6,6 +6,9 @@
     <data>
 
         <variable
+            name="item"
+            type="com.egeperk.rick_and_morty.EpisodeByIdQuery.Episode" />
+        <variable
             name="viewModel"
             type="com.egeperk.rick_and_morty_pro.view.detail.DetailViewModel" />
 
@@ -43,7 +46,7 @@
 
             <TextView
                 android:text="@{viewModel.episode.episode}"
-                android:id="@+id/char_name"
+                android:id="@+id/episode_header_number"
                 style="@style/Typography.Bold.Body.20"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -67,7 +70,7 @@
                 android:textColor="?attr/colorOnPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/char_name"
+                app:layout_constraintTop_toBottomOf="@id/episode_header_number"
                 tools:text="The End of Something" />
 
             <TextView
@@ -149,7 +152,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="16dp"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                android:text="@string/lorem_ipsum"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

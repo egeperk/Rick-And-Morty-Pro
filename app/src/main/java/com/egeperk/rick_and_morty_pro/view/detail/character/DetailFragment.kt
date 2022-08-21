@@ -9,12 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.paging.map
 import coil.load
 import com.egeperk.rick_and_morty.CharacterByIdQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.data.model.Character
 import com.egeperk.rick_and_morty_pro.databinding.FragmentDetailBinding
+import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_CHAR
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_EPISODE
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_EPISODE_BY_ID
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_FAVORITES
@@ -25,6 +27,7 @@ import com.egeperk.rick_and_morty_pro.util.setStatusBarLight
 import com.egeperk.rick_and_morty_pro.view.detail.DetailViewModel
 import com.egeperk.rick_and_morty_pro.view.favorites.FavoritesViewModel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -54,22 +57,19 @@ class DetailFragment : Fragment() {
 
             if (activity?.hasInternetConnection() == true) {
 
-
                 if (arguments != null) {
                     detailViewModel.apply {
                         getCharacterData(args.uuid)
-                        getCharacterEpisodes(args.uuid)
+                        getCharacterEpisodes(args.uuid, true)
                     }
                 }
-
-
 
                 episodeAdapter =
                     GenericAdapter<CharacterByIdQuery.Episode>(R.layout.episode_row_detail) { position ->
                         findNavController().safeNavigate(
                             DetailFragmentDirections.actionDetailFragmentToEpisodeDetailFragment(
                                 episodeAdapter?.snapshot()?.items?.map { it.id }?.get(position)
-                                    .toString()
+                                    .toString(), TYPE_EPISODE
                             )
                         )
                     }.apply {
@@ -87,15 +87,14 @@ class DetailFragment : Fragment() {
                 favBtn.setOnClickListener {
                     addCharacter()
                 }
+
             }
         }
-
         return binding?.root
     }
 
     private fun addCharacter() {
-        lifecycleScope.launch {
-
+            binding?.favImage?.setImageResource(R.drawable.ic_icon_added_fav)
             favoritesVieModel.addCharacter(
                 Character(
                     id = detailViewModel.character.value?.id,
@@ -110,7 +109,6 @@ class DetailFragment : Fragment() {
                     pk = detailViewModel.character.value?.id?.toInt()!!,
                 )
             )
-        }
     }
 
     private fun setDataFromDb() {
@@ -128,8 +126,6 @@ class DetailFragment : Fragment() {
                     gender.text = it.gender
                 }
             }
-            Toast.makeText(requireContext(), "xxx", Toast.LENGTH_SHORT).show()
-
         }
 
     }
