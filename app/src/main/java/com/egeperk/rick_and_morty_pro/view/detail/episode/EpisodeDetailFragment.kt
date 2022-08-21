@@ -107,7 +107,7 @@ class EpisodeDetailFragment : Fragment() {
                 episodeDescription.paint.shader = textShader
 
                 favBtn.setOnClickListener {
-                    favBtn.setImageResource(R.drawable.ic_icon_added_fav)
+                    favBtnImage.setImageResource(R.drawable.ic_icon_added_fav)
                     addEpisodeToDb()
                 }
             }

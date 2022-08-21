@@ -87,29 +87,35 @@
                 app:layout_constraintTop_toBottomOf="@id/episode_name"
                 tools:text="S2.10" />
 
-
-            <ImageView
-                android:id="@+id/fav_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <LinearLayout
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="20dp"
-                android:src="@drawable/ic_star"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/episode_number"
-                app:tint="@color/green" />
-
-            <TextView
-                android:id="@+id/add_to_favs"
-                style="@style/Typography.Regular.16"
+                android:id="@+id/fav_btn"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:text="@string/add_your_favorites"
-                android:textColor="@color/green"
-                app:layout_constraintStart_toEndOf="@id/fav_btn"
-                app:layout_constraintTop_toBottomOf="@id/episode_number" />
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_marginEnd="8dp"
+                    android:id="@+id/fav_btn_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_star"
+                    app:tint="@color/green" />
+
+                <TextView
+                    android:layout_marginTop="2dp"
+                    android:id="@+id/add_to_favs"
+                    style="@style/Typography.Regular.16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_your_favorites"
+                    android:textColor="@color/green" />
+
+            </LinearLayout>
+
+
 
             <TextView
                 android:text="@{viewModel.episode.air_date}"
@@ -144,7 +150,7 @@
                 android:textColor="?attr/colorOnPrimary"
                 app:layout_constraintStart_toEndOf="@id/dot"
                 app:layout_constraintTop_toBottomOf="@id/fav_btn"
-                tools:text="20m" />
+                android:text="20m" />
 
             <TextView
                 android:id="@+id/episode_description"

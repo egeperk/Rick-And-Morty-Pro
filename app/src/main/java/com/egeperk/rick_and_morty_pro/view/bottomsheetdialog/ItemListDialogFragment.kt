@@ -79,7 +79,9 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                 TYPE_FAVORITES -> {
                     if (args.from == TYPE_FAVORITES_CHAR) {
 
-                       setCharacterScreen()
+                        seasonsCard.isVisible = false
+                        filterBtn.isVisible = false
+                        headerTitle.text = resources.getString(R.string.characters)
 
                         favoriteCharAdapter =
                             GenericAdapter<Character>(R.layout.character_row_favorites) { position ->
@@ -95,6 +97,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                             }
 
                         lifecycleScope.launch {
+                            favoritesViewModel.readCharactersData()
                             favoritesViewModel.charResult.collectLatest {
                                 favoriteCharAdapter?.submitData(it)
                             }
@@ -104,7 +107,8 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                         }
                     } else {
 
-                      setEpisodeScreen()
+                        headerTitle.text = resources.getString(R.string.episodes)
+                        filterBtn.isVisible = true
 
                         favoriteEpAdapter =
                             GenericAdapter<Episode>(R.layout.episode_row_favorites) { position ->
@@ -120,6 +124,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                             }
 
                         lifecycleScope.launch {
+                            favoritesViewModel.readEpisodesData()
                             favoritesViewModel.episodeResult.collectLatest {
                                 favoriteEpAdapter?.submitData(it)
                             }
@@ -131,7 +136,9 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                 }
                 TYPE_CHAR -> {
 
-                   setCharacterScreen()
+                    seasonsCard.isVisible = false
+                    filterBtn.isVisible = false
+                    headerTitle.text = resources.getString(R.string.characters)
 
                     if (args.from == TYPE_CHAR_BY_ID) {
                         charIdAdapter =
@@ -199,7 +206,9 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                     }
                 }
                 TYPE_EPISODE -> {
-                   setEpisodeScreen()
+
+                    headerTitle.text = resources.getString(R.string.episodes)
+                    filterBtn.isVisible = true
 
                     if (args.from == TYPE_EPISODE_BY_ID) {
                         episodeIdAdapter =
@@ -278,21 +287,6 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
             }
         }
         return binding?.root
-    }
-
-    private fun setEpisodeScreen() {
-        binding?.apply {
-            headerTitle.text = resources.getString(R.string.episodes)
-            filterBtn.isVisible = true
-        }
-    }
-
-    private fun setCharacterScreen(){
-       binding?.apply {
-           seasonsCard.isVisible = false
-           filterBtn.isVisible = false
-           headerTitle.text = resources.getString(R.string.characters)
-       }
     }
 
     private fun setButtons() {
