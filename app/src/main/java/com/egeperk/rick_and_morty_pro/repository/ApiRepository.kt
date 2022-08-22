@@ -15,8 +15,8 @@ class ApiRepository(private val api: ApolloClient) {
         return api.query(CharactersQuery(Optional.Present(page), Optional.Present(query))).execute()
     }
 
-    suspend fun episodesQuery(page: Int?): ApolloResponse<EpisodeQuery.Data> {
-        return api.query(EpisodeQuery(Optional.Present(page))).execute()
+    suspend fun episodesQuery(page: Int?, name: String?): ApolloResponse<EpisodeQuery.Data> {
+        return api.query(EpisodeQuery(Optional.Present(page),Optional.Present(name))).execute()
     }
 
     suspend fun characterByIdQuery(id: String) : ApolloResponse<CharacterByIdQuery.Data> {

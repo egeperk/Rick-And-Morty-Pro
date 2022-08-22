@@ -14,14 +14,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import com.egeperk.rick_and_morty.CharactersQuery
+import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.databinding.FragmentSearchBinding
 import com.egeperk.rick_and_morty_pro.util.onRightDrawableClicked
 import com.egeperk.rick_and_morty_pro.view.home.HomeViewModel
-import com.google.android.material.card.MaterialCardView
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -33,64 +35,75 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         return FragmentSearchBinding.inflate(layoutInflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = homeViewModel
 
-            searchRvCard.isVisible = false
+            homeViewModel.isSearch.postValue(true)
 
-            homeViewModel.apply {
-                isSearch.postValue(true)
-            }
-
-            val itemAdapter = GenericAdapter<CharactersQuery.Result>(R.layout.character_row) {}
-            searchResultRv.adapter = itemAdapter
+            val charAdapter = GenericAdapter<CharactersQuery.Result>(R.layout.character_row) {}
+            searchResultRv.adapter = charAdapter
 
             val searchAdapter = GenericAdapter<CharactersQuery.Result>(R.layout.search_row) {}
             searchTextRv.adapter = searchAdapter
+
+            val episodeAdapter = GenericAdapter<EpisodeQuery.Result>(R.layout.episode_row) {}
+            episodeResultRv.adapter = episodeAdapter
 
             searchBar.apply {
 
                 setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                         searchResultRv.isVisible = true
+                        episodeResultRv.isVisible = true
                         searchHeader.text = requireContext().getString(R.string.results)
                         lifecycleScope.launch {
                             if (homeViewModel.search.value.isEmpty()) {
-                                itemAdapter.submitData(PagingData.empty())
-                                itemHeader.isVisible = false
-                                itemCount.isVisible = false
+                                charAdapter.submitData(PagingData.empty())
+                                characterBtnLy.isVisible = false
+                                episodeBtnLy.isVisible = false
                             } else {
 
-                                itemAdapter.addLoadStateListener {
+                                charAdapter.addLoadStateListener {
                                     if (it.source.append is LoadState.NotLoading && it.append.endOfPaginationReached) {
 
                                         searchResultRv.isVisible = true
-                                        itemCount.apply {
-                                            text = itemAdapter.itemCount.toString()
-                                            isVisible = true
-                                        }
-                                        itemHeader.apply {
-                                            text = resources.getString(R.string.characters)
-                                            this.isVisible = true
-                                        }
+                                        episodeResultRv.isVisible = true
+
+                                        characterBtnLy.isVisible = true
+                                        episodeBtnLy.isVisible = true
                                     }
-                                    if (itemAdapter.itemCount < 1 || !searchResultRv.isVisible) {
-                                        itemCount.isVisible = false
-                                        itemHeader.isVisible = false
+                                    if (charAdapter.itemCount < 1 || !searchResultRv.isVisible) {
+                                        characterBtnLy.isVisible = false
                                     }
-                                    if (it.source.append is LoadState.Loading) {
-                                        searchResultRv.isVisible = false
+                                }
+
+                                episodeAdapter.addLoadStateListener {
+                                    if (episodeAdapter.itemCount < 1 || !episodeResultRv.isVisible) {
+                                        episodeBtnLy.isVisible = false
                                     }
                                 }
 
                                 homeViewModel.apply {
-                                    homeViewModel.search.value.let { getCharacterData(it,showFour = false).value }
-                                    charResult.collectLatest {
-                                        itemAdapter.submitData(PagingData.empty())
-                                        itemAdapter.submitData(it)
+                                    homeViewModel.search.value.let { filter ->
+                                        getCharacterData(
+                                            filter,
+                                            showFour = true
+                                        )
+                                        getEpisodeData(showFour = true, filter)
+                                        charactersCount.observe(viewLifecycleOwner) {
+                                            characterCount.text = it.toString()
+                                        }
+                                        episodeCount.observe(viewLifecycleOwner) {
+                                            episodeCountTv.text = it.toString()
+                                        }
                                     }
+                                    episodeResult.onEach {
+                                        episodeAdapter.submitData(it)
+                                    }.launchIn(this@launch)
+                                    charResult.onEach {
+                                        charAdapter.submitData(it)
+                                    }.launchIn(this@launch)
                                 }
                             }
                         }
@@ -99,21 +112,27 @@ class SearchFragment : Fragment() {
                 }
 
                 onRightDrawableClicked {
-                    searchRvCard.isVisible = false
-                    searchResultRv.isVisible = false
-                    it.text.clear()
-                    it.clearFocus()
+                    lifecycleScope.launch {
+                        charAdapter.submitData(PagingData.empty())
+                        episodeAdapter.submitData(PagingData.empty())
+                    }
+                    it.apply {
+                        text.clear()
+                        clearFocus()
+                    }
                     searchHeader.text = requireContext().getString(R.string.search)
-                    itemHeader.isVisible = false
-                    itemCount.isVisible = false
+                    characterBtnLy.isVisible = false
+                    episodeBtnLy.isVisible = false
                 }
 
-                doOnTextChanged { text, start, before, count ->
+                doOnTextChanged { text, _, _, _ ->
 
-                    searchResultRv.isVisible = false
-                    itemCount.isVisible = false
-                    itemHeader.isVisible = false
-
+                    lifecycleScope.launch {
+                        charAdapter.submitData(PagingData.empty())
+                        episodeAdapter.submitData(PagingData.empty())
+                    }
+                    characterBtnLy.isVisible = false
+                    episodeBtnLy.isVisible = false
 
                     if (text.toString().isNotEmpty()) {
                         searchRvCard.isVisible = true
@@ -123,10 +142,17 @@ class SearchFragment : Fragment() {
                             R.drawable.ic_baseline_clear_24,
                             0
                         )
+
+                        lifecycleScope.launch {
+                            homeViewModel.search.collect {
+                                searchAdapter.submitData(PagingData.empty())
+                                homeViewModel.searchCharacterData(it)
+                                searchAdapter.submitData(homeViewModel.charSearchResult.value)
+
+                            }
+                        }
+
                     } else {
-                        itemCount.isVisible = false
-                        itemHeader.isVisible = false
-                        searchResultRv.isVisible = false
                         searchRvCard.isVisible = false
                         searchBar.setCompoundDrawablesWithIntrinsicBounds(
                             R.drawable.ic_search,
@@ -142,21 +168,14 @@ class SearchFragment : Fragment() {
                     }
 
                 }
-                lifecycleScope.launch {
-                    homeViewModel.search.collect {
-                        if (it.isEmpty()) {
-                            itemAdapter.submitData(PagingData.empty())
-                        } else {
-                            searchAdapter.submitData(PagingData.empty())
-                            searchAdapter.submitData(homeViewModel.getCharacterData(it,showFour = true).value)
-                        }
-                    }
-                }
                 setOnFocusChangeListener { _, hasFocus ->
                     if (!hasFocus) {
                         searchRvCard.isVisible = false
 
-                        (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(this.windowToken, 0)
+                        (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
+                            this.windowToken,
+                            0
+                        )
                     }
                 }
             }

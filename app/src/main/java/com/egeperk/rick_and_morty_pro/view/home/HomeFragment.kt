@@ -77,7 +77,7 @@ class HomeFragment : Fragment() {
                 homeEpisodeRv.adapter = episodeAdapter
 
                 homeViewModel.apply {
-                    getEpisodeData(showFour = true)
+                    getEpisodeData(showFour = true, null)
                     getCharacterData(EMPTY_VALUE, showFour = true)
                 }
 

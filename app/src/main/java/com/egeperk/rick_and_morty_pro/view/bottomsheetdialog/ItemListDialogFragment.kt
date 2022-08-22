@@ -196,7 +196,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                             layoutManager = GridLayoutManager(requireContext(), 2)
                         }
 
-                        homeViewModel.getCharacterData(EMPTY_VALUE, false)
+                        homeViewModel.getCharacterData(EMPTY_VALUE, showFour = false)
 
                         lifecycleScope.launch {
                             homeViewModel.charResult.collectLatest {
@@ -271,7 +271,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                             layoutManager = LinearLayoutManager(requireContext())
                         }
 
-                        homeViewModel.getEpisodeData(showFour = false)
+                        homeViewModel.getEpisodeData(showFour = false, null)
 
                         lifecycleScope.launch {
                             homeViewModel.episodeResult.collectLatest {

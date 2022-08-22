@@ -1,5 +1,5 @@
-query Episode ($page: Int){
-    episodes(page: $page) {
+query Episode ($page: Int, $name: String){
+    episodes(page: $page, filter: { name: $name }) {
         results {
             id
             episode
