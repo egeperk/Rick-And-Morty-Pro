@@ -150,9 +150,10 @@
                 android:textColor="?attr/colorOnPrimary"
                 app:layout_constraintStart_toEndOf="@id/dot"
                 app:layout_constraintTop_toBottomOf="@id/fav_btn"
-                android:text="20m" />
+                android:text="@string/_20m" />
 
             <TextView
+                android:maxLines="7"
                 android:id="@+id/episode_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
