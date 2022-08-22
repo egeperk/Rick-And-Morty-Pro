@@ -38,7 +38,6 @@ class EpisodeDetailFragment : Fragment() {
     private var charAdapter: GenericAdapter<EpisodeByIdQuery.Character>? = null
     private var locationAdapter: GenericAdapter<EpisodeByIdQuery.Character>? = null
     private var textShader: Shader? = null
-    private var isExpanded = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -135,23 +134,16 @@ class EpisodeDetailFragment : Fragment() {
 
     private fun setTextViewState() {
 
-        if (binding?.showBtn?.text == resources.getString(R.string.show_more)) {
-            isExpanded = true
-            binding?.episodeDescription.apply {
-                this?.paint?.shader = null
-                this?.maxLines = Int.MAX_VALUE
-            }
-            binding?.showBtn?.text = resources.getString(R.string.show_less)
+            if (detailViewModel.isExpanded.value == true) {
+                detailViewModel.isExpanded.postValue(false)
+                binding?.episodeDescription?.paint?.shader = textShader
 
-        } else {
-            isExpanded = false
-            binding?.episodeDescription.apply {
-                this?.paint?.shader = textShader
-                this?.maxLines = 7
-            }
-            binding?.showBtn?.text = resources.getString(R.string.show_more)
+            } else {
+                detailViewModel.isExpanded.postValue(true)
+                binding?.episodeDescription?.paint?.shader = null
 
-        }
+            }
+
     }
 
     private fun setDataFromDb() {
