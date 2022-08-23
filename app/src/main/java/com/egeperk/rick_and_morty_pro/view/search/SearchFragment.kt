@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import com.egeperk.rick_and_morty.CharactersQuery
@@ -18,18 +19,22 @@ import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.databinding.FragmentSearchBinding
+import com.egeperk.rick_and_morty_pro.util.Constants
 import com.egeperk.rick_and_morty_pro.util.onRightDrawableClicked
+import com.egeperk.rick_and_morty_pro.util.safeNavigate
 import com.egeperk.rick_and_morty_pro.view.home.HomeViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class SearchFragment : Fragment() {
 
     private val homeViewModel: HomeViewModel by viewModel()
+    private var charAdapter: GenericAdapter<CharactersQuery.Result>? = null
+    private var searchAdapter: GenericAdapter<CharactersQuery.Result>? = null
+    private var episodeAdapter: GenericAdapter<EpisodeQuery.Result>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,46 +46,70 @@ class SearchFragment : Fragment() {
 
             homeViewModel.isSearch.postValue(true)
 
-            val charAdapter = GenericAdapter<CharactersQuery.Result>(R.layout.character_row) {}
+            characterBtnLy.setOnClickListener {
+                findNavController().safeNavigate(
+                    SearchFragmentDirections.actionSearchFragmentToItemListDialogFragment(
+                        Constants.TYPE_SEARCH,
+                        Constants.TYPE_SEARCH_CHAR,homeViewModel.search.value))
+            }
+
+            episodeBtnLy.setOnClickListener {
+                findNavController().safeNavigate(
+                    SearchFragmentDirections.actionSearchFragmentToItemListDialogFragment(
+                        Constants.TYPE_SEARCH,
+                        Constants.TYPE_SEARCH_EPISODE,homeViewModel.search.value))
+            }
+
+            charAdapter = GenericAdapter(R.layout.character_row) { position ->
+                findNavController().safeNavigate(
+                    SearchFragmentDirections.actionSearchFragmentToDetailFragment(
+                        charAdapter?.snapshot()?.items?.map { it.id }
+                            ?.get(position)
+                            .toString(), Constants.TYPE_DIALOG)
+                )
+            }
             searchResultRv.adapter = charAdapter
 
-            val searchAdapter = GenericAdapter<CharactersQuery.Result>(R.layout.search_row) {}
+            searchAdapter = GenericAdapter(R.layout.search_row) { position ->
+                findNavController().safeNavigate(
+                    SearchFragmentDirections.actionSearchFragmentToDetailFragment(
+                        searchAdapter?.snapshot()?.items?.map { it.id }
+                            ?.get(position)
+                            .toString(), Constants.TYPE_DIALOG)
+                )
+            }
             searchTextRv.adapter = searchAdapter
 
-            val episodeAdapter = GenericAdapter<EpisodeQuery.Result>(R.layout.episode_row) {}
+            episodeAdapter = GenericAdapter(R.layout.episode_row) { position ->
+                findNavController().safeNavigate(
+                    SearchFragmentDirections.actionSearchFragmentToEpisodeDetailFragment(
+                        episodeAdapter?.snapshot()?.items?.map { it.id }
+                            ?.get(position)
+                            .toString(), Constants.TYPE_DIALOG)
+                )
+            }
             episodeResultRv.adapter = episodeAdapter
 
             searchBar.apply {
 
                 setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                        searchResultRv.isVisible = true
-                        episodeResultRv.isVisible = true
                         searchHeader.text = requireContext().getString(R.string.results)
                         lifecycleScope.launch {
                             if (homeViewModel.search.value.isEmpty()) {
-                                charAdapter.submitData(PagingData.empty())
-                                characterBtnLy.isVisible = false
-                                episodeBtnLy.isVisible = false
                             } else {
 
-                                charAdapter.addLoadStateListener {
+                                charAdapter?.addLoadStateListener {
                                     if (it.source.append is LoadState.NotLoading && it.append.endOfPaginationReached) {
-
-                                        searchResultRv.isVisible = true
-                                        episodeResultRv.isVisible = true
-
+                                        loadingLy.isVisible = false
                                         characterBtnLy.isVisible = true
-                                        episodeBtnLy.isVisible = true
                                     }
-                                    if (charAdapter.itemCount < 1 || !searchResultRv.isVisible) {
+                                    if (charAdapter?.itemCount == 0) {
                                         characterBtnLy.isVisible = false
                                     }
-                                }
-
-                                episodeAdapter.addLoadStateListener {
-                                    if (episodeAdapter.itemCount < 1 || !episodeResultRv.isVisible) {
-                                        episodeBtnLy.isVisible = false
+                                    if (it.source.append is LoadState.Loading) {
+                                        itemLy.isVisible = false
+                                        loadingLy.isVisible = true
                                     }
                                 }
 
@@ -90,19 +119,30 @@ class SearchFragment : Fragment() {
                                             filter,
                                             showFour = true
                                         )
+                                        getCharacterCount(filter)
                                         getEpisodeData(showFour = true, filter)
+                                        getEpisodeCount(filter)
                                         charactersCount.observe(viewLifecycleOwner) {
                                             characterCount.text = it.toString()
+                                            searchResultRv.isVisible = it != null
+                                            characterBtnLy.isVisible = it != null
                                         }
                                         episodeCount.observe(viewLifecycleOwner) {
                                             episodeCountTv.text = it.toString()
+                                            episodeBtnLy.isVisible = it != null
                                         }
                                     }
                                     episodeResult.onEach {
-                                        episodeAdapter.submitData(it)
+                                        episodeAdapter?.apply {
+                                            submitData(PagingData.empty())
+                                            submitData(it)
+                                        }
                                     }.launchIn(this@launch)
                                     charResult.onEach {
-                                        charAdapter.submitData(it)
+                                        charAdapter?.apply {
+                                            submitData(PagingData.empty())
+                                            submitData(it)
+                                        }
                                     }.launchIn(this@launch)
                                 }
                             }
@@ -112,27 +152,14 @@ class SearchFragment : Fragment() {
                 }
 
                 onRightDrawableClicked {
-                    lifecycleScope.launch {
-                        charAdapter.submitData(PagingData.empty())
-                        episodeAdapter.submitData(PagingData.empty())
-                    }
                     it.apply {
                         text.clear()
                         clearFocus()
                     }
                     searchHeader.text = requireContext().getString(R.string.search)
-                    characterBtnLy.isVisible = false
-                    episodeBtnLy.isVisible = false
                 }
 
                 doOnTextChanged { text, _, _, _ ->
-
-                    lifecycleScope.launch {
-                        charAdapter.submitData(PagingData.empty())
-                        episodeAdapter.submitData(PagingData.empty())
-                    }
-                    characterBtnLy.isVisible = false
-                    episodeBtnLy.isVisible = false
 
                     if (text.toString().isNotEmpty()) {
                         searchRvCard.isVisible = true
@@ -145,9 +172,9 @@ class SearchFragment : Fragment() {
 
                         lifecycleScope.launch {
                             homeViewModel.search.collect {
-                                searchAdapter.submitData(PagingData.empty())
+                                searchAdapter?.submitData(PagingData.empty())
                                 homeViewModel.searchCharacterData(it)
-                                searchAdapter.submitData(homeViewModel.charSearchResult.value)
+                                searchAdapter?.submitData(homeViewModel.charSearchResult.value)
 
                             }
                         }
@@ -161,8 +188,8 @@ class SearchFragment : Fragment() {
                             0
                         )
                     }
-                    searchAdapter.addLoadStateListener { loadState ->
-                        if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && searchAdapter.itemCount < 1) {
+                    searchAdapter?.addLoadStateListener { loadState ->
+                        if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && searchAdapter?.itemCount == 0) {
                             searchRvCard.isVisible = false
                         }
                     }

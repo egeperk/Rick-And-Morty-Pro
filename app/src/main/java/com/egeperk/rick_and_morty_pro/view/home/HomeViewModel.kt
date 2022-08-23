@@ -12,6 +12,7 @@ import com.egeperk.rick_and_morty_pro.adapters.pagingsource.SearchCharacterPagin
 import com.egeperk.rick_and_morty_pro.repository.ApiRepository
 import com.egeperk.rick_and_morty_pro.util.Constants.EMPTY_VALUE
 import com.egeperk.rick_and_morty_pro.util.Constants.PAGE_SIZE
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -34,49 +35,31 @@ class HomeViewModel(private val repository: ApiRepository) : ViewModel() {
         MutableStateFlow<PagingData<EpisodeQuery.Result>>(PagingData.empty())
     val episodeResult = _episodeResult.asStateFlow()
 
-    val charPosition = MutableLiveData<List<String>>()
-    val episodePosition = MutableLiveData<List<String>>()
-
     var isSearch = MutableLiveData(false)
 
     fun getCharacterData(
         query: String,
         showFour: Boolean
-    ){
-        viewModelScope.launch {
-
-            charPosition.value = repository.charactersQuery(
-                0,
-                query
-            ).data?.characters?.results?.map { it?.id.toString() }
-
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
             val newResult =
                 Pager(PagingConfig(pageSize = if (isSearch.value == true) PAGE_SIZE * 10 else PAGE_SIZE)) {
                     CharacterHomePagingSource(repository, query, showFour)
                 }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
 
             _charResult.value = newResult.value
-            charactersCount.value =
-                repository.charactersQuery(0, query).data?.characters?.info?.count
         }
     }
 
     fun searchCharacterData(query: String) {
 
-        viewModelScope.launch {
-
-            charPosition.value = repository.charactersQuery(
-                0,
-                query
-            ).data?.characters?.results?.map { it?.id.toString() }
+        viewModelScope.launch(Dispatchers.IO) {
 
             val newResult = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
                 SearchCharacterPagingSource(repository, query)
             }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
 
             _charSearchResult.value = newResult.value
-            charactersCount.value =
-                repository.charactersQuery(0, query).data?.characters?.info?.count
         }
     }
 
@@ -84,17 +67,20 @@ class HomeViewModel(private val repository: ApiRepository) : ViewModel() {
         showFour: Boolean,
         name: String?
     ) {
-        viewModelScope.launch {
-
-            episodePosition.value =
-                repository.episodesQuery(0, name).data?.episodes?.results?.map { it?.id.toString() }
+        viewModelScope.launch(Dispatchers.IO) {
 
             val newResult = Pager(PagingConfig(pageSize = PAGE_SIZE * 5)) {
                 EpisodeHomePagingSource(repository, showFour, name)
             }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
-
             _episodeResult.value = newResult.value
-            episodeCount.value = repository.episodesQuery(0, name).data?.episodes?.info?.count
         }
+    }
+
+    fun getEpisodeCount(name: String? = null) = viewModelScope.launch(Dispatchers.IO) {
+        episodeCount.postValue(repository.episodesQuery(0, name).data?.episodes?.info?.count)
+    }
+
+    fun getCharacterCount(query: String? = null) = viewModelScope.launch(Dispatchers.IO) {
+        charactersCount.postValue(repository.charactersQuery(0, query).data?.characters?.info?.count)
     }
 }

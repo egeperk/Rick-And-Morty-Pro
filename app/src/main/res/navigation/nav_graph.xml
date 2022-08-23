@@ -45,6 +45,9 @@
         <action
             android:id="@+id/action_searchFragment_to_episodeDetailFragment"
             app:destination="@id/episodeDetailFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_itemListDialogFragment"
+            app:destination="@id/itemListDialogFragment" />
     </fragment>
     <dialog
         android:id="@+id/itemListDialogFragment"

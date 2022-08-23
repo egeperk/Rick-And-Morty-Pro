@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.paging.map
 import coil.load
 import com.egeperk.rick_and_morty.EpisodeByIdQuery
 import com.egeperk.rick_and_morty_pro.R
@@ -81,9 +82,14 @@ class EpisodeDetailFragment : Fragment() {
 
 
                 lifecycleScope.launch {
-                    charAdapter?.submitData(detailViewModel.characterResult.value)
                     detailViewModel.characterResult.collectLatest {
                         locationAdapter?.submitData(it)
+                    }
+                }
+
+                lifecycleScope.launch {
+                    detailViewModel.characterResult.collectLatest {
+                        charAdapter?.submitData(it)
                     }
                 }
 

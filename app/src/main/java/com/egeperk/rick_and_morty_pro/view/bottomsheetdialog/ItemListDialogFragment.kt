@@ -1,23 +1,19 @@
 package com.egeperk.rick_and_morty_pro.view.bottomsheetdialog
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
 import androidx.paging.PagingData
-import androidx.paging.PagingDataAdapter
 import androidx.paging.filter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.egeperk.rick_and_morty.CharacterByIdQuery
 import com.egeperk.rick_and_morty.CharactersQuery
 import com.egeperk.rick_and_morty.EpisodeByIdQuery
@@ -44,12 +40,13 @@ import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_FAVORITES
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_FAVORITES_CHAR
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_FAVORITES_EPISODE
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_HOME
+import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_SEARCH
+import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_SEARCH_CHAR
 import com.egeperk.rick_and_morty_pro.util.safeNavigate
 import com.egeperk.rick_and_morty_pro.view.detail.DetailViewModel
 import com.egeperk.rick_and_morty_pro.view.favorites.FavoritesViewModel
 import com.egeperk.rick_and_morty_pro.view.home.HomeViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -76,6 +73,83 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
             lifecycleOwner = viewLifecycleOwner
 
             when (args.type) {
+                TYPE_SEARCH -> {
+
+                    seasonsCard.isVisible = false
+                    filterBtn.isVisible = false
+                    headerTitle.text = resources.getString(R.string.characters)
+
+                    if (args.from == TYPE_SEARCH_CHAR) {
+
+                        charAdapter =
+                            GenericAdapter(R.layout.character_row) { position ->
+                                findNavController().safeNavigate(
+                                    ItemListDialogFragmentDirections.actionItemListDialogFragmentToDetailFragment(
+                                        charAdapter?.snapshot()?.items?.map { it.id }
+                                            ?.get(position)
+                                            .toString(), TYPE_HOME
+                                    )
+                                )
+                            }
+                        genericRv.apply {
+                            adapter = charAdapter
+                            layoutManager = GridLayoutManager(requireContext(), 2)
+                        }
+
+                        homeViewModel.charactersCount.observe(viewLifecycleOwner) {
+                                itemCount.text = it.toString()
+                        }
+
+                        homeViewModel.apply {
+                            getCharacterData(args.uuid.toString(), showFour = false)
+                            getCharacterCount(args.uuid.toString())
+                        }
+
+                        lifecycleScope.launch {
+                            homeViewModel.charResult.collectLatest {
+                                charAdapter?.submitData(it)
+                            }
+                        }
+
+                    } else {
+
+                        headerTitle.text = resources.getString(R.string.episodes)
+                        filterBtn.isVisible = true
+
+                        episodeAdapter =
+                            GenericAdapter(R.layout.episode_row) { position ->
+                                findNavController().safeNavigate(
+                                    ItemListDialogFragmentDirections.actionItemListDialogFragmentToDetailFragment(
+                                        episodeAdapter?.snapshot()?.items?.map { it.id }?.get(position)
+                                            .toString(), TYPE_SEARCH
+                                    )
+                                )
+                            }
+                        genericRv.apply {
+                            adapter = episodeAdapter
+                            layoutManager = LinearLayoutManager(requireContext())
+                        }
+
+                        episodeAdapter?.addLoadStateListener {
+                            if (it.source.append is LoadState.NotLoading && it.append.endOfPaginationReached) {
+
+                                itemCount.apply {
+                                    text = episodeAdapter?.itemCount.toString()
+                                    isVisible = true
+                                }
+                            }
+                        }
+
+                        homeViewModel.getEpisodeData(showFour = false, args.uuid.toString())
+
+
+                        lifecycleScope.launch {
+                            homeViewModel.episodeResult.collectLatest {
+                                episodeAdapter?.submitData(it)
+                            }
+                        }
+                    }
+                }
                 TYPE_FAVORITES -> {
                     if (args.from == TYPE_FAVORITES_CHAR) {
 
@@ -179,9 +253,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                         }
 
                     } else {
-                        homeViewModel.charactersCount.observe(viewLifecycleOwner) {
-                            itemCount.text = it.toString()
-                        }
+
                         charAdapter =
                             GenericAdapter(R.layout.character_row) { position ->
                                 findNavController().safeNavigate(
@@ -196,7 +268,14 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                             layoutManager = GridLayoutManager(requireContext(), 2)
                         }
 
-                        homeViewModel.getCharacterData(EMPTY_VALUE, showFour = false)
+                        homeViewModel.apply {
+                            getCharacterData(EMPTY_VALUE, showFour = false)
+                            getCharacterCount()
+                        }
+
+                        homeViewModel.charactersCount.observe(viewLifecycleOwner) {
+                            itemCount.text = it.toString()
+                        }
 
                         lifecycleScope.launch {
                             homeViewModel.charResult.collectLatest {
@@ -251,9 +330,6 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                         }
 
                     } else {
-                        homeViewModel.episodeCount.observe(viewLifecycleOwner) {
-                            itemCount.text = it.toString()
-                        }
 
                         episodeAdapter =
                             GenericAdapter(R.layout.episode_row) { position ->
@@ -271,7 +347,14 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
                             layoutManager = LinearLayoutManager(requireContext())
                         }
 
-                        homeViewModel.getEpisodeData(showFour = false, null)
+                        homeViewModel.apply {
+                            getEpisodeData(showFour = false,null)
+                            getEpisodeCount()
+                        }
+
+                        homeViewModel.episodeCount.observe(viewLifecycleOwner) {
+                            itemCount.text = it.toString()
+                        }
 
                         lifecycleScope.launch {
                             homeViewModel.episodeResult.collectLatest {
