@@ -150,9 +150,10 @@
                 android:textColor="?attr/colorOnPrimary"
                 app:layout_constraintStart_toEndOf="@id/dot"
                 app:layout_constraintTop_toBottomOf="@id/fav_btn"
-                android:text="20m" />
+                android:text="@string/_20m" />
 
             <TextView
+                android:maxLines="@{viewModel.isExpanded() == false ? 7 : Integer.MAX_VALUE}"
                 android:id="@+id/episode_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -165,13 +166,14 @@
                 app:layout_constraintTop_toBottomOf="@id/air_date" />
 
             <TextView
+                android:textIsSelectable="false"
                 style="@style/Typography.Regular.16"
                 android:layout_marginStart="24dp"
                 app:layout_constraintStart_toStartOf="parent"
                 android:paddingVertical="16dp"
                 android:textColor="@color/green"
                 app:layout_constraintTop_toBottomOf="@id/episode_description"
-                android:text="@string/show_more"
+                android:text="@{viewModel.isExpanded() == true ? @string/show_less : @string/show_more}"
                 android:id="@+id/show_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

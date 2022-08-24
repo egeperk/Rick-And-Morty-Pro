@@ -21,6 +21,8 @@ import kotlinx.coroutines.launch
 
 class DetailViewModel(private val repository: ApiRepository) : ViewModel() {
 
+    val isExpanded = MutableLiveData(false)
+
     private val _character: MutableLiveData<CharacterByIdQuery.Character?> = MutableLiveData()
     val character: MutableLiveData<CharacterByIdQuery.Character?> = _character
 

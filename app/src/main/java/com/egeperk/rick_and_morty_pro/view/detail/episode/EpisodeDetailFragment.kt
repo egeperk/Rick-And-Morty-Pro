@@ -37,6 +37,7 @@ class EpisodeDetailFragment : Fragment() {
     private var binding: FragmentEpisodeDetailBinding? = null
     private var charAdapter: GenericAdapter<EpisodeByIdQuery.Character>? = null
     private var locationAdapter: GenericAdapter<EpisodeByIdQuery.Character>? = null
+    private var textShader: Shader? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,12 +60,12 @@ class EpisodeDetailFragment : Fragment() {
                 if (arguments != null) {
                     detailViewModel.apply {
                         getEpisodeData(args.uuid)
-                        getEpisodeCharacters(args.uuid,showThree = true)
+                        getEpisodeCharacters(args.uuid, showThree = true)
                     }
                 }
 
                 charAdapter =
-                    GenericAdapter<EpisodeByIdQuery.Character>(R.layout.character_row_detail) { position ->
+                    GenericAdapter(R.layout.character_row_detail) { position ->
                         findNavController().safeNavigate(
                             EpisodeDetailFragmentDirections.actionEpisodeDetailFragmentToDetailFragment(
                                 charAdapter?.snapshot()?.items?.map {
@@ -90,16 +91,16 @@ class EpisodeDetailFragment : Fragment() {
                 characterBtnLy.setOnClickListener {
                     findNavController().safeNavigate(
                         EpisodeDetailFragmentDirections.actionEpisodeDetailFragmentToItemListDialogFragment(
-                            Constants.TYPE_CHAR, Constants.TYPE_CHAR_BY_ID, args.uuid
+                            TYPE_CHAR, Constants.TYPE_CHAR_BY_ID, args.uuid
                         )
                     )
                 }
 
-                val textShader: Shader = LinearGradient(
+                textShader = LinearGradient(
                     0f,
                     0f,
                     0f,
-                    300f,
+                    350f,
                     intArrayOf(Color.WHITE, Color.TRANSPARENT),
                     floatArrayOf(0f, 1f),
                     TileMode.CLAMP
@@ -109,6 +110,10 @@ class EpisodeDetailFragment : Fragment() {
                 favBtn.setOnClickListener {
                     favBtnImage.setImageResource(R.drawable.ic_icon_added_fav)
                     addEpisodeToDb()
+                }
+
+                showBtn.setOnClickListener {
+                    setTextViewState()
                 }
             }
         }
@@ -127,6 +132,19 @@ class EpisodeDetailFragment : Fragment() {
         )
     }
 
+    private fun setTextViewState() {
+
+            if (detailViewModel.isExpanded.value == true) {
+                detailViewModel.isExpanded.postValue(false)
+                binding?.episodeDescription?.paint?.shader = textShader
+
+            } else {
+                detailViewModel.isExpanded.postValue(true)
+                binding?.episodeDescription?.paint?.shader = null
+
+            }
+
+    }
 
     private fun setDataFromDb() {
 
