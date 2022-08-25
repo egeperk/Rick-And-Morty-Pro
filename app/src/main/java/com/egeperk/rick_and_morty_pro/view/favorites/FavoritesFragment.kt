@@ -40,11 +40,15 @@ class FavoritesFragment : Fragment() {
             viewModel = favoritesVieModel
 
             characterBtnLy.setOnClickListener {
-                findNavController().safeNavigate(FavoritesFragmentDirections.actionFavoritesFragmentToItemListDialogFragment(TYPE_FAVORITES,
-                    TYPE_FAVORITES_CHAR,null))
+                findNavController().safeNavigate(
+                    FavoritesFragmentDirections.actionFavoritesFragmentToItemListDialogFragment(
+                        TYPE_FAVORITES,
+                        TYPE_FAVORITES_CHAR, uuid = null
+                    )
+                )
             }
 
-            favCharsAdapter = GenericAdapter<Character>(R.layout.character_row_favorites) { position ->
+            favCharsAdapter = GenericAdapter<Character>(R.layout.character_row) { position ->
                 findNavController().safeNavigate(FavoritesFragmentDirections.actionFavoritesFragmentToDetailFragment(
                     favCharsAdapter?.snapshot()?.items?.map { it.id }
                         ?.get(position)
@@ -61,11 +65,15 @@ class FavoritesFragment : Fragment() {
             }
 
             episodeBtnLy.setOnClickListener {
-                findNavController().safeNavigate(FavoritesFragmentDirections.actionFavoritesFragmentToItemListDialogFragment(TYPE_FAVORITES,
-                    TYPE_FAVORITES_EPISODE,null))
+                findNavController().safeNavigate(
+                    FavoritesFragmentDirections.actionFavoritesFragmentToItemListDialogFragment(
+                        TYPE_FAVORITES,
+                        TYPE_FAVORITES_EPISODE, uuid = null
+                    )
+                )
             }
 
-            favEpisodeAdapter = GenericAdapter<Episode>(R.layout.episode_row_favorites) { position ->
+            favEpisodeAdapter = GenericAdapter<Episode>(R.layout.episode_row) { position ->
                 findNavController().safeNavigate(FavoritesFragmentDirections.actionFavoritesFragmentToEpisodeDetailFragment(
                     favEpisodeAdapter?.snapshot()?.items?.map { it.id }
                         ?.get(position)

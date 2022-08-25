@@ -18,6 +18,8 @@ import com.egeperk.rick_and_morty.CharactersQuery
 import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
+import com.egeperk.rick_and_morty_pro.data.model.Character
+import com.egeperk.rick_and_morty_pro.data.model.Episode
 import com.egeperk.rick_and_morty_pro.databinding.FragmentSearchBinding
 import com.egeperk.rick_and_morty_pro.util.Constants
 import com.egeperk.rick_and_morty_pro.util.onRightDrawableClicked
@@ -32,9 +34,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SearchFragment : Fragment() {
 
     private val homeViewModel: HomeViewModel by viewModel()
-    private var charAdapter: GenericAdapter<CharactersQuery.Result>? = null
-    private var searchAdapter: GenericAdapter<CharactersQuery.Result>? = null
-    private var episodeAdapter: GenericAdapter<EpisodeQuery.Result>? = null
+    private var charAdapter: GenericAdapter<Character>? = null
+    private var searchAdapter: GenericAdapter<Character>? = null
+    private var episodeAdapter: GenericAdapter<Episode>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

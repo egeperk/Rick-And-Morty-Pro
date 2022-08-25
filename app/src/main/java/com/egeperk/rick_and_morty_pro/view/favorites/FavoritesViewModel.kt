@@ -11,7 +11,6 @@ import com.egeperk.rick_and_morty_pro.util.Constants.PAGE_SIZE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class FavoritesViewModel(private val repository: LocalRepository) :
     ViewModel() {
@@ -19,7 +18,7 @@ class FavoritesViewModel(private val repository: LocalRepository) :
     private val _charResult = MutableStateFlow<PagingData<Character>>(PagingData.empty())
     val charResult = _charResult.asStateFlow()
 
-    private val _character :MutableStateFlow<Character>? = null
+    private val _character: MutableStateFlow<Character>? = null
     val character = _character?.asStateFlow()
 
     private val _episodeResult = MutableStateFlow<PagingData<Episode>>(PagingData.empty())
@@ -29,15 +28,30 @@ class FavoritesViewModel(private val repository: LocalRepository) :
 
     val episodeCount = repository.getEpisodeCount().asLiveData()
 
-    fun readCharacterById(id:String) = repository.getCharacterById(id)
+    fun readCharacterById(id: String) = repository.getCharacterById(id)
 
-    fun readEpisodeById(id:String) = repository.getEpisodeById(id)
+    fun readEpisodeById(id: String) = repository.getEpisodeById(id)
 
     fun readCharactersData() =
         viewModelScope.launch(Dispatchers.IO) {
             val result = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
                 repository.readAllCharactersData()
-            }.flow.cachedIn(viewModelScope).stateIn(viewModelScope).value
+            }.flow.map {
+                it.map { data ->
+                    Character(
+                        id = data.id,
+                        name = data.name,
+                        image = data.image,
+                        status = data.status,
+                        gender = data.gender,
+                        species = data.species,
+                        type = data.type,
+                        origin = data.origin,
+                        location = data.location,
+                        pk = data.id?.toInt() ?: 0
+                    )
+                }
+            }.cachedIn(viewModelScope).stateIn(viewModelScope).value
             _charResult.value = result
         }
 
@@ -45,17 +59,52 @@ class FavoritesViewModel(private val repository: LocalRepository) :
         viewModelScope.launch(Dispatchers.IO) {
             val result = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
                 repository.readAllEpisodesData()
-            }.flow.cachedIn(viewModelScope).stateIn(viewModelScope).value
+            }.flow.map {
+                it.map { data ->
+                    Episode(
+                        id = data.id,
+                        name = data.name,
+                        episode = data.episode,
+                        air_date = data.air_date,
+                        pk = data.id?.toInt() ?: 0
+                    )
+                }
+            }.cachedIn(viewModelScope).stateIn(viewModelScope).value
             _episodeResult.value = result
         }
 
     val readLimitedCharactersData = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
         repository.readLimitedCharactersData()
-    }.flow.cachedIn(viewModelScope)
+    }.flow.map {
+        it.map { data ->
+            Character(
+                id = data.id,
+                name = data.name,
+                image = data.image,
+                status = data.status,
+                gender = data.gender,
+                species = data.species,
+                type = data.type,
+                origin = data.origin,
+                location = data.location,
+                pk = data.id?.toInt() ?: 0
+            )
+        }
+    }.cachedIn(viewModelScope)
 
     val readLimitedEpisodesData = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
         repository.readLimitedEpisodeData()
-    }.flow.cachedIn(viewModelScope)
+    }.flow.map {
+        it.map { data ->
+            Episode(
+                id = data.id,
+                name = data.name,
+                episode = data.episode,
+                air_date = data.air_date,
+                pk = data.id?.toInt() ?: 0
+            )
+        }
+    }.cachedIn(viewModelScope)
 
     fun addCharacter(character: Character) = viewModelScope.launch(Dispatchers.IO) {
         repository.addCharacter(character)

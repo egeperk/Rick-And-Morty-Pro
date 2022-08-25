@@ -15,6 +15,7 @@ import com.egeperk.rick_and_morty.CharacterByIdQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.data.model.Character
+import com.egeperk.rick_and_morty_pro.data.model.Episode
 import com.egeperk.rick_and_morty_pro.databinding.FragmentDetailBinding
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_CHAR
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_EPISODE
@@ -38,7 +39,7 @@ class DetailFragment : Fragment() {
     private val favoritesVieModel: FavoritesViewModel by viewModel()
     private val args by navArgs<DetailFragmentArgs>()
     private var binding: FragmentDetailBinding? = null
-    private var episodeAdapter: GenericAdapter<CharacterByIdQuery.Episode>? = null
+    private var episodeAdapter: GenericAdapter<Episode>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,7 +66,7 @@ class DetailFragment : Fragment() {
                 }
 
                 episodeAdapter =
-                    GenericAdapter<CharacterByIdQuery.Episode>(R.layout.episode_row_detail) { position ->
+                    GenericAdapter<Episode>(R.layout.episode_row) { position ->
                         findNavController().safeNavigate(
                             DetailFragmentDirections.actionDetailFragmentToEpisodeDetailFragment(
                                 episodeAdapter?.snapshot()?.items?.map { it.id }?.get(position)

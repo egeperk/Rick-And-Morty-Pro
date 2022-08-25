@@ -3,24 +3,25 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-<variable
-    name="item"
-    type="com.egeperk.rick_and_morty.CharactersQuery.Result" />
+
+        <variable
+            name="item"
+            type="com.egeperk.rick_and_morty_pro.data.model.Character" />
     </data>
 
     <LinearLayout
-        android:elevation="0dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:elevation="0dp">
 
         <TextView
-            android:text="@{item.name}"
             style="@style/Typography.Bold.Body.16"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingVertical="12dp"
             android:paddingHorizontal="24dp"
-            tools:text="Rick Sanchez"/>
+            android:paddingVertical="12dp"
+            android:text="@{item.name}"
+            tools:text="Rick Sanchez" />
 
     </LinearLayout>
 </layout>

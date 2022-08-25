@@ -11,6 +11,8 @@ import com.egeperk.rick_and_morty.CharactersQuery
 import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
+import com.egeperk.rick_and_morty_pro.data.model.Character
+import com.egeperk.rick_and_morty_pro.data.model.Episode
 import com.egeperk.rick_and_morty_pro.databinding.FragmentHomeBinding
 import com.egeperk.rick_and_morty_pro.util.Constants.EMPTY_VALUE
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_CHAR
@@ -26,8 +28,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class HomeFragment : Fragment() {
 
     private val homeViewModel: HomeViewModel by viewModel()
-    private var charAdapter: GenericAdapter<CharactersQuery.Result>? = null
-    private var episodeAdapter: GenericAdapter<EpisodeQuery.Result>? = null
+    private var charAdapter: GenericAdapter<Character>? = null
+    private var episodeAdapter: GenericAdapter<Episode>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -81,7 +83,7 @@ class HomeFragment : Fragment() {
                 homeEpisodeRv.adapter = episodeAdapter
 
                 homeViewModel.apply {
-                    getEpisodeData(showFour = true, null)
+                    getEpisodeData(showFour = true, name = null)
                     getCharacterData(EMPTY_VALUE, showFour = true)
                 }
 
@@ -98,7 +100,7 @@ class HomeFragment : Fragment() {
     private fun showSheet(type: String) {
         findNavController().safeNavigate(
             HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(
-                type, null, null
+                type, from = null, uuid = null
             )
         )
     }

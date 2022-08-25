@@ -36,7 +36,7 @@ class EpisodeDetailFragment : Fragment() {
     private val detailViewModel: DetailViewModel by viewModel()
     private val favoritesVieModel: FavoritesViewModel by viewModel()
     private var binding: FragmentEpisodeDetailBinding? = null
-    private var charAdapter: GenericAdapter<EpisodeByIdQuery.Character>? = null
+    private var charAdapter: GenericAdapter<Character>? = null
     private var locationAdapter: GenericAdapter<EpisodeByIdQuery.Character>? = null
     private var textShader: Shader? = null
 
@@ -61,12 +61,12 @@ class EpisodeDetailFragment : Fragment() {
                 if (arguments != null) {
                     detailViewModel.apply {
                         getEpisodeData(args.uuid)
-                        getEpisodeCharacters(args.uuid, showThree = true)
+                        getEpisodeCharacters(args.uuid,showThree = true)
                     }
                 }
 
                 charAdapter =
-                    GenericAdapter(R.layout.character_row_detail) { position ->
+                    GenericAdapter<Character>(R.layout.character_row) { position ->
                         findNavController().safeNavigate(
                             EpisodeDetailFragmentDirections.actionEpisodeDetailFragmentToDetailFragment(
                                 charAdapter?.snapshot()?.items?.map {
@@ -84,7 +84,7 @@ class EpisodeDetailFragment : Fragment() {
 
                 lifecycleScope.launch {
                     detailViewModel.characterResult.collectLatest {
-                        locationAdapter?.submitData(it)
+                        //locationAdapter?.submitData(it)
                     }
                 }
 
