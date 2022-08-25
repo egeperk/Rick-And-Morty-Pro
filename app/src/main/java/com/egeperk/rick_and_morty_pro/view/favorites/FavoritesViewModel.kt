@@ -1,8 +1,6 @@
 package com.egeperk.rick_and_morty_pro.view.favorites
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.paging.*
 import com.egeperk.rick_and_morty_pro.data.model.Character
 import com.egeperk.rick_and_morty_pro.data.model.Episode
@@ -63,4 +61,8 @@ class FavoritesViewModel(private val repository: LocalRepository) :
         repository.addEpisode(episode)
     }
 
+    val combinedData = MediatorLiveData<Pair<Int?,Int?>>().apply {
+        addSource(characterCount) {value = Pair(it, episodeCount.value)}
+        addSource(episodeCount) {value = Pair(characterCount.value, it)}
+    }
 }

@@ -10,14 +10,17 @@
             type="com.egeperk.rick_and_morty_pro.view.favorites.FavoritesViewModel" />
     </data>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/header_ly"
+            app:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             tools:context=".view.favorites.FavoritesFragment">
+
 
             <ImageView
                 android:id="@+id/back_btn"
@@ -33,7 +36,7 @@
             <TextView
                 android:id="@+id/favorites_header"
                 style="@style/Typography.Bold.Body.20"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingVertical="14dp"
                 android:text="@string/favorites"
@@ -42,158 +45,185 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
-                android:id="@+id/character_btn_ly"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/favorites_header">
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <TextView
-                    android:id="@+id/character_header"
-                    style="@style/Typography.Bold.Body.20"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="2dp"
-                    android:text="@string/characters"
 
-                    />
+        <androidx.core.widget.NestedScrollView
+            android:overScrollMode="never"
+            app:layout_constraintTop_toBottomOf="@+id/header_ly"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                <TextView
-                    android:id="@+id/character_header_count"
-                    style="@style/Typography.Bold.Body.16"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/custom_count_bg_selector"
-                    android:gravity="center"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="4dp"
-                    android:text="@{viewModel.characterCount.toString()}"
-                    app:layout_constraintStart_toEndOf="@id/character_header"
-                    tools:text="80" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/ic_vector_arrow" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/empty_char"
-                style="@style/Typography.Regular.Body.20"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="32dp"
-                android:paddingVertical="24dp"
-                android:text="@string/you_have_no_favourite_character_yet"
-                android:textColor="@color/empty_rv_gray"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/episode_btn_ly"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/character_btn_ly" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/character_rv"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="12dp"
-                android:layout_marginTop="12dp"
-                android:orientation="vertical"
-                android:overScrollMode="never"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:layout_constraintTop_toBottomOf="@id/character_btn_ly"
-                app:spanCount="2" />
+                android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:id="@+id/episode_btn_ly"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/character_rv">
 
-                <TextView
-                    android:id="@+id/episodes_header"
-                    style="@style/Typography.Bold.Body.20"
+                <LinearLayout
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:id="@+id/character_btn_ly"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="2dp"
-                    android:text="@string/episodes" />
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="20dp"
+                    android:clickable="@{viewModel.characterCount != 0 ? true : false}"
+                    android:orientation="horizontal"
+                    app:goneIf="@{viewModel.characterCount == 0 &amp;&amp; viewModel.episodeCount == 0}"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <TextView
+                        android:id="@+id/character_header"
+                        style="@style/Typography.Bold.Body.20"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="2dp"
+                        android:text="@string/characters" />
+
+                    <TextView
+                        android:id="@+id/character_header_count"
+                        style="@style/Typography.Bold.Body.16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/custom_count_bg_selector"
+                        android:gravity="center"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="4dp"
+                        android:text="@{viewModel.characterCount.toString()}"
+                        app:goneIf="@{viewModel.characterCount == 0}"
+                        app:layout_constraintStart_toEndOf="@id/character_header"
+                        tools:text="80" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="16dp"
+                        android:src="@drawable/ic_vector_arrow"
+                        app:goneIf="@{viewModel.characterCount == 0}" />
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/episodes_header_count"
-                    style="@style/Typography.Bold.Body.16"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/custom_count_bg_selector"
-                    android:gravity="center"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="4dp"
-                    android:text="@{viewModel.episodeCount.toString()}"
-                    app:layout_constraintStart_toEndOf="@id/episodes_header"
-                    app:layout_constraintTop_toBottomOf="@id/character_rv"
-                    tools:text="80" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="16dp"
-                    android:src="@drawable/ic_vector_arrow" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/empty_episode"
-                style="@style/Typography.Regular.Body.20"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="32dp"
-                android:paddingVertical="24dp"
-                android:text="@string/you_have_no_favourite_episode_yet"
-                android:textColor="@color/empty_rv_gray"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/episode_btn_ly" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/episodes_rv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="12dp"
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@id/episode_btn_ly" />
-
-
-                <TextView
-                    android:visibility="gone"
+                    android:id="@+id/empty_char"
                     style="@style/Typography.Regular.Body.20"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:paddingHorizontal="32dp"
+                    android:paddingBottom="64dp"
+                    android:text="@string/you_have_no_favourite_character_yet"
+                    android:textAlignment="center"
                     android:textColor="@color/empty_rv_gray"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/character_btn_ly" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/character_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginTop="24dp"
+                    android:orientation="vertical"
+                    android:overScrollMode="never"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:layout_constraintTop_toBottomOf="@id/empty_char"
+                    app:spanCount="2"
+                    tools:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/episode_btn_ly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="20dp"
+                    android:clickable="@{viewModel.episodeCount != 0 ? true : false}"
+                    android:orientation="horizontal"
+                    app:goneIf="@{viewModel.characterCount == 0 &amp;&amp; viewModel.episodeCount == 0}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/character_rv">
+
+                    <TextView
+                        android:id="@+id/episodes_header"
+                        style="@style/Typography.Bold.Body.20"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="2dp"
+                        android:text="@string/episodes" />
+
+                    <TextView
+                        android:id="@+id/episodes_header_count"
+                        style="@style/Typography.Bold.Body.16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/custom_count_bg_selector"
+                        android:gravity="center"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="4dp"
+                        android:text="@{viewModel.episodeCount.toString()}"
+                        app:goneIf="@{viewModel.episodeCount == 0}"
+                        app:layout_constraintStart_toEndOf="@id/episodes_header"
+                        app:layout_constraintTop_toBottomOf="@id/character_rv"
+                        tools:text="80" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="16dp"
+                        android:src="@drawable/ic_vector_arrow"
+                        app:goneIf="@{viewModel.episodeCount == 0}" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/empty_episode"
+                    style="@style/Typography.Regular.Body.20"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="32dp"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="64dp"
+                    android:text="@string/you_have_no_favourite_episode_yet"
+                    android:textAlignment="center"
+                    android:textColor="@color/empty_rv_gray"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/episode_btn_ly" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/episodes_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginTop="24dp"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintTop_toBottomOf="@id/empty_episode" />
+
+
+                <TextView
                     android:id="@+id/full_empty_text"
+                    style="@style/Typography.Regular.Body.20"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
                     android:text="@string/you_have_no_favourite_character_nor_episode_yet"
+                    android:textAlignment="center"
+                    android:textColor="@color/empty_rv_gray"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
-
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -6,11 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.paging.PagingData
-import androidx.paging.map
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.data.model.Character
@@ -39,20 +36,31 @@ class FavoritesFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
             viewModel = favoritesVieModel
 
-            characterBtnLy.setOnClickListener {
-                findNavController().safeNavigate(FavoritesFragmentDirections.actionFavoritesFragmentToItemListDialogFragment(TYPE_FAVORITES,
-                    TYPE_FAVORITES_CHAR,null))
+            favoritesVieModel.combinedData.observe(viewLifecycleOwner) {
+                emptyChar.isVisible = it.first == 0 && it.second != 0
+                emptyEpisode.isVisible = it.first != 0 && it.second == 0
+                fullEmptyText.isVisible = it.first == 0 && it.second == 0
             }
 
-            favCharsAdapter = GenericAdapter<Character>(R.layout.character_row_favorites) { position ->
-                findNavController().safeNavigate(FavoritesFragmentDirections.actionFavoritesFragmentToDetailFragment(
-                    favCharsAdapter?.snapshot()?.items?.map { it.id }
-                        ?.get(position)
-                        .toString(), TYPE_FAVORITES
-                ))
-            }.apply {
-                characterRv.adapter = this
+            characterBtnLy.setOnClickListener {
+                findNavController().safeNavigate(
+                    FavoritesFragmentDirections.actionFavoritesFragmentToItemListDialogFragment(
+                        TYPE_FAVORITES,
+                        TYPE_FAVORITES_CHAR, null
+                    )
+                )
             }
+
+            favCharsAdapter =
+                GenericAdapter<Character>(R.layout.character_row_favorites) { position ->
+                    findNavController().safeNavigate(FavoritesFragmentDirections.actionFavoritesFragmentToDetailFragment(
+                        favCharsAdapter?.snapshot()?.items?.map { it.id }
+                            ?.get(position)
+                            .toString(), TYPE_FAVORITES
+                    ))
+                }.apply {
+                    characterRv.adapter = this
+                }
 
             lifecycleScope.launch {
                 favoritesVieModel.readLimitedCharactersData.collectLatest {
@@ -61,19 +69,24 @@ class FavoritesFragment : Fragment() {
             }
 
             episodeBtnLy.setOnClickListener {
-                findNavController().safeNavigate(FavoritesFragmentDirections.actionFavoritesFragmentToItemListDialogFragment(TYPE_FAVORITES,
-                    TYPE_FAVORITES_EPISODE,null))
+                findNavController().safeNavigate(
+                    FavoritesFragmentDirections.actionFavoritesFragmentToItemListDialogFragment(
+                        TYPE_FAVORITES,
+                        TYPE_FAVORITES_EPISODE, null
+                    )
+                )
             }
 
-            favEpisodeAdapter = GenericAdapter<Episode>(R.layout.episode_row_favorites) { position ->
-                findNavController().safeNavigate(FavoritesFragmentDirections.actionFavoritesFragmentToEpisodeDetailFragment(
-                    favEpisodeAdapter?.snapshot()?.items?.map { it.id }
-                        ?.get(position)
-                        .toString(), TYPE_FAVORITES
-                ))
-            }.apply {
-                episodesRv.adapter = this
-            }
+            favEpisodeAdapter =
+                GenericAdapter<Episode>(R.layout.episode_row_favorites) { position ->
+                    findNavController().safeNavigate(FavoritesFragmentDirections.actionFavoritesFragmentToEpisodeDetailFragment(
+                        favEpisodeAdapter?.snapshot()?.items?.map { it.id }
+                            ?.get(position)
+                            .toString(), TYPE_FAVORITES
+                    ))
+                }.apply {
+                    episodesRv.adapter = this
+                }
 
             lifecycleScope.launch {
                 favoritesVieModel.readLimitedEpisodesData.collectLatest {
