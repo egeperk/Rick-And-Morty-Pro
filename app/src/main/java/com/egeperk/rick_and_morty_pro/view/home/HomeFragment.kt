@@ -1,15 +1,12 @@
 package com.egeperk.rick_and_morty_pro.view.home
 
-import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.paging.map
 import com.egeperk.rick_and_morty.CharactersQuery
 import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.R
@@ -42,6 +39,10 @@ class HomeFragment : Fragment() {
 
             if (activity?.hasInternetConnection() == true) {
 
+                homeViewModel.apply {
+                    getEpisodeCount()
+                    getCharacterCount()
+                }
 
                 episodeBtnLy.setOnClickListener {
                     showSheet(TYPE_EPISODE)
@@ -51,10 +52,11 @@ class HomeFragment : Fragment() {
                     showSheet(TYPE_CHAR)
                 }
 
-                charAdapter = GenericAdapter(R.layout.character_row) {
+                charAdapter = GenericAdapter(R.layout.character_row) { position ->
                     findNavController().safeNavigate(
                         HomeFragmentDirections.actionHomeFragmentToDetailFragment(
-                            homeViewModel.charPosition.value?.get(it)
+                            charAdapter?.snapshot()?.items?.map { it.id }
+                                ?.get(position)
                                 .toString(), TYPE_DIALOG
                         )
                     )
@@ -67,17 +69,19 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-                episodeAdapter = GenericAdapter(R.layout.episode_row) {
+                episodeAdapter = GenericAdapter(R.layout.episode_row) { position ->
                     findNavController().safeNavigate(
                         HomeFragmentDirections.actionHomeFragmentToEpisodeDetailFragment(
-                            homeViewModel.episodePosition.value?.get(it).toString(), TYPE_DIALOG
+                            episodeAdapter?.snapshot()?.items?.map { it.id }
+                                ?.get(position)
+                                .toString(), TYPE_DIALOG
                         )
                     )
                 }
                 homeEpisodeRv.adapter = episodeAdapter
 
                 homeViewModel.apply {
-                    getEpisodeData(showFour = true)
+                    getEpisodeData(showFour = true, null)
                     getCharacterData(EMPTY_VALUE, showFour = true)
                 }
 

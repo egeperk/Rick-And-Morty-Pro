@@ -8,8 +8,10 @@ import com.egeperk.rick_and_morty_pro.data.model.Character
 import com.egeperk.rick_and_morty_pro.data.model.Episode
 import com.egeperk.rick_and_morty_pro.data.repository.LocalRepository
 import com.egeperk.rick_and_morty_pro.util.Constants.PAGE_SIZE
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class FavoritesViewModel(private val repository: LocalRepository) :
     ViewModel() {
@@ -32,7 +34,7 @@ class FavoritesViewModel(private val repository: LocalRepository) :
     fun readEpisodeById(id:String) = repository.getEpisodeById(id)
 
     fun readCharactersData() =
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val result = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
                 repository.readAllCharactersData()
             }.flow.cachedIn(viewModelScope).stateIn(viewModelScope).value
@@ -40,7 +42,7 @@ class FavoritesViewModel(private val repository: LocalRepository) :
         }
 
     fun readEpisodesData() =
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val result = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
                 repository.readAllEpisodesData()
             }.flow.cachedIn(viewModelScope).stateIn(viewModelScope).value
@@ -55,11 +57,11 @@ class FavoritesViewModel(private val repository: LocalRepository) :
         repository.readLimitedEpisodeData()
     }.flow.cachedIn(viewModelScope)
 
-    fun addCharacter(character: Character) = viewModelScope.launch {
+    fun addCharacter(character: Character) = viewModelScope.launch(Dispatchers.IO) {
         repository.addCharacter(character)
     }
 
-    fun addEpisode(episode: Episode) = viewModelScope.launch {
+    fun addEpisode(episode: Episode) = viewModelScope.launch(Dispatchers.IO) {
         repository.addEpisode(episode)
     }
 

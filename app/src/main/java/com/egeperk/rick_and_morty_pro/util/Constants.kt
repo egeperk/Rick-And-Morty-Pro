@@ -11,7 +11,10 @@ object Constants {
     const val TYPE_CHAR_BY_ID = "character_id"
     const val TYPE_FAVORITES_CHAR = "favorite_chars"
     const val TYPE_FAVORITES_EPISODE = "favorite_episodes"
-    const val TYPE_FAVORITES = "favorites"
+    const val TYPE_FAVORITES = "search"
+    const val TYPE_SEARCH_CHAR = "search_chars"
+    const val TYPE_SEARCH_EPISODE = "search_episodes"
+    const val TYPE_SEARCH = "favorites"
     const val TYPE_DIALOG = "dialog"
     const val TYPE_HOME = "home"
     const val SEASON_ONE = "S01"
@@ -21,6 +24,5 @@ object Constants {
     const val SEASON_FIVE = "S05"
     const val ROTATE_UP = 180f
     const val ROTATE_DOWN = 0f
-    const val DELAY_TIME = 100L
 
 }
