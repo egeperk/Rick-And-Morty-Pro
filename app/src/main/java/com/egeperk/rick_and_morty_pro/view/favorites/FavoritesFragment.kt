@@ -36,17 +36,11 @@ class FavoritesFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
             viewModel = favoritesVieModel
 
-            favoritesVieModel.combinedData.observe(viewLifecycleOwner) {
-                emptyChar.isVisible = it.first == 0 && it.second != 0
-                emptyEpisode.isVisible = it.first != 0 && it.second == 0
-                fullEmptyText.isVisible = it.first == 0 && it.second == 0
-            }
-
             characterBtnLy.setOnClickListener {
                 findNavController().safeNavigate(
                     FavoritesFragmentDirections.actionFavoritesFragmentToItemListDialogFragment(
                         TYPE_FAVORITES,
-                        TYPE_FAVORITES_CHAR, null
+                        TYPE_FAVORITES_CHAR, uuid = null
                     )
                 )
             }
@@ -72,7 +66,7 @@ class FavoritesFragment : Fragment() {
                 findNavController().safeNavigate(
                     FavoritesFragmentDirections.actionFavoritesFragmentToItemListDialogFragment(
                         TYPE_FAVORITES,
-                        TYPE_FAVORITES_EPISODE, null
+                        TYPE_FAVORITES_EPISODE, uuid = null
                     )
                 )
             }

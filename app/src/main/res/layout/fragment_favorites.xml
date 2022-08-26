@@ -69,9 +69,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="20dp"
-                    android:clickable="@{viewModel.characterCount != 0 ? true : false}"
+                    android:clickable="@{viewModel.itemCounts.first != 0}"
                     android:orientation="horizontal"
-                    app:goneIf="@{viewModel.characterCount == 0 &amp;&amp; viewModel.episodeCount == 0}"
+                    app:goneIf="@{viewModel.itemCounts.first == 0 &amp;&amp; viewModel.itemCounts.second == 0}"
                     app:layout_constraintStart_toStartOf="parent">
 
                     <TextView
@@ -92,8 +92,8 @@
                         android:gravity="center"
                         android:paddingHorizontal="8dp"
                         android:paddingVertical="4dp"
-                        android:text="@{viewModel.characterCount.toString()}"
-                        app:goneIf="@{viewModel.characterCount == 0}"
+                        android:text="@{viewModel.itemCounts.first.toString()}"
+                        app:goneIf="@{viewModel.itemCounts.first == 0}"
                         app:layout_constraintStart_toEndOf="@id/character_header"
                         tools:text="80" />
 
@@ -103,10 +103,11 @@
                         android:layout_gravity="center"
                         android:layout_marginStart="16dp"
                         android:src="@drawable/ic_vector_arrow"
-                        app:goneIf="@{viewModel.characterCount == 0}" />
+                        app:goneIf="@{viewModel.itemCounts.first == 0}" />
                 </LinearLayout>
 
                 <TextView
+                    app:goneIf="@{viewModel.itemCounts.first != 0 || viewModel.itemCounts.first == 0 &amp;&amp; viewModel.itemCounts.second == 0}"
                     android:id="@+id/empty_char"
                     style="@style/Typography.Regular.Body.20"
                     android:layout_width="0dp"
@@ -141,9 +142,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="20dp"
-                    android:clickable="@{viewModel.episodeCount != 0 ? true : false}"
+                    android:clickable="@{viewModel.itemCounts.second != 0}"
                     android:orientation="horizontal"
-                    app:goneIf="@{viewModel.characterCount == 0 &amp;&amp; viewModel.episodeCount == 0}"
+                    app:goneIf="@{viewModel.itemCounts.first == 0 &amp;&amp; viewModel.itemCounts.second == 0}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/character_rv">
 
@@ -165,8 +166,8 @@
                         android:gravity="center"
                         android:paddingHorizontal="8dp"
                         android:paddingVertical="4dp"
-                        android:text="@{viewModel.episodeCount.toString()}"
-                        app:goneIf="@{viewModel.episodeCount == 0}"
+                        android:text="@{viewModel.itemCounts.second.toString()}"
+                        app:goneIf="@{viewModel.itemCounts.second == 0}"
                         app:layout_constraintStart_toEndOf="@id/episodes_header"
                         app:layout_constraintTop_toBottomOf="@id/character_rv"
                         tools:text="80" />
@@ -177,10 +178,11 @@
                         android:layout_gravity="center"
                         android:layout_marginStart="16dp"
                         android:src="@drawable/ic_vector_arrow"
-                        app:goneIf="@{viewModel.episodeCount == 0}" />
+                        app:goneIf="@{viewModel.itemCounts.second == 0}" />
                 </LinearLayout>
 
                 <TextView
+                    app:goneIf="@{viewModel.itemCounts.second != 0 || viewModel.itemCounts.first == 0 &amp;&amp; viewModel.itemCounts.second == 0}"
                     android:id="@+id/empty_episode"
                     style="@style/Typography.Regular.Body.20"
                     android:layout_width="0dp"
@@ -209,6 +211,7 @@
 
 
                 <TextView
+                    app:goneIf="@{viewModel.itemCounts.first != 0 || viewModel.itemCounts.second != 0}"
                     android:id="@+id/full_empty_text"
                     style="@style/Typography.Regular.Body.20"
                     android:layout_width="0dp"
