@@ -22,7 +22,7 @@ interface ItemDao {
     fun readLimitedCharacters(): PagingSource<Int, Character>
 
     @Query("select * from character_table")
-    fun readAllCharacters(): PagingSource<Int, Character>
+    fun readAllCharacters(): LiveData<List<Character>>
 
     @Query("select * from character_table where id=:id")
     fun getCharacterById(id: String): Flow<Character>
@@ -34,7 +34,7 @@ interface ItemDao {
     fun readLimitedEpisode(): PagingSource<Int, Episode>
 
     @Query("select * from episode_table")
-    fun readAllEpisodes(): PagingSource<Int, Episode>
+    fun readAllEpisodes(): Flow<List<Episode>>
 
     @Query("select * from episode_table where id=:id")
     fun getEpisodeById(id: String): Flow<Episode>

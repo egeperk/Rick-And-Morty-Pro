@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.PagingData
@@ -133,9 +135,11 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
         when (from) {
             TYPE_FAVORITES_EPISODE -> {
                 lifecycleScope.launch {
-                    favoritesViewModel.readEpisodesData()
-                    favoritesViewModel.episodeResult.collectLatest {
-                        episodeAdapter?.submitData(it)
+                    favoritesViewModel.apply {
+                        readEpisodesData()
+                        episodeResult.collectLatest {
+                            episodeAdapter?.submitData(it)
+                        }
                     }
                 }
                 favoritesViewModel.episodeCount.observe(viewLifecycleOwner) {
@@ -197,10 +201,9 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
         when (from) {
             TYPE_FAVORITES_CHAR -> {
 
-                lifecycleScope.launch {
-                    favoritesViewModel.readCharactersData()
-                    favoritesViewModel.charResult.collectLatest {
-                        characterAdapter?.submitData(it)
+                favoritesViewModel.characters.observe(viewLifecycleOwner) {
+                    lifecycleScope.launch {
+                        characterAdapter?.submitData(PagingData.from(it))
                     }
                 }
                 favoritesViewModel.characterCount.observe(viewLifecycleOwner) {

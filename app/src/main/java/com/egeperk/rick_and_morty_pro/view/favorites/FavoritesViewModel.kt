@@ -1,8 +1,6 @@
 package com.egeperk.rick_and_morty_pro.view.favorites
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.paging.*
 import com.egeperk.rick_and_morty_pro.data.model.Character
 import com.egeperk.rick_and_morty_pro.data.model.Episode
@@ -14,9 +12,6 @@ import kotlinx.coroutines.launch
 
 class FavoritesViewModel(private val repository: LocalRepository) :
     ViewModel() {
-
-    private val _charResult = MutableStateFlow<PagingData<Character>>(PagingData.empty())
-    val charResult = _charResult.asStateFlow()
 
     private val _character: MutableStateFlow<Character>? = null
     val character = _character?.asStateFlow()
@@ -32,34 +27,11 @@ class FavoritesViewModel(private val repository: LocalRepository) :
 
     fun readEpisodeById(id: String) = repository.getEpisodeById(id)
 
-    fun readCharactersData() =
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
-                repository.readAllCharactersData()
-            }.flow.map {
-                it.map { data ->
-                    Character(
-                        id = data.id,
-                        name = data.name,
-                        image = data.image,
-                        status = data.status,
-                        gender = data.gender,
-                        species = data.species,
-                        type = data.type,
-                        origin = data.origin,
-                        location = data.location,
-                        pk = data.id?.toInt() ?: 0
-                    )
-                }
-            }.cachedIn(viewModelScope).stateIn(viewModelScope).value
-            _charResult.value = result
-        }
+    val characters = repository.readAllCharactersData()
 
     fun readEpisodesData() =
         viewModelScope.launch(Dispatchers.IO) {
-            val result = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
-                repository.readAllEpisodesData()
-            }.flow.map {
+           val result = repository.readAllEpisodesData().map {
                 it.map { data ->
                     Episode(
                         id = data.id,
@@ -69,9 +41,11 @@ class FavoritesViewModel(private val repository: LocalRepository) :
                         pk = data.id?.toInt() ?: 0
                     )
                 }
-            }.cachedIn(viewModelScope).stateIn(viewModelScope).value
-            _episodeResult.value = result
+            }.stateIn(viewModelScope).value
+            _episodeResult.value = PagingData.from(result)
         }
+
+    val episodes = repository.readAllEpisodesData().asLiveData()
 
     val readLimitedCharactersData = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
         repository.readLimitedCharactersData()

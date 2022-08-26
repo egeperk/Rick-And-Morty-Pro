@@ -12,7 +12,7 @@ class LocalRepository(private val db: ItemDatabase) {
 
     fun readLimitedCharactersData(): PagingSource<Int,Character> = db.itemDao().readLimitedCharacters()
 
-    fun readAllCharactersData(): PagingSource<Int,Character> = db.itemDao().readAllCharacters()
+    fun readAllCharactersData(): LiveData<List<Character>> = db.itemDao().readAllCharacters()
 
     fun getCharacterCount(): Flow<Int> = db.itemDao().getCharacterCount()
 
@@ -22,7 +22,7 @@ class LocalRepository(private val db: ItemDatabase) {
 
     fun readLimitedEpisodeData(): PagingSource<Int,Episode> = db.itemDao().readLimitedEpisode()
 
-    fun readAllEpisodesData(): PagingSource<Int,Episode> = db.itemDao().readAllEpisodes()
+    fun readAllEpisodesData(): Flow<List<Episode>> = db.itemDao().readAllEpisodes()
 
     fun getEpisodeById(id: String): Flow<Episode> = db.itemDao().getEpisodeById(id)
 

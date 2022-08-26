@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -28,6 +29,7 @@ import com.egeperk.rick_and_morty_pro.view.favorites.FavoritesViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.time.Duration.Companion.seconds
 
 
 class EpisodeDetailFragment : Fragment() {
@@ -55,6 +57,8 @@ class EpisodeDetailFragment : Fragment() {
                 setDataFromDb()
             }
 
+            checkDatabase()
+
             if (activity?.hasInternetConnection() == true) {
 
 
@@ -66,7 +70,7 @@ class EpisodeDetailFragment : Fragment() {
                 }
 
                 charAdapter =
-                    GenericAdapter<Character>(R.layout.character_row) { position ->
+                    GenericAdapter(R.layout.character_row) { position ->
                         findNavController().safeNavigate(
                             EpisodeDetailFragmentDirections.actionEpisodeDetailFragmentToDetailFragment(
                                 charAdapter?.snapshot()?.items?.map {
@@ -151,6 +155,26 @@ class EpisodeDetailFragment : Fragment() {
             }
 
     }
+    private fun checkDatabase() {
+
+        favoritesVieModel.episodes.combineWith(detailViewModel.episode).observe(viewLifecycleOwner){ data ->
+
+                if (data.first?.contains(data.second?.id?.toInt()?.let {
+                        Episode(
+                            id = data.second!!.id,
+                            name = data.second!!.name,
+                            episode = data.second!!.episode,
+                            air_date = data.second!!.air_date,
+                            pk = data.second!!.id?.toInt() ?: 0
+                        )
+                    }) == true) {
+                    binding?.apply {
+                        favBtnImage.setImageResource(R.drawable.ic_icon_added_fav)
+                        addToFavs.text = resources.getString(R.string.added_fav_ep)
+                    }}
+            }
+        }
+
 
     private fun setDataFromDb() {
 

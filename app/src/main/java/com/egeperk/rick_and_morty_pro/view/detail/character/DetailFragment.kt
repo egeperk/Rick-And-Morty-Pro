@@ -17,14 +17,11 @@ import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.data.model.Character
 import com.egeperk.rick_and_morty_pro.data.model.Episode
 import com.egeperk.rick_and_morty_pro.databinding.FragmentDetailBinding
+import com.egeperk.rick_and_morty_pro.util.*
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_CHAR
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_EPISODE
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_EPISODE_BY_ID
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_FAVORITES
-import com.egeperk.rick_and_morty_pro.util.hasInternetConnection
-import com.egeperk.rick_and_morty_pro.util.safeNavigate
-import com.egeperk.rick_and_morty_pro.util.setStatusBarDark
-import com.egeperk.rick_and_morty_pro.util.setStatusBarLight
 import com.egeperk.rick_and_morty_pro.view.detail.DetailViewModel
 import com.egeperk.rick_and_morty_pro.view.favorites.FavoritesViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -55,6 +52,8 @@ class DetailFragment : Fragment() {
             if (args.from == TYPE_FAVORITES) {
                 setDataFromDb()
             }
+
+            checkDatabase()
 
             if (activity?.hasInternetConnection() == true) {
 
@@ -97,21 +96,25 @@ class DetailFragment : Fragment() {
     }
 
     private fun addCharacter() {
-            binding?.favImage?.setImageResource(R.drawable.ic_icon_added_fav)
-            favoritesVieModel.addCharacter(
-                Character(
-                    id = detailViewModel.character.value?.id,
-                    name = detailViewModel.character.value?.name,
-                    image = detailViewModel.character.value?.image,
-                    status = detailViewModel.character.value?.status,
-                    gender = detailViewModel.character.value?.gender,
-                    species = detailViewModel.character.value?.species,
-                    type = detailViewModel.character.value?.type,
-                    origin = detailViewModel.character.value?.origin?.name,
-                    location = detailViewModel.character.value?.location?.name,
-                    pk = detailViewModel.character.value?.id?.toInt()!!,
-                )
+        binding?.apply {
+            favImage.setImageResource(R.drawable.ic_icon_added_fav)
+            addToFavsTv.text = resources.getString(R.string.added_fav)
+        }
+
+        favoritesVieModel.addCharacter(
+            Character(
+                id = detailViewModel.character.value?.id,
+                name = detailViewModel.character.value?.name,
+                image = detailViewModel.character.value?.image,
+                status = detailViewModel.character.value?.status,
+                gender = detailViewModel.character.value?.gender,
+                species = detailViewModel.character.value?.species,
+                type = detailViewModel.character.value?.type,
+                origin = detailViewModel.character.value?.origin?.name,
+                location = detailViewModel.character.value?.location?.name,
+                pk = detailViewModel.character.value?.id?.toInt()!!,
             )
+        )
     }
 
     private fun setDataFromDb() {
@@ -131,6 +134,33 @@ class DetailFragment : Fragment() {
             }
         }
 
+    }
+
+    private fun checkDatabase() {
+
+        favoritesVieModel.characters.combineWith(detailViewModel.character)
+            .observe(viewLifecycleOwner) { data ->
+
+                if (data.first?.contains(data.second?.id?.toInt()?.let {
+                        Character(
+                            id = data.second!!.id,
+                            name = data.second!!.name,
+                            image = data.second!!.image,
+                            status = data.second!!.status,
+                            gender = data.second!!.gender,
+                            species = data.second!!.species,
+                            type = data.second!!.type,
+                            origin = data.second!!.origin?.name,
+                            location = data.second!!.location?.name,
+                            pk = it
+                        )
+                    }) == true) {
+                    binding?.apply {
+                        favImage.setImageResource(R.drawable.ic_icon_added_fav)
+                        addToFavsTv.text = resources.getString(R.string.added_fav)
+                    }
+                }
+            }
     }
 
     private fun showEpisodeSheet() {
