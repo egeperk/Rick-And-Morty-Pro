@@ -9,12 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.paging.map
-import coil.load
 import com.egeperk.rick_and_morty.EpisodeByIdQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
@@ -29,7 +26,6 @@ import com.egeperk.rick_and_morty_pro.view.favorites.FavoritesViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import kotlin.time.Duration.Companion.seconds
 
 
 class EpisodeDetailFragment : Fragment() {
@@ -159,15 +155,9 @@ class EpisodeDetailFragment : Fragment() {
 
         favoritesVieModel.episodes.combineWith(detailViewModel.episode).observe(viewLifecycleOwner){ data ->
 
-                if (data.first?.contains(data.second?.id?.toInt()?.let {
-                        Episode(
-                            id = data.second!!.id,
-                            name = data.second!!.name,
-                            episode = data.second!!.episode,
-                            air_date = data.second!!.air_date,
-                            pk = data.second!!.id?.toInt() ?: 0
-                        )
-                    }) == true) {
+                if (data?.first?.map {
+                        it.id
+                    }?.contains(data.second?.id) == true) {
                     binding?.apply {
                         favBtnImage.setImageResource(R.drawable.ic_icon_added_fav)
                         addToFavs.text = resources.getString(R.string.added_fav_ep)

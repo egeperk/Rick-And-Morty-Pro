@@ -4,28 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.paging.map
 import coil.load
-import com.egeperk.rick_and_morty.CharacterByIdQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.data.model.Character
 import com.egeperk.rick_and_morty_pro.data.model.Episode
 import com.egeperk.rick_and_morty_pro.databinding.FragmentDetailBinding
 import com.egeperk.rick_and_morty_pro.util.*
-import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_CHAR
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_EPISODE
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_EPISODE_BY_ID
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_FAVORITES
 import com.egeperk.rick_and_morty_pro.view.detail.DetailViewModel
 import com.egeperk.rick_and_morty_pro.view.favorites.FavoritesViewModel
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -141,20 +136,9 @@ class DetailFragment : Fragment() {
         favoritesVieModel.characters.combineWith(detailViewModel.character)
             .observe(viewLifecycleOwner) { data ->
 
-                if (data.first?.contains(data.second?.id?.toInt()?.let {
-                        Character(
-                            id = data.second!!.id,
-                            name = data.second!!.name,
-                            image = data.second!!.image,
-                            status = data.second!!.status,
-                            gender = data.second!!.gender,
-                            species = data.second!!.species,
-                            type = data.second!!.type,
-                            origin = data.second!!.origin?.name,
-                            location = data.second!!.location?.name,
-                            pk = it
-                        )
-                    }) == true) {
+                if (data.first?.map {
+                        it.id
+                    }?.contains(data.second?.id) == true) {
                     binding?.apply {
                         favImage.setImageResource(R.drawable.ic_icon_added_fav)
                         addToFavsTv.text = resources.getString(R.string.added_fav)
