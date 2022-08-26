@@ -7,7 +7,9 @@ import com.egeperk.rick_and_morty_pro.repository.ApiRepository
 import java.text.FieldPosition
 
 class EpisodeHomePagingSource(
-    private val repository: ApiRepository, private val showFour: Boolean = true
+    private val repository: ApiRepository,
+    private val showFour: Boolean = true,
+    private val name: String?
 ) :
     PagingSource<Int, EpisodeQuery.Result>() {
 
@@ -15,7 +17,7 @@ class EpisodeHomePagingSource(
 
         return try {
             val page = params.key ?: 1
-            val response = repository.episodesQuery(page)
+            val response = repository.episodesQuery(page, name)
             val nextKey = response.data?.episodes?.info?.next
             val data = response.data?.episodes?.results
             val episodes = mapResponseToPresentationModel(data!!)

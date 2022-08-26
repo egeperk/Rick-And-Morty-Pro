@@ -77,7 +77,9 @@ class DetailFragment : Fragment() {
                     }
 
                 lifecycleScope.launch {
-                    episodeAdapter?.submitData(detailViewModel.episodeResult.value)
+                    detailViewModel.episodeResult.collectLatest {
+                        episodeAdapter?.submitData(it)
+                    }
                 }
 
                 episodeBtnLy.setOnClickListener {
