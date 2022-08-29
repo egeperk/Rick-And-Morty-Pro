@@ -6,11 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.paging.PagingData
-import androidx.paging.map
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.data.model.Character
@@ -82,6 +79,7 @@ class FavoritesFragment : Fragment() {
             }.apply {
                 episodesRv.adapter = this
             }
+
 
             lifecycleScope.launch {
                 favoritesVieModel.readLimitedEpisodesData.collectLatest {

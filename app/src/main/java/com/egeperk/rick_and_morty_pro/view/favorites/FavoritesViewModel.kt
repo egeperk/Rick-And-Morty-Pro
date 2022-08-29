@@ -88,4 +88,8 @@ class FavoritesViewModel(private val repository: LocalRepository) :
         repository.addEpisode(episode)
     }
 
+    val itemCounts = MediatorLiveData<Pair<Int?,Int?>>().apply {
+        addSource(characterCount) {value = Pair(it, episodeCount.value)}
+        addSource(episodeCount) {value = Pair(characterCount.value, it)}
+    }
 }
