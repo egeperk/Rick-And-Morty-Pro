@@ -4,30 +4,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.paging.map
 import coil.load
-import com.egeperk.rick_and_morty.CharacterByIdQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.data.model.Character
+import com.egeperk.rick_and_morty_pro.data.model.Episode
 import com.egeperk.rick_and_morty_pro.databinding.FragmentDetailBinding
-import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_CHAR
+import com.egeperk.rick_and_morty_pro.util.*
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_EPISODE
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_EPISODE_BY_ID
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_FAVORITES
-import com.egeperk.rick_and_morty_pro.util.hasInternetConnection
-import com.egeperk.rick_and_morty_pro.util.safeNavigate
-import com.egeperk.rick_and_morty_pro.util.setStatusBarDark
-import com.egeperk.rick_and_morty_pro.util.setStatusBarLight
 import com.egeperk.rick_and_morty_pro.view.detail.DetailViewModel
 import com.egeperk.rick_and_morty_pro.view.favorites.FavoritesViewModel
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -38,7 +31,7 @@ class DetailFragment : Fragment() {
     private val favoritesVieModel: FavoritesViewModel by viewModel()
     private val args by navArgs<DetailFragmentArgs>()
     private var binding: FragmentDetailBinding? = null
-    private var episodeAdapter: GenericAdapter<CharacterByIdQuery.Episode>? = null
+    private var episodeAdapter: GenericAdapter<Episode>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,6 +48,8 @@ class DetailFragment : Fragment() {
                 setDataFromDb()
             }
 
+            checkDatabase()
+
             if (activity?.hasInternetConnection() == true) {
 
                 if (arguments != null) {
@@ -65,7 +60,7 @@ class DetailFragment : Fragment() {
                 }
 
                 episodeAdapter =
-                    GenericAdapter<CharacterByIdQuery.Episode>(R.layout.episode_row_detail) { position ->
+                    GenericAdapter<Episode>(R.layout.episode_row) { position ->
                         findNavController().safeNavigate(
                             DetailFragmentDirections.actionDetailFragmentToEpisodeDetailFragment(
                                 episodeAdapter?.snapshot()?.items?.map { it.id }?.get(position)
@@ -96,21 +91,25 @@ class DetailFragment : Fragment() {
     }
 
     private fun addCharacter() {
-            binding?.favImage?.setImageResource(R.drawable.ic_icon_added_fav)
-            favoritesVieModel.addCharacter(
-                Character(
-                    id = detailViewModel.character.value?.id,
-                    name = detailViewModel.character.value?.name,
-                    image = detailViewModel.character.value?.image,
-                    status = detailViewModel.character.value?.status,
-                    gender = detailViewModel.character.value?.gender,
-                    species = detailViewModel.character.value?.species,
-                    type = detailViewModel.character.value?.type,
-                    origin = detailViewModel.character.value?.origin?.name,
-                    location = detailViewModel.character.value?.location?.name,
-                    pk = detailViewModel.character.value?.id?.toInt()!!,
-                )
+        binding?.apply {
+            favImage.setImageResource(R.drawable.ic_icon_added_fav)
+            addToFavsTv.text = resources.getString(R.string.added_fav)
+        }
+
+        favoritesVieModel.addCharacter(
+            Character(
+                id = detailViewModel.character.value?.id,
+                name = detailViewModel.character.value?.name,
+                image = detailViewModel.character.value?.image,
+                status = detailViewModel.character.value?.status,
+                gender = detailViewModel.character.value?.gender,
+                species = detailViewModel.character.value?.species,
+                type = detailViewModel.character.value?.type,
+                origin = detailViewModel.character.value?.origin?.name,
+                location = detailViewModel.character.value?.location?.name,
+                pk = detailViewModel.character.value?.id?.toInt()!!,
             )
+        )
     }
 
     private fun setDataFromDb() {
@@ -130,6 +129,22 @@ class DetailFragment : Fragment() {
             }
         }
 
+    }
+
+    private fun checkDatabase() {
+
+        favoritesVieModel.characters.combineWith(detailViewModel.character)
+            .observe(viewLifecycleOwner) { data ->
+
+                if (data.first?.map {
+                        it.id
+                    }?.contains(data.second?.id) == true) {
+                    binding?.apply {
+                        favImage.setImageResource(R.drawable.ic_icon_added_fav)
+                        addToFavsTv.text = resources.getString(R.string.added_fav)
+                    }
+                }
+            }
     }
 
     private fun showEpisodeSheet() {

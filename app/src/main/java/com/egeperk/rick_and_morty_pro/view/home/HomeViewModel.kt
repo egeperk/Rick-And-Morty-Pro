@@ -4,11 +4,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
+import androidx.room.PrimaryKey
 import com.egeperk.rick_and_morty.CharactersQuery
 import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.adapters.pagingsource.CharacterHomePagingSource
 import com.egeperk.rick_and_morty_pro.adapters.pagingsource.EpisodeHomePagingSource
 import com.egeperk.rick_and_morty_pro.adapters.pagingsource.SearchCharacterPagingSource
+import com.egeperk.rick_and_morty_pro.data.model.Character
+import com.egeperk.rick_and_morty_pro.data.model.Episode
 import com.egeperk.rick_and_morty_pro.repository.ApiRepository
 import com.egeperk.rick_and_morty_pro.util.Constants.EMPTY_VALUE
 import com.egeperk.rick_and_morty_pro.util.Constants.PAGE_SIZE
@@ -24,15 +27,15 @@ class HomeViewModel(private val repository: ApiRepository) : ViewModel() {
     val search = MutableStateFlow(EMPTY_VALUE)
 
     private val _charResult =
-        MutableStateFlow<PagingData<CharactersQuery.Result>>(PagingData.empty())
+        MutableStateFlow<PagingData<Character>>(PagingData.empty())
     val charResult = _charResult.asStateFlow()
 
     private val _charSearchResult =
-        MutableStateFlow<PagingData<CharactersQuery.Result>>(PagingData.empty())
+        MutableStateFlow<PagingData<Character>>(PagingData.empty())
     val charSearchResult = _charSearchResult.asStateFlow()
 
     private val _episodeResult =
-        MutableStateFlow<PagingData<EpisodeQuery.Result>>(PagingData.empty())
+        MutableStateFlow<PagingData<Episode>>(PagingData.empty())
     val episodeResult = _episodeResult.asStateFlow()
 
     var isSearch = MutableLiveData(false)
@@ -45,7 +48,22 @@ class HomeViewModel(private val repository: ApiRepository) : ViewModel() {
             val newResult =
                 Pager(PagingConfig(pageSize = if (isSearch.value == true) PAGE_SIZE * 10 else PAGE_SIZE)) {
                     CharacterHomePagingSource(repository, query, showFour)
-                }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
+                }.flow.map {
+                    it.map { data ->
+                        Character(
+                            id = data.id,
+                            name = data.name,
+                            image = data.image,
+                            status = null,
+                            gender = null,
+                            species = null,
+                            type = null,
+                            origin = null,
+                            location = null,
+                            pk = data.id?.toInt() ?: 0
+                        )
+                    }
+                }.cachedIn(viewModelScope).stateIn(viewModelScope)
 
             _charResult.value = newResult.value
         }
@@ -57,7 +75,23 @@ class HomeViewModel(private val repository: ApiRepository) : ViewModel() {
 
             val newResult = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
                 SearchCharacterPagingSource(repository, query)
-            }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
+            }.flow.map {
+              it.map { data ->
+                  Character(
+                      id = data.id,
+                      name = data.name,
+                      image = data.image,
+                      status = null,
+                      gender = null,
+                      species = null,
+                      type = null,
+                      origin = null,
+                      location = null,
+                      pk = data.id?.toInt() ?: 0
+                  )
+              }
+            }
+                .cachedIn(viewModelScope).stateIn(viewModelScope)
 
             _charSearchResult.value = newResult.value
         }
@@ -71,7 +105,18 @@ class HomeViewModel(private val repository: ApiRepository) : ViewModel() {
 
             val newResult = Pager(PagingConfig(pageSize = PAGE_SIZE * 5)) {
                 EpisodeHomePagingSource(repository, showFour, name)
-            }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
+            }.flow.map {
+               it.map { data ->
+                   Episode(
+                       id = data.id,
+                       name = data.name,
+                       episode = data.episode,
+                       air_date = data.air_date,
+                       pk = data.id?.toInt() ?: 0
+                   )
+               }
+            }.
+            cachedIn(viewModelScope).stateIn(viewModelScope)
             _episodeResult.value = newResult.value
         }
     }

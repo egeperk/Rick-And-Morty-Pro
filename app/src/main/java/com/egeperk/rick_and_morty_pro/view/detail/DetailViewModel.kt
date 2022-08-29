@@ -4,21 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
+import androidx.paging.*
+import androidx.room.PrimaryKey
 import com.egeperk.rick_and_morty.CharacterByIdQuery
 import com.egeperk.rick_and_morty.EpisodeByIdQuery
 import com.egeperk.rick_and_morty_pro.adapters.pagingsource.CharacterDetailPagingSource
 import com.egeperk.rick_and_morty_pro.adapters.pagingsource.EpisodeDetailPagingSource
+import com.egeperk.rick_and_morty_pro.data.model.Character
+import com.egeperk.rick_and_morty_pro.data.model.Episode
 import com.egeperk.rick_and_morty_pro.repository.ApiRepository
 import com.egeperk.rick_and_morty_pro.util.Constants
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class DetailViewModel(private val repository: ApiRepository) : ViewModel() {
@@ -32,11 +29,11 @@ class DetailViewModel(private val repository: ApiRepository) : ViewModel() {
     val episode: LiveData<EpisodeByIdQuery.Episode?> = _episode
 
     private val _episodeResult =
-        MutableStateFlow<PagingData<CharacterByIdQuery.Episode>>(PagingData.empty())
+        MutableStateFlow<PagingData<Episode>>(PagingData.empty())
     val episodeResult = _episodeResult.asStateFlow()
 
     private val _characterResult =
-        MutableStateFlow<PagingData<EpisodeByIdQuery.Character>>(PagingData.empty())
+        MutableStateFlow<PagingData<Character>>(PagingData.empty())
     val characterResult = _characterResult.asStateFlow()
 
     fun getCharacterData(id: String) {
@@ -59,7 +56,17 @@ class DetailViewModel(private val repository: ApiRepository) : ViewModel() {
                     id,
                     showThree
                 )
-            }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
+            }.flow.map {
+              it.map { data ->
+                  Episode(
+                      id = data.id,
+                      name = data.name,
+                      episode = data.episode,
+                      air_date = data.air_date,
+                      pk = data.id?.toInt() ?: 0
+                  )
+              }
+            }.cachedIn(viewModelScope).stateIn(viewModelScope)
             _episodeResult.value = newResult.value
         }
 
@@ -72,7 +79,22 @@ class DetailViewModel(private val repository: ApiRepository) : ViewModel() {
                     id,
                     showThree
                 )
-            }.flow.cachedIn(viewModelScope).stateIn(viewModelScope)
+            }.flow.map {
+              it.map { data ->
+                  Character(
+                      id = data.id,
+                      name = data.name,
+                      image = data.image,
+                      status = null,
+                      gender = null,
+                      species = null,
+                      type = null,
+                      origin = null,
+                      location = null,
+                      pk = data.id?.toInt() ?: 0
+                  )
+              }
+            }.cachedIn(viewModelScope).stateIn(viewModelScope)
             _characterResult.value = newResult.value
         }
 }

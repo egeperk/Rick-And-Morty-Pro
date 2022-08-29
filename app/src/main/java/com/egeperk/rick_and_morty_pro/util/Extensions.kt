@@ -9,6 +9,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import com.egeperk.rick_and_morty_pro.R
@@ -61,3 +63,8 @@ fun Activity.hasInternetConnection(): Boolean {
         else -> false
     }
 }
+fun <T, S> LiveData<List<T>>.combineWith(second: LiveData<S?>): LiveData<Pair<List<T>?, S?>> =
+    MediatorLiveData<Pair<List<T>?, S?>>().apply {
+        addSource(this@combineWith) { value = Pair(it, second.value) }
+        addSource(second) { value = Pair(this@combineWith.value, it) }
+    }

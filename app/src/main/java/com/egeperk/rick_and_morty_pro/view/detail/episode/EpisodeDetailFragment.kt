@@ -12,8 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.paging.map
-import coil.load
 import com.egeperk.rick_and_morty.EpisodeByIdQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
@@ -36,7 +34,7 @@ class EpisodeDetailFragment : Fragment() {
     private val detailViewModel: DetailViewModel by viewModel()
     private val favoritesVieModel: FavoritesViewModel by viewModel()
     private var binding: FragmentEpisodeDetailBinding? = null
-    private var charAdapter: GenericAdapter<EpisodeByIdQuery.Character>? = null
+    private var charAdapter: GenericAdapter<Character>? = null
     private var locationAdapter: GenericAdapter<EpisodeByIdQuery.Character>? = null
     private var textShader: Shader? = null
 
@@ -55,18 +53,20 @@ class EpisodeDetailFragment : Fragment() {
                 setDataFromDb()
             }
 
+            checkDatabase()
+
             if (activity?.hasInternetConnection() == true) {
 
 
                 if (arguments != null) {
                     detailViewModel.apply {
                         getEpisodeData(args.uuid)
-                        getEpisodeCharacters(args.uuid, showThree = true)
+                        getEpisodeCharacters(args.uuid,showThree = true)
                     }
                 }
 
                 charAdapter =
-                    GenericAdapter(R.layout.character_row_detail) { position ->
+                    GenericAdapter(R.layout.character_row) { position ->
                         findNavController().safeNavigate(
                             EpisodeDetailFragmentDirections.actionEpisodeDetailFragmentToDetailFragment(
                                 charAdapter?.snapshot()?.items?.map {
@@ -84,7 +84,7 @@ class EpisodeDetailFragment : Fragment() {
 
                 lifecycleScope.launch {
                     detailViewModel.characterResult.collectLatest {
-                        locationAdapter?.submitData(it)
+                        //locationAdapter?.submitData(it)
                     }
                 }
 
@@ -151,6 +151,20 @@ class EpisodeDetailFragment : Fragment() {
             }
 
     }
+    private fun checkDatabase() {
+
+        favoritesVieModel.episodes.combineWith(detailViewModel.episode).observe(viewLifecycleOwner){ data ->
+
+                if (data?.first?.map {
+                        it.id
+                    }?.contains(data.second?.id) == true) {
+                    binding?.apply {
+                        favBtnImage.setImageResource(R.drawable.ic_icon_added_fav)
+                        addToFavs.text = resources.getString(R.string.added_fav_ep)
+                    }}
+            }
+        }
+
 
     private fun setDataFromDb() {
 
