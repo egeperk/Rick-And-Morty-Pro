@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.map
-import androidx.lifecycle.switchMap
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.PagingData
@@ -19,6 +17,7 @@ import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.data.model.Character
 import com.egeperk.rick_and_morty_pro.data.model.Episode
+import com.egeperk.rick_and_morty_pro.data.model.Location
 import com.egeperk.rick_and_morty_pro.databinding.FragmentBottomSheetDialogBinding
 import com.egeperk.rick_and_morty_pro.util.Constants.EMPTY_VALUE
 import com.egeperk.rick_and_morty_pro.util.Constants.ROTATE_DOWN
@@ -36,6 +35,7 @@ import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_FAVORITES
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_FAVORITES_CHAR
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_FAVORITES_EPISODE
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_HOME
+import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_LOCATION
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_SEARCH
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_SEARCH_CHAR
 import com.egeperk.rick_and_morty_pro.util.safeNavigate
@@ -66,6 +66,10 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
             binding = this
 
             when (args.type) {
+                TYPE_LOCATION -> {
+                    setLocationAdapter()
+                }
+
                 TYPE_SEARCH -> {
 
                     setCharacterScreen()
@@ -115,6 +119,25 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
         }
         return binding?.root
     }
+
+    private fun setLocationAdapter() {
+        binding?.apply {
+            headerTitle.text = resources.getString(R.string.locations)
+            itemCount.text = args.data?.toList()!!.size.toString()
+            filterBtn.isVisible = false
+        }
+
+        val locationAdapter = GenericAdapter<Location>(R.layout.location_row) {}
+        binding?.genericRv?.apply {
+            adapter = locationAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
+
+        lifecycleScope.launch {
+            locationAdapter.submitData(PagingData.from(args.data?.toList()!!))
+        }
+    }
+
 
     private fun setEpisodeAdapter(arg: String?, from: String?) {
 

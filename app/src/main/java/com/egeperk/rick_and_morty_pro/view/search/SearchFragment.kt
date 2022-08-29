@@ -14,8 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
-import com.egeperk.rick_and_morty.CharactersQuery
-import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.data.model.Character
@@ -52,14 +50,14 @@ class SearchFragment : Fragment() {
                 findNavController().safeNavigate(
                     SearchFragmentDirections.actionSearchFragmentToItemListDialogFragment(
                         Constants.TYPE_SEARCH,
-                        Constants.TYPE_SEARCH_CHAR,homeViewModel.search.value))
+                        Constants.TYPE_SEARCH_CHAR,homeViewModel.search.value, data = null))
             }
 
             episodeBtnLy.setOnClickListener {
                 findNavController().safeNavigate(
                     SearchFragmentDirections.actionSearchFragmentToItemListDialogFragment(
                         Constants.TYPE_SEARCH,
-                        Constants.TYPE_SEARCH_EPISODE,homeViewModel.search.value))
+                        Constants.TYPE_SEARCH_EPISODE,homeViewModel.search.value, data = null))
             }
 
             charAdapter = GenericAdapter(R.layout.character_row) { position ->

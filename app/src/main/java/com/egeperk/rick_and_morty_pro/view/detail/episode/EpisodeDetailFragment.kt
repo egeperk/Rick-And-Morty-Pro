@@ -12,15 +12,17 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.egeperk.rick_and_morty.EpisodeByIdQuery
+import androidx.paging.PagingData
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.data.model.Character
 import com.egeperk.rick_and_morty_pro.data.model.Episode
+import com.egeperk.rick_and_morty_pro.data.model.Location
 import com.egeperk.rick_and_morty_pro.databinding.FragmentEpisodeDetailBinding
 import com.egeperk.rick_and_morty_pro.util.*
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_CHAR
 import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_FAVORITES
+import com.egeperk.rick_and_morty_pro.util.Constants.TYPE_LOCATION
 import com.egeperk.rick_and_morty_pro.view.detail.DetailViewModel
 import com.egeperk.rick_and_morty_pro.view.favorites.FavoritesViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -35,7 +37,7 @@ class EpisodeDetailFragment : Fragment() {
     private val favoritesVieModel: FavoritesViewModel by viewModel()
     private var binding: FragmentEpisodeDetailBinding? = null
     private var charAdapter: GenericAdapter<Character>? = null
-    private var locationAdapter: GenericAdapter<EpisodeByIdQuery.Character>? = null
+    private var locationAdapter: GenericAdapter<Location>? = null
     private var textShader: Shader? = null
 
     override fun onCreateView(
@@ -82,9 +84,41 @@ class EpisodeDetailFragment : Fragment() {
                 locationRv.adapter = locationAdapter
 
 
-                lifecycleScope.launch {
-                    detailViewModel.characterResult.collectLatest {
-                        //locationAdapter?.submitData(it)
+                detailViewModel.getLocations(args.uuid)
+
+
+                val locationList = ArrayList<Location>()
+
+                detailViewModel.location.observe(viewLifecycleOwner){
+                    it.forEach{data->
+                        val location = Location(
+                            id = data?.location?.id,
+                            name = data?.location?.name,
+                            dimension = data?.location?.dimension,
+                            type = data?.location?.type
+                        )
+                        locationList.add(location)
+                    }
+                    val singleLocationList = locationList.distinct()
+                    locationCount.text= locationList.distinct().size.toString()
+
+                    lifecycleScope.launch{
+                        locationAdapter?.submitData(
+                            PagingData.from(
+                                singleLocationList.subList(
+                                    0,
+                                    3
+                                )
+                            )
+                        )
+                    }
+
+                    locationBtnLy.setOnClickListener{
+                        findNavController().safeNavigate(
+                            EpisodeDetailFragmentDirections.actionEpisodeDetailFragmentToItemListDialogFragment(
+                                TYPE_LOCATION, from = null, uuid = null, data = singleLocationList.toTypedArray()
+                            )
+                        )
                     }
                 }
 
@@ -97,7 +131,7 @@ class EpisodeDetailFragment : Fragment() {
                 characterBtnLy.setOnClickListener {
                     findNavController().safeNavigate(
                         EpisodeDetailFragmentDirections.actionEpisodeDetailFragmentToItemListDialogFragment(
-                            TYPE_CHAR, Constants.TYPE_CHAR_BY_ID, args.uuid
+                            TYPE_CHAR, Constants.TYPE_CHAR_BY_ID, args.uuid, data = null
                         )
                     )
                 }

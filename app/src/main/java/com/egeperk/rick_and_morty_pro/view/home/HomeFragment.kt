@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.egeperk.rick_and_morty.CharactersQuery
-import com.egeperk.rick_and_morty.EpisodeQuery
 import com.egeperk.rick_and_morty_pro.R
 import com.egeperk.rick_and_morty_pro.adapters.pagingadapter.GenericAdapter
 import com.egeperk.rick_and_morty_pro.data.model.Character
@@ -100,7 +98,7 @@ class HomeFragment : Fragment() {
     private fun showSheet(type: String) {
         findNavController().safeNavigate(
             HomeFragmentDirections.actionHomeFragmentToItemListDialogFragment(
-                type, from = null, uuid = null
+                type, from = null, uuid = null, data = null
             )
         )
     }

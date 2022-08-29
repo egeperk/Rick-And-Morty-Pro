@@ -150,7 +150,7 @@ class DetailFragment : Fragment() {
     private fun showEpisodeSheet() {
         findNavController().safeNavigate(
             DetailFragmentDirections.actionDetailFragmentToItemListDialogFragment(
-                TYPE_EPISODE, TYPE_EPISODE_BY_ID, args.uuid
+                TYPE_EPISODE, TYPE_EPISODE_BY_ID, args.uuid, data = null
             )
         )
     }
