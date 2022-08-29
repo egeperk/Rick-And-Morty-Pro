@@ -64,6 +64,10 @@
             android:name="uuid"
             app:argType="string"
             app:nullable="true" />
+        <argument
+            android:name="data"
+            app:argType="com.egeperk.rick_and_morty_pro.data.model.Location[]"
+            app:nullable="true"/>
         <action
             android:id="@+id/action_itemListDialogFragment_to_episodeDetailFragment"
             app:destination="@id/episodeDetailFragment" />

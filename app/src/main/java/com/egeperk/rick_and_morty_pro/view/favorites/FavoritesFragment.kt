@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.egeperk.rick_and_morty_pro.R
@@ -40,7 +39,7 @@ class FavoritesFragment : Fragment() {
                 findNavController().safeNavigate(
                     FavoritesFragmentDirections.actionFavoritesFragmentToItemListDialogFragment(
                         TYPE_FAVORITES,
-                        TYPE_FAVORITES_CHAR, uuid = null
+                        TYPE_FAVORITES_CHAR, uuid = null, data = null
                     )
                 )
             }
@@ -65,7 +64,7 @@ class FavoritesFragment : Fragment() {
                 findNavController().safeNavigate(
                     FavoritesFragmentDirections.actionFavoritesFragmentToItemListDialogFragment(
                         TYPE_FAVORITES,
-                        TYPE_FAVORITES_EPISODE, uuid = null
+                        TYPE_FAVORITES_EPISODE, uuid = null, data = null
                     )
                 )
             }

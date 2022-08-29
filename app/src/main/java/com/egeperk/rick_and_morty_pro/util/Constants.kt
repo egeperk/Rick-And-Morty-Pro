@@ -11,6 +11,7 @@ object Constants {
     const val TYPE_CHAR_BY_ID = "character_id"
     const val TYPE_FAVORITES_CHAR = "favorite_chars"
     const val TYPE_FAVORITES_EPISODE = "favorite_episodes"
+    const val TYPE_LOCATION = "location"
     const val TYPE_FAVORITES = "search"
     const val TYPE_SEARCH_CHAR = "search_chars"
     const val TYPE_SEARCH_EPISODE = "search_episodes"

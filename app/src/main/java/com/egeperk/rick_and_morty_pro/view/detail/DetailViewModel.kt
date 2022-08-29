@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
-import androidx.room.PrimaryKey
 import com.egeperk.rick_and_morty.CharacterByIdQuery
 import com.egeperk.rick_and_morty.EpisodeByIdQuery
 import com.egeperk.rick_and_morty_pro.adapters.pagingsource.CharacterDetailPagingSource
@@ -19,6 +18,8 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class DetailViewModel(private val repository: ApiRepository) : ViewModel() {
+
+    val location = MutableLiveData<List<EpisodeByIdQuery.Character?>>()
 
     val isExpanded = MutableLiveData(false)
 
@@ -97,4 +98,10 @@ class DetailViewModel(private val repository: ApiRepository) : ViewModel() {
             }.cachedIn(viewModelScope).stateIn(viewModelScope)
             _characterResult.value = newResult.value
         }
+
+    fun getLocations(id: String) {
+        viewModelScope.launch{
+            location.postValue(repository.episodeByIdQuery(id).data?.episode?.characters)
+        }
+    }
 }
