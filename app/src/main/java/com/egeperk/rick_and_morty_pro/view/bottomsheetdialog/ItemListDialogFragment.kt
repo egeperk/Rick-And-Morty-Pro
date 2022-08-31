@@ -123,7 +123,7 @@ class ItemListDialogFragment : BottomSheetDialogFragment() {
     private fun setLocationAdapter() {
         binding?.apply {
             headerTitle.text = resources.getString(R.string.locations)
-            itemCount.text = args.data?.toList()!!.size.toString()
+            itemCount.text = args.data?.toList()?.size.toString()
             filterBtn.isVisible = false
         }
 
